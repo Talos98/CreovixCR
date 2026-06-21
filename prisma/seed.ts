@@ -16,8 +16,9 @@ async function main() {
     ];
 
     for (const model of models) {
-        await (model as any).deleMany();
+        await (model as any).deleteMany();
     }
+
 
     // 2. Creación de datos maestros (Independientes)
 
@@ -68,7 +69,7 @@ async function main() {
 
     const catMap = Object.fromEntries(cats.map(c => [c.name, c.id]));
     const specMap = Object.fromEntries(specs.map(s => [s.name, s.id]));
-    const userMap = Object.fromEntries(users.map(u => [u.name, u.id]));
+    const userMap = Object.fromEntries(users.map(u => [u.email, u.id]));
 
     // 4. Professional Profiles
     await prisma.professionalProfile.create({
@@ -153,7 +154,7 @@ async function main() {
             endTime: new Date(),
             mode: ServiceMode.ONLINE,
             status: AppointmentStatus.COMPLETED,
-            clientId: userMap["client1@gmail.com"],
+            clientId: userMap["client1@mail.com"],
             professionalId: userMap["pro1@mail.com"],
             serviceId: logoService.id,
         },
