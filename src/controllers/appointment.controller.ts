@@ -22,6 +22,22 @@ export class AppointmentController {
         }
     };
 
+    getById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = parseId(req.params.id);
+
+        const appointment = await appointmentService.getById(id);
+
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: appointment
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
     create = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const appointment = await appointmentService.create(req.body);
