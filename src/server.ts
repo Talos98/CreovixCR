@@ -2,6 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import { AppRoutes } from "./routes/routes";
 
 const app = express();
 // Acceder a la configuracion del archivo .env
@@ -19,6 +20,9 @@ app.use(
         extended: true,
     })
 );
+
+app.use(AppRoutes.routes);
+
 app.get("/", (req, res) => {
     res.json({
         message: "API de creovixcr funcionando correctamente",
