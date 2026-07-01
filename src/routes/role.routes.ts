@@ -8,7 +8,7 @@ export class RoleRoutes {
         const controller = new RoleController()
 
         //Routes
-        //localhost:3000/category/
+        //localhost:3000/role
 
         router.get('/', asyncHandler(controller.list))
         router.get('/:id', asyncHandler(controller.getById))

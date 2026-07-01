@@ -14,12 +14,12 @@ export class AppRoutes {
 
         router.use('/appointment', AppointmentRoutes.routes)
         router.use('/category', CategoryRoutes.routes)
-        router.use('professionalProfile', ProfessionalProfileRoutes.routes)
-        router.use('review', ReviewRoutes.routes)
-        router.use('role', RoleRoutes.routes)
-        router.use('service', ServiceRoutes.routes)
-        router.use('specialty', SpecialtyRoutes.routes)
-        router.use('user', UserRoutes.routes)
+        router.use('/professionalProfile', ProfessionalProfileRoutes.routes)
+        router.use('/review', ReviewRoutes.routes)
+        router.use('/role', RoleRoutes.routes)
+        router.use('/service', ServiceRoutes.routes)
+        router.use('/specialty', SpecialtyRoutes.routes)
+        router.use('/user', UserRoutes.routes)
         return router;
     }
 }
