@@ -7,6 +7,7 @@ import { RoleRoutes } from "./role.routes";
 import { ServiceRoutes } from "./service.routes";
 import { SpecialtyRoutes } from "./specialty.routes";
 import { UserRoutes } from "./user.routes";
+import { ImageRoutes } from "./image.routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -20,6 +21,7 @@ export class AppRoutes {
         router.use('/service', ServiceRoutes.routes)
         router.use('/specialty', SpecialtyRoutes.routes)
         router.use('/user', UserRoutes.routes)
+        router.use('/images' , ImageRoutes.routes)
         return router;
     }
 }
