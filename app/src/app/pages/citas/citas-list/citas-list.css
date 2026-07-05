@@ -1,0 +1,131 @@
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.filters-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    color: #666666;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    background: #fff8f7;
+    border: 1px solid #ffdad6;
+}
+
+.error-container mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #ba1a1a;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    border-radius: 16px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+    color: #666666;
+}
+
+.empty-state mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #999999;
+}
+
+.table-container {
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 0.5rem;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+}
+
+table {
+    width: 100%;
+}
+
+th.mat-header-cell {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #0c3c2c;
+}
+
+.status-chip {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.status-accepted {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-rejected {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.status-cancelled {
+    background: #efebe9;
+    color: #5d4037;
+}
+
+.status-completed {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+@media (max-width: 768px) {
+    .filters-section {
+        grid-template-columns: 1fr;
+    }
+}

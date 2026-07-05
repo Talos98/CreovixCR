@@ -1,0 +1,27 @@
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    color: #666666;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    background: #fff8f7;
+    border: 1px solid #ffdad6;
+}
+
+.error-container mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #ba1a1a;
+}

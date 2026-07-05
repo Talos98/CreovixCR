@@ -6,6 +6,7 @@ node_modules/
 
 dist/
 build/
+.angular/
 
 # Environment variables (IMPORTANT)
 
@@ -17,10 +18,7 @@ build/
 
 # Prisma
 
-# (Keep schema, ignore generated files if needed)
-
 prisma/generated/
-
 generated/
 
 # Logs

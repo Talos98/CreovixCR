@@ -1,0 +1,126 @@
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.toolbar {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    height: 72px;
+    padding: 0;
+    background: transparent;
+    gap: 0.75rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+.brand-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #ffffff;
+    background: #0c3c2c;
+    box-shadow: 0 4px 12px rgba(12, 60, 44, 0.25);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+
+    strong {
+        font-size: 1.1rem;
+        color: #0c3c2c;
+    }
+
+    small {
+        opacity: 0.6;
+        font-size: 0.75rem;
+        color: #666666;
+    }
+}
+
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 1.5rem;
+
+    a,
+    button {
+        border-radius: 999px;
+        color: #333333;
+    }
+
+    a:hover,
+    button:hover {
+        color: #0c3c2c;
+    }
+
+    mat-icon {
+        margin-right: 0.35rem;
+    }
+}
+
+.active-link {
+    background: rgba(12, 60, 44, 0.08);
+    color: #0c3c2c !important;
+    font-weight: 500;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    background: #f2f2f2;
+    border: 1px solid #e6e6e6;
+    font-size: 0.82rem;
+    color: #333333;
+
+    strong {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        color: #ffffff;
+        background: #e85320;
+    }
+}
+
+.mobile-menu-button {
+    display: none;
+}
+
+@media (max-width: 980px) {
+
+    .desktop-nav,
+    .user-chip,
+    .toolbar>button:not(.mobile-menu-button):not([aria-label]) {
+        display: none;
+    }
+
+    .mobile-menu-button {
+        display: inline-flex;
+    }
+
+    .brand-text small {
+        display: none;
+    }
+}
