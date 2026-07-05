@@ -3,6 +3,9 @@ import * as dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import { AppRoutes } from "./routes/routes";
+import path from "path/win32"
+import { ErrorMiddleware } from "./middlewares/error.middleware";
+
 
 const app = express();
 // Acceder a la configuracion del archivo .env
@@ -21,7 +24,19 @@ app.use(
     })
 );
 
+
+// Definited routes
 app.use(AppRoutes.routes);
+
+//Hnadler errors middleware
+
+app.use(ErrorMiddleware.handleError)
+
+// Access to Images
+app.use("/images",express.static(
+    path.join(path.resolve(),"assets/uploads")))
+
+
 
 app.get("/", (req, res) => {
     res.json({
