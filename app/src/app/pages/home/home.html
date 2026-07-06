@@ -1,0 +1,39 @@
+<section class="hero">
+    <div class="hero-content">
+        <span class="eyebrow">Plataforma de servicios</span>
+        <h1>Tu Negocio, Nuestra Responsabilidad</h1>
+        <p>
+            Gestiona servicios profesionales, agenda citas
+            y conecta con los mejores especialistas del mercado.
+        </p>
+        <div class="hero-actions">
+            <a mat-flat-button class="cta-primary" routerLink="/servicios">
+                Comenzar
+            </a>
+            <a mat-button class="cta-secondary" routerLink="/servicios">
+                Ver servicios
+            </a>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <img src="assets/pngegg.png" alt="CreovixCR">
+    </div>
+</section>
+
+<div class="section-header">
+    <span class="section-eyebrow">Nuestros módulos</span>
+    <h2>Funcionalidades Principales</h2>
+    <p>Todo lo que necesitás para gestionar tu plataforma de servicios profesionales.</p>
+</div>
+
+<section class="summary-grid">
+    @for (card of cards(); track card.title) {
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <mat-icon>{{ card.icon }}</mat-icon>
+        </div>
+        <h2>{{ card.title }}</h2>
+        <p>{{ card.description }}</p>
+    </div>
+    }
+</section>

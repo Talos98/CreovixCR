@@ -1,0 +1,128 @@
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.filters-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-field {
+    min-width: 200px;
+    flex: 1;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    color: #666666;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    background: #fff8f7;
+    border: 1px solid #ffdad6;
+}
+
+.error-container mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #ba1a1a;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    border-radius: 16px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+}
+
+.empty-state mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #999999;
+}
+
+.table-container {
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 0.5rem;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+}
+
+table {
+    width: 100%;
+}
+
+th.mat-header-cell {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #0c3c2c;
+}
+
+.status-active {
+    color: #1c7458;
+    font-weight: 600;
+}
+
+.status-inactive {
+    color: #ba1a1a;
+    font-weight: 600;
+}
+
+.toggle-active {
+    color: #1c7458;
+}
+
+.toggle-inactive {
+    color: #ba1a1a;
+}
+
+.view-icon-button {
+    color: #0c3c2c;
+}
+
+.edit-icon-button {
+    color: #e85320;
+}
+
+@media (max-width: 768px) {
+    .filters-section {
+        flex-direction: column;
+    }
+
+    .filter-field {
+        min-width: unset;
+    }
+}

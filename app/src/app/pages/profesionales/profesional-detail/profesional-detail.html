@@ -1,0 +1,101 @@
+@if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Cargando detalle del profesional...</p>
+    </div>
+}
+
+@if (error()) {
+    <div class="error-container glass-card">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ error() }}</p>
+        <a mat-flat-button class="primary-button" routerLink="/admin/profesionales">
+            <mat-icon>arrow_back</mat-icon> Volver a la lista
+        </a>
+    </div>
+}
+
+@if (profesional(); as prof) {
+    <div class="detail-header">
+        <a mat-button routerLink="/admin/profesionales">
+            <mat-icon>arrow_back</mat-icon> Volver a la lista
+        </a>
+    </div>
+
+    <div class="detail-layout">
+        <mat-card class="detail-card glass-card">
+            <mat-card-header>
+                <div class="detail-icon">
+                    <mat-icon>person</mat-icon>
+                </div>
+                <mat-card-title>{{ prof.user?.name ?? 'Profesional' }}</mat-card-title>
+                <mat-card-subtitle>{{ prof.title }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                @if (prof.description) {
+                    <p class="description">{{ prof.description }}</p>
+                }
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <mat-icon>work_history</mat-icon>
+                        <div>
+                            <strong>Experiencia</strong>
+                            <span>{{ prof.yearsExperience }} anos</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>phone</mat-icon>
+                        <div>
+                            <strong>Telefono</strong>
+                            <span>{{ prof.phone }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>location_on</mat-icon>
+                        <div>
+                            <strong>Ubicacion</strong>
+                            <span>{{ prof.location }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>attach_money</mat-icon>
+                        <div>
+                            <strong>Tarifa base</strong>
+                            <span>&#8353;{{ prof.baseRate }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>{{ prof.mode === 'ONLINE' ? 'videocam' : 'storefront' }}</mat-icon>
+                        <div>
+                            <strong>Modalidad</strong>
+                            <span>{{ prof.mode === 'ONLINE' ? 'En linea' : 'Presencial' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>{{ prof.isAvailable ? 'check_circle' : 'cancel' }}</mat-icon>
+                        <div>
+                            <strong>Disponibilidad</strong>
+                            <span [class.status-active]="prof.isAvailable" [class.status-inactive]="!prof.isAvailable">
+                                {{ prof.isAvailable ? 'Disponible' : 'No disponible' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                @if (prof.user) {
+                    <div class="user-section">
+                        <h3><mat-icon>email</mat-icon> Contacto</h3>
+                        <p>{{ prof.user.email }}</p>
+                    </div>
+                }
+            </mat-card-content>
+        </mat-card>
+    </div>
+}

@@ -1,0 +1,74 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, Arial, sans-serif;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.primary-button {
+    background-color: #0c3c2c !important;
+    color: #ffffff !important;
+}
+
+.secondary-button {
+    background-color: #e85320 !important;
+    color: #ffffff !important;
+}
+
+.tertiary-button {
+    background-color: #b38552 !important;
+    color: #ffffff !important;
+}
+
+.primary-icon-button {
+    color: #0c3c2c !important;
+}
+
+.secondary-icon-button {
+    color: #e85320 !important;
+}
+
+.tertiary-icon-button {
+    color: #b38552 !important;
+}
+
+.create-button {
+    background-color: #1c7458 !important;
+    color: white !important;
+}
+
+.view-button {
+    background-color: #0c3c2c !important;
+    color: white !important;
+}
+
+.edit-button {
+    background-color: #e85320 !important;
+    color: white !important;
+}
+
+.delete-button {
+    background-color: #d32f2f !important;
+    color: white !important;
+}
+
+.create-icon-button {
+    color: #1c7458 !important;
+}
+
+.view-icon-button {
+    color: #0c3c2c !important;
+}
+
+.edit-icon-button {
+    color: #e85320 !important;
+}
+
+.delete-icon-button {
+    color: #d32f2f !important;
+}

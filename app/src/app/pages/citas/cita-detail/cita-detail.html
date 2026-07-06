@@ -1,0 +1,108 @@
+@if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Cargando detalle de la cita...</p>
+    </div>
+}
+
+@if (error()) {
+    <div class="error-container glass-card">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ error() }}</p>
+        <a mat-flat-button class="primary-button" routerLink="/admin/citas">
+            <mat-icon>arrow_back</mat-icon> Volver a citas
+        </a>
+    </div>
+}
+
+@if (cita(); as c) {
+    <div class="detail-header">
+        <a mat-button routerLink="/admin/citas">
+            <mat-icon>arrow_back</mat-icon> Volver a citas
+        </a>
+    </div>
+
+    <div class="detail-layout">
+        <mat-card class="detail-card glass-card">
+            <mat-card-header>
+                <div class="detail-icon">
+                    <mat-icon>event</mat-icon>
+                </div>
+                <mat-card-title>Cita #{{ c.id }}</mat-card-title>
+                <mat-card-subtitle>
+                    <span class="status-chip" [class]="getStatusClass(c.status)">
+                        {{ getStatusLabel(c.status) }}
+                    </span>
+                </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <mat-icon>person</mat-icon>
+                        <div>
+                            <strong>Cliente</strong>
+                            <span>{{ c.client?.name ?? '—' }}</span>
+                            @if (c.client?.email) {
+                                <small>{{ c.client?.email }}</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>medical_services</mat-icon>
+                        <div>
+                            <strong>Profesional</strong>
+                            <span>{{ c.professional?.name ?? '—' }}</span>
+                            @if (c.professional?.email) {
+                                <small>{{ c.professional?.email }}</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>work</mat-icon>
+                        <div>
+                            <strong>Servicio</strong>
+                            <span>{{ c.service?.name ?? '—' }}</span>
+                            @if (c.service?.price) {
+                                <small>Precio: &#8353;{{ c.service?.price }}</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>calendar_today</mat-icon>
+                        <div>
+                            <strong>Fecha</strong>
+                            <span>{{ formatDate(c.date) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>schedule</mat-icon>
+                        <div>
+                            <strong>Hora</strong>
+                            <span>{{ formatTime(c.startTime) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>{{ c.mode === 'ONLINE' ? 'videocam' : 'location_on' }}</mat-icon>
+                        <div>
+                            <strong>Modalidad</strong>
+                            <span>{{ c.mode === 'ONLINE' ? 'En linea' : 'Presencial' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                @if (c.description) {
+                    <div class="description-section">
+                        <h3><mat-icon>description</mat-icon> Descripcion</h3>
+                        <p>{{ c.description }}</p>
+                    </div>
+                }
+            </mat-card-content>
+        </mat-card>
+    </div>
+}

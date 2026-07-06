@@ -1,0 +1,84 @@
+<section class="admin-header">
+  <h1>Gestión de Usuarios</h1>
+</section>
+
+<section class="filters-section">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar usuario</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput (input)="search.set($any($event.target).value)" [value]="search()" placeholder="Nombre o correo..." />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Filtrar por rol</mat-label>
+    <mat-select (selectionChange)="roleFilter.set($event.value)" [value]="roleFilter()">
+      <mat-option [value]="null">Todos</mat-option>
+      <mat-option value="ADMIN">Administrador</mat-option>
+      <mat-option value="PROFESSIONAL">Profesional</mat-option>
+      <mat-option value="CLIENT">Cliente</mat-option>
+    </mat-select>
+  </mat-form-field>
+</section>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando usuarios...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-flat-button class="primary-button" (click)="loadUsuarios()">Reintentar</button>
+  </div>
+} @else if (usuariosFiltrados().length === 0) {
+  <div class="empty-state">
+    <mat-icon>person_off</mat-icon>
+    <p>No hay usuarios registrados</p>
+  </div>
+} @else {
+  <div class="table-container">
+    <table mat-table [dataSource]="usuariosFiltrados()">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Correo</th>
+        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Rol</th>
+        <td mat-cell *matCellDef="let user">{{ getRoleLabel(user.role) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let user">
+          <mat-chip [class]="user.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+            {{ user.status === 'ACTIVE' ? 'Activo' : 'Inactivo' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let user">
+          <button
+            mat-icon-button
+            [class]="user.status === 'ACTIVE' ? 'toggle-active' : 'toggle-inactive'"
+            (click)="toggleStatus(user)"
+            [matTooltip]="user.status === 'ACTIVE' ? 'Desactivar' : 'Activar'"
+          >
+            <mat-icon>{{ user.status === 'ACTIVE' ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+}
