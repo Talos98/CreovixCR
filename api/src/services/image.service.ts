@@ -24,7 +24,7 @@ export class ImageService {
             await fs.access(filePath);
             await fs.unlink(filePath);
         } catch {
-            
+
         }
     }
 

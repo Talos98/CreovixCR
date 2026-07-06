@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ImageController } from "../controllers/image.controller";
+
 export class ImageRoutes {
     static get routes() {
         const router = Router();
