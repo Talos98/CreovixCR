@@ -1,13 +1,20 @@
 import { z } from "zod";
 
 export const createProfessionalProfileSchema = z.object({
-    userId: z.number().int().positive(),
-    title: z.string(),
+
+    //User
+    name:z.string().min(1,"El nombre es obligatorio"),
+    lastName:z.string().min(1,"Los apellidos son obligatorios"),
+    email:z.string().email("Correo inválido"),
+
+    //Profile
+
+    title: z.string().min(1,"El título es obligaotorio"),
     description: z.string().optional(),
     yearsExperience: z.number().int().nonnegative(),
-    phone: z.string(),
-    location: z.string(),
-    baseRate: z.number(),
+    phone: z.string().min(1,"El teléfono es obligatorio"),
+    location: z.string().min(1,"La ubicación es obligatoria"),
+    baseRate: z.number().positive("Debe ser mayor a 0"),
     mode: z.enum(["ONLINE", "IN_PERSON"]),
     isAvailable: z.boolean(),
     profileImage: z.string().optional()
