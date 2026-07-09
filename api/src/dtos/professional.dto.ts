@@ -22,3 +22,11 @@ export const createProfessionalSchema = z.object({
 
 export type CreateProfessionalDto =
     z.infer<typeof createProfessionalSchema>;
+
+export const updateProfessionalSchema =
+    createProfessionalSchema.partial();
+
+
+export type UpdateProfessionalDto =
+    z.infer<typeof updateProfessionalSchema>;
+

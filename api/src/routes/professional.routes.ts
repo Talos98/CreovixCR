@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ProfessionalController } from "../controllers/professional.controller";
 import { asyncHandler } from "../middlewares/async-handler.middleware";
 import { validateRequest } from "../middlewares/validate-request.middleware";
-import { createProfessionalSchema } from "../dtos/professional.dto";
+import { createProfessionalSchema, updateProfessionalSchema } from "../dtos/professional.dto";
 
 
 export class ProfessionalRoutes {
@@ -17,6 +17,12 @@ export class ProfessionalRoutes {
             "/",
             validateRequest(createProfessionalSchema),
             asyncHandler(controller.create)
+        );
+
+        router.put(
+            "/:id",
+            validateRequest(updateProfessionalSchema),
+            asyncHandler(controller.update)
         );
 
 

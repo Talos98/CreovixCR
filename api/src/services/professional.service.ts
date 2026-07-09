@@ -20,7 +20,7 @@ export const professionalService = {
         profileImage?: string;
     }) {
 
-       
+
         const existingUser = await prisma.user.findUnique({
             where: {
                 email: data.email
@@ -34,14 +34,14 @@ export const professionalService = {
 
         return await prisma.$transaction(async (tx) => {
 
-            
+
             const user = await tx.user.create({
                 data: {
                     name: data.name,
                     lastName: data.lastName,
                     email: data.email,
 
-                    
+
                     password: "temporary-password",
 
                     role: Role.PROFESSIONAL,
@@ -50,7 +50,7 @@ export const professionalService = {
             });
 
 
-            
+
             const profile = await tx.professionalProfile.create({
                 data: {
                     userId: user.id,
@@ -68,11 +68,86 @@ export const professionalService = {
                 }
             });
 
-
             return {
                 user,
                 profile
             };
         });
+    },
+    async update(id: number, data: any) {
+
+        const professional = await prisma.professionalProfile.findUnique({
+            where: {
+                id
+            },
+            include: {
+                user: true
+            }
+        });
+
+
+        if (!professional) {
+            throw AppError.badRequest("Professional not found");
+        }
+
+
+        if (data.email) {
+
+            const existingUser = await prisma.user.findUnique({
+                where: {
+                    email: data.email
+                }
+            });
+
+
+            if (
+                existingUser &&
+                existingUser.id !== professional.userId
+            ) {
+                throw AppError.badRequest("Email already exists");
+            }
+        }
+
+
+        return await prisma.$transaction(async (tx) => {
+
+
+            const user = await tx.user.update({
+                where: {
+                    id: professional.userId
+                },
+                data: {
+                    name: data.name,
+                    lastName: data.lastName,
+                    email: data.email
+                }
+            });
+
+
+            const profile = await tx.professionalProfile.update({
+                where: {
+                    id
+                },
+                data: {
+                    title: data.title,
+                    description: data.description,
+                    yearsExperience: data.yearsExperience,
+                    phone: data.phone,
+                    location: data.location,
+                    baseRate: data.baseRate,
+                    mode: data.mode,
+                    isAvailable: data.isAvailable,
+                    profileImage: data.profileImage
+                }
+            });
+
+
+            return {
+                user,
+                profile
+            };
+
+        });
     }
+
 };

@@ -17,52 +17,29 @@ import { environment } from '../../../../environments/environment.development';
     templateUrl: './profesional-create-page.html',
 })
 export class ProfesionalCreatePage {
+
     private readonly router = inject(Router);
-    private readonly http = inject(HttpClient);
     private readonly professionalService = inject(ProfessionalService);
     private readonly noti = inject(NotificationService);
 
-    usuarios = signal<any[]>([]);
-    loading = signal(true);
     saving = signal(false);
     error = signal<string | null>(null);
-
-    constructor() {
-        this.cargarDatosFormulario();
-    }
-
-    cargarDatosFormulario() {
-        this.loading.set(true);
-        this.error.set(null);
-
-        this.http.get<any>(`${environment.apiUrl}/user`).subscribe({
-            next: (response) => {
-                const users = response.data?.data ?? response.data ?? [];
-                this.usuarios.set(users.filter((u: any) => u.role === 'PROFESSIONAL'));
-            },
-            error: () => {
-                this.error.set('No se pudieron cargar los usuarios');
-            },
-            complete: () => {
-                this.loading.set(false);
-            },
-        });
-    }
 
     guardar(data: ProfessionalCreateDto | ProfessionalUpdateDto) {
         this.saving.set(true);
         this.error.set(null);
 
-        this.professionalService.crear(data as ProfessionalCreateDto).subscribe({
-            next: () => {
-                this.noti.success('Profesional registrado correctamente');
-                this.router.navigate(['/admin/profesionales']);
-            },
-            error: () => {
-                this.error.set('No se pudo registrar el profesional');
-                this.saving.set(false);
-            },
-        });
+        this.professionalService.crear(data as ProfessionalCreateDto)
+            .subscribe({
+                next: () => {
+                    this.noti.success('Profesional registrado correctamente');
+                    this.router.navigate(['/admin/profesionales']);
+                },
+                error: () => {
+                    this.error.set('No se pudo registrar el profesional');
+                    this.saving.set(false);
+                }
+            });
     }
 
     cancelar() {

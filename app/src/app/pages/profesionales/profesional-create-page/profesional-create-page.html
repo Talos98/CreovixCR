@@ -1,25 +1,11 @@
 <h1>Registrar Profesional</h1>
 
-@if (loading()) {
-    <div class="loading-container">
-        <mat-spinner diameter="48"></mat-spinner>
-        <p>Cargando formulario...</p>
-    </div>
-}
-
 @if (error()) {
-    <div class="error-container">
-        <mat-icon>error_outline</mat-icon>
-        <p>{{ error() }}</p>
-        <button mat-flat-button class="primary-button" (click)="cargarDatosFormulario()">Reintentar</button>
-    </div>
+<div class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error() }}</p>
+
+</div>
 }
 
-@if (!loading() && !error()) {
-    <app-profesional-form
-        [usuarios]="usuarios()"
-        [saving]="saving()"
-        (guardar)="guardar($event)"
-        (cancelar)="cancelar()"
-    />
-}
+<app-profesional-form [saving]="saving()" (guardar)="guardar($event)" (cancelar)="cancelar()" />

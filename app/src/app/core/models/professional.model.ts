@@ -10,11 +10,21 @@ export interface ProfessionalProfile {
     mode: 'ONLINE' | 'IN_PERSON';
     isAvailable: boolean;
     profileImage: string;
-    user?: { id: number; name: string; email: string; role: string; status: string };
+    user?: { 
+        id: number;
+        name: string;
+        lastName: string;
+        email: string;
+        role: string;
+        status: string };
 }
 
 export interface ProfessionalFormModel {
-    userId: number | null;
+    
+    name: string;
+    lastName: string;
+    email: string;
+
     title: string;
     description: string;
     yearsExperience: number;
@@ -23,10 +33,15 @@ export interface ProfessionalFormModel {
     baseRate: number;
     mode: 'ONLINE' | 'IN_PERSON';
     isAvailable: boolean;
+    profileImage: string;
 }
 
 export interface ProfessionalCreateDto {
-    userId: number;
+    
+    name: string;
+    lastName: string;
+    email: string;
+
     title: string;
     description: string;
     yearsExperience: number;
@@ -35,6 +50,8 @@ export interface ProfessionalCreateDto {
     baseRate: number;
     mode: 'ONLINE' | 'IN_PERSON';
     isAvailable: boolean;
+    profileImage: string;
 }
 
-export type ProfessionalUpdateDto = Omit<ProfessionalCreateDto, 'userId'>;
+export type ProfessionalUpdateDto = Partial<ProfessionalCreateDto>;
+

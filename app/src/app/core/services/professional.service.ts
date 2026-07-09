@@ -7,7 +7,10 @@ import { ProfessionalProfile, ProfessionalCreateDto, ProfessionalUpdateDto } fro
 @Injectable({ providedIn: 'root' })
 export class ProfessionalService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = `${environment.apiUrl}/professionalProfile`;
+   private readonly apiUrl = `${environment.apiUrl}/professionalProfile`;
+   private readonly professionalUrl =
+        `${environment.apiUrl}/professional`;
+
 
     listar() {
         return this.http.get<any>(this.apiUrl);
@@ -18,11 +21,11 @@ export class ProfessionalService {
     }
 
     crear(data: ProfessionalCreateDto) {
-        return this.http.post<ApiResponse<ProfessionalProfile>>(this.apiUrl, data);
+        return this.http.post<ApiResponse<ProfessionalProfile>>(this.professionalUrl, data);
     }
 
     actualizar(id: number, data: ProfessionalUpdateDto) {
-        return this.http.put<ApiResponse<ProfessionalProfile>>(`${this.apiUrl}/${id}`, data);
+        return this.http.put<ApiResponse<ProfessionalProfile>>(`${this.professionalUrl}/${id}`, data);
     }
 
     toggleAvailability(id: number) {

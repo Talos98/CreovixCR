@@ -26,4 +26,33 @@ export class ProfessionalController {
         }
     };
 
+    update = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+    try {
+
+        const id = Number(req.params.id);
+
+        const professional =
+            await professionalService.update(
+                id,
+                req.body
+            );
+
+
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Professional updated successfully",
+            data: professional
+        });
+
+
+    } catch(error) {
+        next(error);
+    }
+};
+
 }
