@@ -69,6 +69,7 @@ export const userService = {
     // =====================
     async create(data: {
         name: string;
+        lastName:string;
         email: string;
         password: string;
         role?: Role;
@@ -86,6 +87,7 @@ export const userService = {
         return prisma.user.create({
             data: {
                 name: data.name,
+                lastName: data.lastName,
                 email: data.email,
                 password: data.password,
                 role: data.role ?? Role.CLIENT,
@@ -110,7 +112,7 @@ export const userService = {
             });
 
             if (existingUser && existingUser.id !== id) {
-                throw AppError.badRequest("Email already in use");
+                throw AppError.badRequest("El correo ya existe");
             }
         }
 
@@ -118,6 +120,7 @@ export const userService = {
             where: { id },
             data: {
                 name: data.name,
+                lastName: data.lastName,
                 email: data.email,
                 password: data.password,
                 role: data.role,

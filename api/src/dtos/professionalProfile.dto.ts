@@ -2,12 +2,7 @@ import { z } from "zod";
 
 export const createProfessionalProfileSchema = z.object({
 
-    //User
-    name:z.string().min(1,"El nombre es obligatorio"),
-    lastName:z.string().min(1,"Los apellidos son obligatorios"),
-    email:z.string().email("Correo inválido"),
-
-    //Profile
+    userId: z.number().int().positive(),
 
     title: z.string().min(1,"El título es obligaotorio"),
     description: z.string().optional(),
