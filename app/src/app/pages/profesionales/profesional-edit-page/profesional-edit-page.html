@@ -11,16 +11,16 @@
     <div class="error-container">
         <mat-icon>error_outline</mat-icon>
         <p>{{ error() }}</p>
-        <button mat-flat-button class="primary-button" (click)="cargarDatosFormulario()">Reintentar</button>
+        <button mat-flat-button class="primary-button" (click)="loadFormData()">Reintentar</button>
     </div>
 }
 
 @if (!loading() && !error()) {
     <app-profesional-form
         [profesional]="profesional()"
-        [usuarios]="usuarios()"
         [saving]="saving()"
         (guardar)="guardar($event)"
         (cancelar)="cancelar()"
     />
 }
+

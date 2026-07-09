@@ -13,6 +13,7 @@ import {
     min,
     minLength,
     maxLength,
+    email
 } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -54,12 +55,14 @@ interface UserOption {
 export class ProfesionalForm {
     profesional = input<ProfessionalProfile | null>(null);
     saving = input<boolean>(false);
-    usuarios = input<UserOption[]>([]);
     guardar = output<ProfessionalCreateDto | ProfessionalUpdateDto>();
     cancelar = output<void>();
 
     profesionalModel = signal<ProfessionalFormModel>({
-        userId: null,
+        name: '',
+        lastName: '',
+        email: '',
+
         title: '',
         description: '',
         yearsExperience: 0,
@@ -67,12 +70,21 @@ export class ProfesionalForm {
         location: '',
         baseRate: 0,
         mode: 'IN_PERSON',
-        isAvailable: true
+        isAvailable: true,
+        profileImage: ''
     });
 
     profesionalForm = form(this.profesionalModel, (path) => {
-        required(path.userId, {
-            message: 'Seleccione un usuario'
+        required(path.name, {
+            message: 'El nombre es obligatorio'
+        });
+
+        required(path.lastName, {
+            message: 'Los apellidos son obligatorios'
+        });
+
+        email(path.email, {
+            message: 'El correo es obligatorio'
         });
 
         required(path.title, {
@@ -90,7 +102,7 @@ export class ProfesionalForm {
         });
 
         required(path.yearsExperience, {
-            message: 'Los anos de experiencia son obligatorios'
+            message: 'Los años de experiencia son obligatorios'
         });
         min(path.yearsExperience, 0, {
             message: 'Debe ser 0 o mayor'
@@ -101,7 +113,7 @@ export class ProfesionalForm {
         });
 
         required(path.location, {
-            message: 'La ubicacion es obligatoria'
+            message: 'La ubicación es obligatoria'
         });
 
         required(path.baseRate, {
@@ -119,13 +131,6 @@ export class ProfesionalForm {
     isEdit = computed(() => this.profesional() !== null);
     isSubmitting = computed(() => this.saving());
 
-    constructor() {
-        const prof = this.profesional();
-        if (prof) {
-            this.loadProfesional(prof);
-        }
-    }
-
     ngOnChanges(): void {
         const prof = this.profesional();
         if (prof) {
@@ -135,7 +140,9 @@ export class ProfesionalForm {
 
     private loadProfesional(prof: ProfessionalProfile) {
         this.profesionalModel.set({
-            userId: prof.userId,
+            name: prof.user?.name ?? '',
+            lastName: prof.user?.lastName ?? '',
+            email: prof.user?.email ?? '',
             title: prof.title,
             description: prof.description ?? '',
             yearsExperience: prof.yearsExperience,
@@ -143,23 +150,26 @@ export class ProfesionalForm {
             location: prof.location,
             baseRate: prof.baseRate,
             mode: prof.mode,
-            isAvailable: prof.isAvailable
+            isAvailable: prof.isAvailable,
+            profileImage: prof.profileImage ?? ''
         });
     }
 
     submit() {
         if (this.isSubmitting()) return;
-        this.marcarCamposComoTocados();
-        if (this.formularioInvalido()) return;
+        this.markFieldsAsTouched();
+        if (this.isFormInvalid()) return;
 
         const dto = this.buildDto();
         this.guardar.emit(dto);
     }
 
-    private marcarCamposComoTocados() {
-        if (!this.isEdit()) {
-            this.profesionalForm.userId().markAsTouched();
-        }
+    private markFieldsAsTouched() {
+
+        this.profesionalForm.name().markAsTouched();
+        this.profesionalForm.lastName().markAsTouched();
+        this.profesionalForm.email().markAsTouched();
+
         this.profesionalForm.title().markAsTouched();
         this.profesionalForm.description().markAsTouched();
         this.profesionalForm.yearsExperience().markAsTouched();
@@ -169,10 +179,13 @@ export class ProfesionalForm {
         this.profesionalForm.mode().markAsTouched();
     }
 
-    private formularioInvalido(): boolean {
-        const userIdInvalid = !this.isEdit() && this.profesionalForm.userId().invalid();
+    private isFormInvalid(): boolean {
+
         return (
-            userIdInvalid ||
+            this.profesionalForm.name().invalid() ||
+            this.profesionalForm.lastName().invalid() ||
+            this.profesionalForm.email().invalid() ||
+
             this.profesionalForm.title().invalid() ||
             this.profesionalForm.yearsExperience().invalid() ||
             this.profesionalForm.phone().invalid() ||
@@ -185,21 +198,11 @@ export class ProfesionalForm {
     private buildDto(): ProfessionalCreateDto | ProfessionalUpdateDto {
         const value = this.profesionalModel();
 
-        if (this.isEdit()) {
-            return {
-                title: value.title.trim(),
-                description: value.description.trim(),
-                yearsExperience: Number(value.yearsExperience),
-                phone: value.phone.trim(),
-                location: value.location.trim(),
-                baseRate: Number(value.baseRate),
-                mode: value.mode,
-                isAvailable: value.isAvailable
-            } as ProfessionalUpdateDto;
-        }
-
         return {
-            userId: Number(value.userId),
+
+            name: value.name.trim(),
+            lastName: value.lastName.trim(),
+            email: value.email.trim(),
             title: value.title.trim(),
             description: value.description.trim(),
             yearsExperience: Number(value.yearsExperience),
@@ -207,7 +210,8 @@ export class ProfesionalForm {
             location: value.location.trim(),
             baseRate: Number(value.baseRate),
             mode: value.mode,
-            isAvailable: value.isAvailable
-        } as ProfessionalCreateDto;
+            isAvailable: value.isAvailable,
+            profileImage: value.profileImage?.trim()
+        };
     }
 }

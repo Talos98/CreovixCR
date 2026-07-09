@@ -52,7 +52,7 @@ export const professionalProfileService = {
         });
 
         if (!profile) {
-            throw AppError.badRequest("Professional profile not found");
+            throw AppError.badRequest("Perfil profesional no encontrado");
         }
 
         return profile;
@@ -78,12 +78,12 @@ export const professionalProfileService = {
         });
 
         if (!user) {
-            throw AppError.badRequest("User does not exist");
+            throw AppError.badRequest("El usuario no existe");
         }
 
         // 2. Validar que sea PROFESSIONAL
         if (user.role !== Role.PROFESSIONAL) {
-            throw AppError.badRequest("User must be a professional");
+            throw AppError.badRequest("El usuario debe ser un profesional");
         }
 
         // 3. Evitar duplicado de perfil
@@ -92,7 +92,7 @@ export const professionalProfileService = {
         });
 
         if (existingProfile) {
-            throw AppError.badRequest("Professional profile already exists");
+            throw AppError.badRequest("Perfil professional ya se encuenta existente");
         }
 
         // 4. Crear perfil

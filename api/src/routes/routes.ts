@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AppointmentRoutes } from "./appointment.routes";
 import { CategoryRoutes } from "./category.routes";
 import { ProfessionalProfileRoutes } from "./professionalProfile.routes";
+import { ProfessionalRoutes } from "./professional.routes";
 import { ReviewRoutes } from "./review.routes";
 import { RoleRoutes } from "./role.routes";
 import { ServiceRoutes } from "./service.routes";
@@ -16,12 +17,14 @@ export class AppRoutes {
         router.use('/appointment', AppointmentRoutes.routes)
         router.use('/category', CategoryRoutes.routes)
         router.use('/professionalProfile', ProfessionalProfileRoutes.routes)
+        router.use('/professional', ProfessionalRoutes.routes)
         router.use('/review', ReviewRoutes.routes)
         router.use('/role', RoleRoutes.routes)
         router.use('/service', ServiceRoutes.routes)
         router.use('/specialty', SpecialtyRoutes.routes)
         router.use('/user', UserRoutes.routes)
         router.use('/images' , ImageRoutes.routes)
+
         return router;
     }
 }

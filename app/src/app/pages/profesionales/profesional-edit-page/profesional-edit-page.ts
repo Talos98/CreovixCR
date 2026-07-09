@@ -33,10 +33,10 @@ export class ProfesionalEditPage {
     private readonly id = Number(this.route.snapshot.paramMap.get('id'));
 
     constructor() {
-        this.cargarDatosFormulario();
+        this.loadFormData();
     }
 
-    cargarDatosFormulario() {
+    loadFormData() {
         if (!this.id) {
             this.error.set('El identificador del profesional no es valido');
             this.loading.set(false);
@@ -46,14 +46,9 @@ export class ProfesionalEditPage {
         this.loading.set(true);
         this.error.set(null);
 
-        forkJoin({
-            profesional: this.professionalService.obtenerPorId(this.id),
-            usuarios: this.http.get<any>(`${environment.apiUrl}/user`),
-        }).subscribe({
-            next: ({ profesional, usuarios }) => {
-                this.profesional.set(profesional.data);
-                const users = usuarios.data?.data ?? usuarios.data ?? [];
-                this.usuarios.set(users.filter((u: any) => u.role === 'PROFESSIONAL'));
+        this.professionalService.obtenerPorId(this.id).subscribe({
+            next: (resp) => {
+                this.profesional.set(resp.data);
             },
             error: () => {
                 this.error.set('No se pudo cargar la informacion del profesional');
