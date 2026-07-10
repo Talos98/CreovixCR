@@ -24,6 +24,7 @@ export interface AppointmentFormModel {
     serviceId: number | null;
     date: string;
     startTime: string;
+    endTime: string;
     mode: 'ONLINE' | 'IN_PERSON';
     description: string;
 }
@@ -34,6 +35,7 @@ export interface AppointmentCreateDto {
     serviceId: number;
     date: string;
     startTime: string;
+    endTime: string;
     mode: 'ONLINE' | 'IN_PERSON';
     description: string;
 }

@@ -81,11 +81,51 @@ export const appointmentService = {
         await this.validateUser(data.professionalId);
         await this.validateService(data.serviceId);
 
+        const date = new Date(data.date);
+
+        const startDateTime = new Date(`${data.date}T${data.startTime}`);
+        const endDateTime = new Date(`${data.date}T${data.endTime}`);
+
+        if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+            throw AppError.badRequest("Fecha u hora inválida");
+        }
+
+        if (endDateTime <= startDateTime) {
+            throw AppError.badRequest("La hora de finalización debe ser mayor a la de inicio");
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const appointmentDate = new Date(data.date);
+
+        if (appointmentDate < today) {
+            throw AppError.badRequest("La fecha no puede ser pasada");
+        }
+
+
+        const overlapping = await prisma.appointment.findFirst({
+            where: {
+                professionalId: data.professionalId,
+                date: new Date(data.date),
+                AND: [
+                    { startTime: { lt: endDateTime } },
+                    { endTime: { gt: startDateTime } }
+                ]
+            }
+        });
+
+        if (overlapping) {
+            throw AppError.badRequest("El profesional ya tiene una cita en ese horario");
+        }
+
+
+
         return prisma.appointment.create({
             data: {
-                date: data.date,
-                startTime: data.startTime,
-                endTime: data.endTime,
+                date: date,
+                startTime: startDateTime,
+                endTime: endDateTime,
                 mode: data.mode,
                 description: data.description,
                 status: AppointmentStatus.PENDING,

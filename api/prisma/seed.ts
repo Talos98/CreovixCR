@@ -1,10 +1,10 @@
-import { spec } from "node:test/reporters";
 import { AppointmentStatus, Role, ServiceMode } from "../generated/prisma/enums";
 import { prisma } from "../src/config/prisma";
+
 async function main() {
     console.log("Iniciando seed...");
 
-    // 1. Clean of data
+    // LIMPIEZA
     const models = [
         prisma.review,
         prisma.appointment,
@@ -19,48 +19,56 @@ async function main() {
         await (model as any).deleteMany();
     }
 
-
-    // 2. Creación de datos maestros (Independientes)
-
-    //Categories
+    // ========================
+    // CATEGORÍAS (5)
+    // ========================
     await prisma.category.createMany({
         data: [
-            { name: "Branding", description: "Logo and brand identity" },
-            { name: "Social Media", description: "Contenido creation" },
-            { name: "Web Design", description: "UI/UX design" },
+            { name: "Branding", description: "Identidad visual y logotipos" },
+            { name: "Redes Sociales", description: "Contenido para redes sociales" },
+            { name: "Diseño Web", description: "Interfaces y experiencia de usuario" },
+            { name: "Publicidad", description: "Diseño publicitario" },
+            { name: "Ilustración", description: "Arte digital e ilustraciones" },
         ],
-
     });
 
-    // Specialties
+    // ========================
+    // ESPECIALIDADES (8)
+    // ========================
     await prisma.specialty.createMany({
         data: [
-            { name: "Logo Design" },
-            { name: "Instagram Content" },
-            { name: "UI Design" },
-            { name: "UX Research" },
+            { name: "Diseño de Logotipos" },
+            { name: "Branding Corporativo" },
+            { name: "Contenido para Instagram" },
+            { name: "Diseño UI" },
+            { name: "Investigación UX" },
+            { name: "Banners Publicitarios" },
+            { name: "Ilustración Digital" },
+            { name: "Packaging" },
         ],
-
     });
 
-    //Users
-
+    // ========================
+    // USUARIOS (8)
+    // ========================
     await prisma.user.createMany({
         data: [
+            { name: "Josué", lastName: "Calderón", email: "admin@creovixcr.com", password: "hash", role: Role.ADMIN },
 
-            { name: "Admin", email: "admin@mail.com", password: "hash", role: Role.ADMIN },
+            { name: "Daniel", lastName: "Vargas", email: "daniel@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
+            { name: "María", lastName: "Fernández", email: "maria@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
+            { name: "Luis", lastName: "Ramírez", email: "luis@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
+            { name: "Sofía", lastName: "Gómez", email: "sofia@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
+            { name: "Andrés", lastName: "Castro", email: "andres@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
 
-            { name: "John Designer", email: "pro1@mail.com", password: "hash", role: Role.PROFESSIONAL },
-            { name: "Jane Creative", email: "pro2@mail.com", password: "hash", role: Role.PROFESSIONAL },
-
-            { name: "Carlos Client", email: "client1@mail.com", password: "hash", role: Role.CLIENT },
-            { name: "Ana Client", email: "client2@mail.com", password: "hash", role: Role.CLIENT },
+            { name: "Carlos", lastName: "Mora", email: "carlos@creovixcr.com", password: "hash", role: Role.CLIENT },
+            { name: "Ana", lastName: "Rojas", email: "ana@creovixcr.com", password: "hash", role: Role.CLIENT },
         ],
-
     });
 
-    // 3. Recuperar datos para mapeo (Uso de Maps para optimizar)
-
+    // ========================
+    // MAPAS
+    // ========================
     const [cats, specs, users] = await Promise.all([
         prisma.category.findMany(),
         prisma.specialty.findMany(),
@@ -71,126 +79,236 @@ async function main() {
     const specMap = Object.fromEntries(specs.map(s => [s.name, s.id]));
     const userMap = Object.fromEntries(users.map(u => [u.email, u.id]));
 
-    // 4. Professional Profiles
-    await prisma.professionalProfile.create({
-        data: {
-            userId: userMap["pro1@mail.com"],
-            title: "Graphic Designer",
-            yearsExperience: 5,
-            phone: "1111-1111",
-            location: "Costa Rica",
-            baseRate: 25,
-            mode: ServiceMode.ONLINE
-        },
+    // ========================
+    // PROFESIONALES (5)
+    // ========================
+    await prisma.professionalProfile.createMany({
+        data: [
+            {
+                userId: userMap["daniel@creovixcr.com"],
+                title: "Diseñador Gráfico Senior",
+                yearsExperience: 6,
+                phone: "8888-1111",
+                location: "San José",
+                baseRate: 30,
+                mode: ServiceMode.ONLINE,
+            },
+            {
+                userId: userMap["maria@creovixcr.com"],
+                title: "Especialista en Branding",
+                yearsExperience: 8,
+                phone: "8888-2222",
+                location: "Alajuela",
+                baseRate: 35,
+                mode: ServiceMode.IN_PERSON,
+            },
+            {
+                userId: userMap["luis@creovixcr.com"],
+                title: "Diseñador UI/UX",
+                yearsExperience: 5,
+                phone: "8888-3333",
+                location: "Heredia",
+                baseRate: 28,
+                mode: ServiceMode.ONLINE,
+            },
+            {
+                userId: userMap["sofia@creovixcr.com"],
+                title: "Ilustradora Digital",
+                yearsExperience: 4,
+                phone: "8888-4444",
+                location: "Cartago",
+                baseRate: 25,
+                mode: ServiceMode.ONLINE,
+            },
+            {
+                userId: userMap["andres@creovixcr.com"],
+                title: "Diseñador Publicitario",
+                yearsExperience: 7,
+                phone: "8888-5555",
+                location: "San José",
+                baseRate: 32,
+                mode: ServiceMode.IN_PERSON,
+            },
+        ],
     });
 
-    await prisma.professionalProfile.create({
-        data: {
-            userId: userMap["pro2@mail.com"],
-            title: "UI/UX Designer",
-            yearsExperience: 7,
-            phone: "2222-2222",
-            location: "Costa Rica",
-            baseRate: 30,
-            mode: ServiceMode.ONLINE
-        }
-    });
+    // ========================
+    // SERVICIOS (10)
+    // ========================
+    const services = [];
 
-    // Services with relations
-
-    const logoService = await prisma.service.create({
+    services.push(await prisma.service.create({
         data: {
-            name: "Logo Design",
-            description: "Professional logo creation",
+            name: "Diseño de Logotipo",
+            description: "Creación profesional de logotipo",
             price: 150,
             duration: 3,
             mode: ServiceMode.ONLINE,
-            professionalId: userMap["pro1@mail.com"],
+            professionalId: userMap["daniel@creovixcr.com"],
             categoryId: catMap["Branding"],
             specialties: {
-                connect: [{ id: specMap["Logo Design"] }]
+                connect: [{ id: specMap["Diseño de Logotipos"] }]
             }
-        },
-    });
+        }
+    }));
 
-    const socialService = await prisma.service.create({
+    services.push(await prisma.service.create({
         data: {
-            name: "Social Media Pack",
-            description: "10 posts",
-            price: 100,
-            duration: 2,
-            mode: ServiceMode.ONLINE,
-            professionalId: userMap["pro1@mail.com"],
-            categoryId: catMap["Social Media"],
-            specialties: {
-                connect: [{ id: specMap["Instagram Content"] }]
-            }
-        },
-    });
-
-    const uiService = await prisma.service.create({
-        data: {
-            name: "UI Design",
-            description: "App interface design",
-            price: 200,
+            name: "Manual de Marca",
+            description: "Identidad visual completa",
+            price: 300,
             duration: 5,
             mode: ServiceMode.ONLINE,
-            professionalId: userMap["pro2@mail.com"],
-            categoryId: catMap["Web Design"],
+            professionalId: userMap["maria@creovixcr.com"],
+            categoryId: catMap["Branding"],
             specialties: {
-                connect: [
-                    { id: specMap["UI Design"] },
-                    { id: specMap["UX Research"] }
-                ]
+                connect: [{ id: specMap["Branding Corporativo"] }]
             }
-        },
-    });
+        }
+    }));
 
-    // Appointments
-    const appointment1 = await prisma.appointment.create({
+    services.push(await prisma.service.create({
         data: {
-            date: new Date(),
-            startTime: new Date(),
-            endTime: new Date(),
+            name: "Posts para Instagram",
+            description: "10 diseños para redes",
+            price: 120,
+            duration: 2,
             mode: ServiceMode.ONLINE,
-            status: AppointmentStatus.COMPLETED,
-            clientId: userMap["client1@mail.com"],
-            professionalId: userMap["pro1@mail.com"],
-            serviceId: logoService.id,
-        },
-    });
+            professionalId: userMap["daniel@creovixcr.com"],
+            categoryId: catMap["Redes Sociales"],
+            specialties: {
+                connect: [{ id: specMap["Contenido para Instagram"] }]
+            }
+        }
+    }));
 
-    const appointment2 = await prisma.appointment.create({
+    services.push(await prisma.service.create({
         data: {
-            date: new Date(),
-            startTime: new Date(),
-            endTime: new Date(),
+            name: "Diseño UI App",
+            description: "Interfaces modernas",
+            price: 250,
+            duration: 4,
             mode: ServiceMode.ONLINE,
-            status: AppointmentStatus.PENDING,
-            clientId: userMap["client2@mail.com"],
-            professionalId: userMap["pro2@mail.com"],
-            serviceId: uiService.id,
+            professionalId: userMap["luis@creovixcr.com"],
+            categoryId: catMap["Diseño Web"],
+            specialties: {
+                connect: [{ id: specMap["Diseño UI"] }]
+            }
+        }
+    }));
 
-        },
-    });
-    // Reviews
+    services.push(await prisma.service.create({
+        data: {
+            name: "Investigación UX",
+            description: "Análisis de usuarios",
+            price: 200,
+            duration: 3,
+            mode: ServiceMode.ONLINE,
+            professionalId: userMap["luis@creovixcr.com"],
+            categoryId: catMap["Diseño Web"],
+            specialties: {
+                connect: [{ id: specMap["Investigación UX"] }]
+            }
+        }
+    }));
 
-    await prisma.review.create({
-        data:
+    services.push(await prisma.service.create({
+        data: {
+            name: "Banner Publicitario",
+            description: "Diseño de banners",
+            price: 80,
+            duration: 1,
+            mode: ServiceMode.ONLINE,
+            professionalId: userMap["andres@creovixcr.com"],
+            categoryId: catMap["Publicidad"],
+            specialties: {
+                connect: [{ id: specMap["Banners Publicitarios"] }]
+            }
+        }
+    }));
 
-        {
-            clientId: userMap["client1@mail.com"],
-            professionalId: userMap["pro1@mail.com"],
-            appointmentId: appointment1.id,
-            rating: 5,
-            comment: "Excellent work!",
-        },
-    });
-    console.log("Seed completado con éxito.");
+    services.push(await prisma.service.create({
+        data: {
+            name: "Ilustración Personalizada",
+            description: "Arte digital único",
+            price: 140,
+            duration: 3,
+            mode: ServiceMode.ONLINE,
+            professionalId: userMap["sofia@creovixcr.com"],
+            categoryId: catMap["Ilustración"],
+            specialties: {
+                connect: [{ id: specMap["Ilustración Digital"] }]
+            }
+        }
+    }));
+
+    services.push(await prisma.service.create({
+        data: {
+            name: "Diseño de Packaging",
+            description: "Diseño de empaques atractivos para productos",
+            price: 220,
+            duration: 4,
+            mode: ServiceMode.IN_PERSON,
+            professionalId: userMap["maria@creovixcr.com"],
+            categoryId: catMap["Branding"],
+            specialties: {
+                connect: [{ id: specMap["Packaging"] }]
+            }
+        }
+    }));
+
+    services.push(await prisma.service.create({
+        data: {
+            name: "Rediseño de Marca",
+            description: "Actualización completa de identidad visual",
+            price: 280,
+            duration: 5,
+            mode: ServiceMode.ONLINE,
+            professionalId: userMap["maria@creovixcr.com"],
+            categoryId: catMap["Branding"],
+            specialties: {
+                connect: [{ id: specMap["Branding Corporativo"] }]
+            }
+        }
+    }));
+
+    services.push(await prisma.service.create({
+        data: {
+            name: "Kit de Historias para Instagram",
+            description: "Plantillas editables para stories",
+            price: 90,
+            duration: 2,
+            mode: ServiceMode.ONLINE,
+            professionalId: userMap["sofia@creovixcr.com"],
+            categoryId: catMap["Redes Sociales"],
+            specialties: {
+                connect: [{ id: specMap["Contenido para Instagram"] }]
+            }
+        }
+    }));
+
+   
+    for (let i = 0; i < 12; i++) {
+        await prisma.appointment.create({
+            data: {
+                date: new Date(),
+                startTime: new Date(),
+                endTime: new Date(),
+                mode: ServiceMode.ONLINE,
+                status: i % 2 === 0 ? AppointmentStatus.COMPLETED : AppointmentStatus.PENDING,
+                clientId: userMap["carlos@creovixcr.com"],
+                professionalId: userMap["daniel@creovixcr.com"],
+                serviceId: services[0].id,
+            }
+        });
+    }
+
+    console.log("Seed completado con éxito 🚀");
 }
+
 main()
-    .catch((e) => {
-        console.error("Error en seed:", e);
+    .catch(e => {
+        console.error(e);
         process.exit(1);
     })
     .finally(async () => {
