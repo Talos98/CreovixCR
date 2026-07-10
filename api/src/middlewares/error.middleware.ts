@@ -34,6 +34,10 @@ export class ErrorMiddleware {
             method: req.method,
             error,
         });
+
+        console.error("💥 ERROR DETALLADO:");
+        console.error(error);
+        
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             success: false,
             name: "InternalServerError",

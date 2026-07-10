@@ -23,6 +23,11 @@ import { User } from '../../../core/models/user.model';
 import { Service } from '../../../core/models/service.model';
 import { AppointmentCreateDto, AppointmentFormModel } from '../../../core/models/appointment.model';
 
+type FieldStateLike = {
+    errors?: any[];
+    setErrors: (errors: any[]) => void;
+};
+
 @Component({
     selector: 'app-cita-create-page',
     standalone: true,
@@ -60,6 +65,7 @@ export class CitaCreatePage {
         serviceId: null,
         date: '',
         startTime: '',
+        endTime: '',
         mode: 'IN_PERSON',
         description: '',
     });
@@ -70,6 +76,7 @@ export class CitaCreatePage {
         required(path.serviceId, { message: 'Seleccione un servicio' });
         required(path.date, { message: 'La fecha es obligatoria' });
         required(path.startTime, { message: 'La hora es obligatoria' });
+        required(path.endTime, { message: 'La hora de finalización es obligatoria' });
         required(path.mode, { message: 'Seleccione una modalidad' });
         minLength(path.description, 5, { message: 'La descripcion debe tener al menos 5 caracteres' });
     });
@@ -103,6 +110,7 @@ export class CitaCreatePage {
 
     submit(): void {
         if (this.saving()) return;
+
         this.marcarCamposComoTocados();
         if (this.formularioInvalido()) return;
 
@@ -110,25 +118,53 @@ export class CitaCreatePage {
         this.error.set(null);
 
         const value = this.citaModel();
+
         const dto: AppointmentCreateDto = {
             clientId: Number(value.clientId),
             professionalId: Number(value.professionalId),
             serviceId: Number(value.serviceId),
             date: value.date,
             startTime: value.startTime,
+            endTime: value.endTime,
             mode: value.mode,
             description: value.description.trim(),
         };
 
         this.appointmentService.crear(dto).subscribe({
             next: () => {
+                this.saving.set(false);
                 this.noti.success('Cita registrada correctamente');
                 this.router.navigate(['/admin/citas']);
             },
-            error: () => {
-                this.error.set('No se pudo registrar la cita');
+
+            error: (err) => {
                 this.saving.set(false);
-            },
+
+
+                const backendMessage = err?.error?.message;
+                this.error.set(backendMessage || 'No se pudo registrar la cita');
+
+
+                const validationErrors = err?.error?.validationErrors;
+
+                if (validationErrors && Array.isArray(validationErrors)) {
+                    validationErrors.forEach((e: any) => {
+                        const fieldName = e.field as keyof typeof this.citaForm;
+                        const field = this.citaForm[fieldName];
+
+                        if (field && typeof field === 'function') {
+
+                            const fieldState = field() as unknown as FieldStateLike;
+                            const currentErrors = fieldState.errors ?? [];
+
+                            fieldState.setErrors([
+                                ...currentErrors,
+                                { message: e.message }
+                            ]);
+                        }
+                    });
+                }
+            }
         });
     }
 
@@ -142,6 +178,7 @@ export class CitaCreatePage {
         this.citaForm.serviceId().markAsTouched();
         this.citaForm.date().markAsTouched();
         this.citaForm.startTime().markAsTouched();
+        this.citaForm.endTime().markAsTouched();
         this.citaForm.mode().markAsTouched();
         this.citaForm.description().markAsTouched();
     }
@@ -153,6 +190,7 @@ export class CitaCreatePage {
             this.citaForm.serviceId().invalid() ||
             this.citaForm.date().invalid() ||
             this.citaForm.startTime().invalid() ||
+            this.citaForm.endTime().invalid() ||
             this.citaForm.mode().invalid() ||
             this.citaForm.description().invalid()
         );
