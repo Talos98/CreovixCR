@@ -113,19 +113,16 @@ export class ServicioForm {
       message: 'Seleccione un profesional'
     });
 
-    validate(path.specialtyIds, (ctx) => {
-      const ids = ctx.value();
-      if (!ids || ids.length === 0) {
-        return {
-          kind: 'especialidadRequerida',
-          message: 'Seleccione al menos una especialidad'
-        };
-      }
-      return undefined;
-    });
   });
 
   selectedSpecialtyIds = signal<number[]>([]);
+  specialtyTouched = signal(false);
+  specialtyError = computed(() => {
+    this.specialtyTouched();
+    return this.selectedSpecialtyIds().length === 0
+      ? 'Seleccione al menos una especialidad'
+      : null;
+  });
 
   isEdit = computed(() => this.servicio() !== null);
   isSubmitting = computed(() => this.saving());
@@ -167,7 +164,7 @@ export class ServicioForm {
         ? Array.from(new Set([...ids, id]))
         : ids.filter((item) => item !== id)
     );
-    this.servicioForm.specialtyIds().markAsTouched();
+    this.specialtyTouched.set(true);
   }
 
   isEspecialidadSelected(id: number): boolean {
@@ -191,7 +188,7 @@ export class ServicioForm {
     this.servicioForm.duration().markAsTouched();
     this.servicioForm.categoryId().markAsTouched();
     this.servicioForm.professionalId().markAsTouched();
-    this.servicioForm.specialtyIds().markAsTouched();
+    this.specialtyTouched.set(true);
   }
 
   private formularioInvalido(): boolean {
@@ -202,7 +199,7 @@ export class ServicioForm {
       this.servicioForm.duration().invalid() ||
       this.servicioForm.categoryId().invalid() ||
       this.servicioForm.professionalId().invalid() ||
-      this.servicioForm.specialtyIds().invalid()
+      this.selectedSpecialtyIds().length === 0
     );
   }
 
