@@ -104,9 +104,9 @@
                     }
                 </div>
 
-                @if (servicioForm.specialtyIds().touched() && servicioForm.specialtyIds().invalid()) {
+                @if (specialtyTouched() && specialtyError()) {
                     <p class="section-error">
-                        {{ servicioForm.specialtyIds().errors()[0].message }}
+                        {{ specialtyError() }}
                     </p>
                 }
             </section>
