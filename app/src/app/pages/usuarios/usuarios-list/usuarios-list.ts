@@ -8,9 +8,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../../../core/services/user.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { User } from '../../../core/models/user.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-usuarios-list',
@@ -31,6 +33,7 @@ import { User } from '../../../core/models/user.model';
 export class UsuariosList {
   private readonly userService = inject(UserService);
   private readonly notificationService = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
 
   usuarios = signal<User[]>([]);
   search = signal('');
@@ -80,19 +83,42 @@ export class UsuariosList {
     });
   }
 
-  toggleStatus(user: User): void {
-    const action = user.status === 'ACTIVE' ? 'desactivar' : 'activar';
-    const confirmed = confirm(`¿Estás seguro de que deseas ${action} al usuario "${user.name}"?`);
+  openConfirmDialog(user: User): void {
+    const isActive = user.status === 'ACTIVE';
 
-    if (!confirmed) return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: isActive ? 'Desactivar usuario' : 'Activar usuario',
+        message: `¿Deseas ${isActive ? 'desactivar' : 'activar'} a ${user.name} ${user.lastName}?`,
+        warning: isActive
+          ? 'El usuario perderá acceso al sistema.'
+          : 'El usuario podrá acceder nuevamente.',
+        confirmText: isActive ? 'Desactivar' : 'Activar'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.toggleStatus(user);
+      }
+    });
+  }
+
+  toggleStatus(user: User): void {
+    const isActive = user.status === 'ACTIVE';
 
     this.userService.toggleStatus(user.id).subscribe({
       next: () => {
-        this.notificationService.success(`Usuario ${action === 'activar' ? 'activado' : 'desactivado'} correctamente.`);
+        this.notificationService.success(
+          `Usuario ${isActive ? 'desactivado' : 'activado'} correctamente.`
+        );
         this.loadUsuarios();
       },
       error: () => {
-        this.notificationService.error(`No se pudo ${action} al usuario.`);
+        this.notificationService.error(
+          `No se pudo ${isActive ? 'desactivar' : 'activar'} al usuario.`
+        );
       },
     });
   }

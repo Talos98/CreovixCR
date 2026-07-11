@@ -35,7 +35,8 @@
             </div>
 
             <div class="header-text">
-                <mat-card-title>{{ prof.user?.name ?? 'Profesional' }}</mat-card-title>
+                <mat-card-title> {{ prof.user ? (prof.user.name + ' ' + prof.user.lastName) : 'Profesional'
+                    }}</mat-card-title>
                 <mat-card-subtitle>{{ prof.title }}</mat-card-subtitle>
             </div>
         </mat-card-header>

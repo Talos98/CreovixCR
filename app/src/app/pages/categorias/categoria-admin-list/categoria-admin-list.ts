@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { CategoryService } from '../../../core/services/category.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Category } from '../../../core/models/category.model';
 
 @Component({
@@ -27,6 +29,7 @@ import { Category } from '../../../core/models/category.model';
 export class CategoriaAdminList {
   private readonly categoryService = inject(CategoryService);
   private readonly notification = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
 
   categorias = signal<Category[]>([]);
   search = signal('');
@@ -78,19 +81,54 @@ export class CategoriaAdminList {
     this.statusFilter.set(value || null);
   }
 
+  openStatusDialog(cat: Category): void {
+    const isActive = cat.status === 'ACTIVE';
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: isActive
+          ? 'Desactivar categoría'
+          : 'Activar categoría',
+
+        message: `¿Deseas ${isActive ? 'desactivar' : 'activar'
+          } la categoría "${cat.name}"?`,
+
+        warning: isActive
+          ? 'La categoría dejará de estar disponible para nuevos servicios.'
+          : 'La categoría volverá a estar disponible para nuevos servicios.',
+
+        confirmText: isActive
+          ? 'Desactivar'
+          : 'Activar',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.toggleStatus(cat);
+      }
+    });
+  }
+
   toggleStatus(cat: Category): void {
-    const action = cat.status === 'ACTIVE' ? 'desactivar' : 'activar';
-    if (!confirm(`¿Está seguro de ${action} la categoría "${cat.name}"?`)) {
-      return;
-    }
+    const isActive = cat.status === 'ACTIVE';
 
     this.categoryService.toggleStatus(cat.id).subscribe({
       next: () => {
-        this.notification.success(`Categoría ${action === 'activar' ? 'activada' : 'desactivada'} correctamente.`);
+        this.notification.success(
+          `Categoría ${isActive ? 'desactivada' : 'activada'
+          } correctamente.`
+        );
+
         this.loadCategorias();
       },
+
       error: () => {
-        this.notification.error(`No se pudo ${action} la categoría.`);
+        this.notification.error(
+          `No se pudo ${isActive ? 'desactivar' : 'activar'
+          } la categoría.`
+        );
       },
     });
   }

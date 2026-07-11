@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ServicioService } from '../../../core/services/servicio.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Service } from '../../../core/models/service.model';
 import { Category } from '../../../core/models/category.model';
 
@@ -30,6 +32,7 @@ import { Category } from '../../../core/models/category.model';
 export class ServicioAdminList {
   private readonly servicioService = inject(ServicioService);
   private readonly noti = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
 
   servicios = signal<Service[]>([]);
   search = signal('');
@@ -85,17 +88,54 @@ export class ServicioAdminList {
       },
     });
   }
+  openStatusDialog(srv: Service): void {
+    const isActive = srv.status === 'ACTIVE';
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: isActive
+          ? 'Desactivar servicio'
+          : 'Activar servicio',
+
+        message: `¿Deseas ${isActive ? 'desactivar' : 'activar'
+          } el servicio "${srv.name}"?`,
+
+        warning: isActive
+          ? 'El servicio dejará de estar disponible para los usuarios.'
+          : 'El servicio volverá a estar disponible para solicitudes.',
+
+        confirmText: isActive
+          ? 'Desactivar'
+          : 'Activar',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.toggleStatus(srv);
+      }
+    });
+  }
 
   toggleStatus(srv: Service): void {
-    const action = srv.status === 'ACTIVE' ? 'desactivar' : 'activar';
-    if (!confirm(`¿Está seguro de ${action} el servicio "${srv.name}"?`)) return;
+    const isActive = srv.status === 'ACTIVE';
 
     this.servicioService.toggleStatus(srv.id).subscribe({
       next: () => {
-        this.noti.success(`Servicio ${action === 'activar' ? 'activado' : 'desactivado'} correctamente`);
+        this.noti.success(
+          `Servicio ${isActive ? 'desactivado' : 'activado'
+          } correctamente`
+        );
+
         this.loadServicios();
       },
-      error: () => this.noti.error('No se pudo cambiar el estado del servicio'),
+
+      error: () => {
+        this.noti.error(
+          'No se pudo cambiar el estado del servicio'
+        );
+      },
     });
   }
 }

@@ -69,7 +69,7 @@
           <button
             mat-icon-button
             [class]="user.status === 'ACTIVE' ? 'toggle-active' : 'toggle-inactive'"
-            (click)="toggleStatus(user)"
+            (click)="openConfirmDialog(user)"
             [matTooltip]="user.status === 'ACTIVE' ? 'Desactivar' : 'Activar'"
           >
             <mat-icon>{{ user.status === 'ACTIVE' ? 'toggle_on' : 'toggle_off' }}</mat-icon>

@@ -45,13 +45,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 72px;
-    height: 72px;
+    width: 110px;
+    height: 110px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     border-radius: 50%;
     overflow: hidden;
     background: #edfaf4;
-    color: #0c3c2c;
-    flex-shrink: 0;
+    
 }
 
 .detail-icon mat-icon {
@@ -159,6 +160,7 @@ mat-card-subtitle {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
 }
 
 @media (max-width: 600px) {

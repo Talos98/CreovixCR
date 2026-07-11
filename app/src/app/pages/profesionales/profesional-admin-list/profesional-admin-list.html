@@ -97,7 +97,7 @@
                         <button mat-icon-button
                             [class.toggle-active]="prof.isAvailable"
                             [class.toggle-inactive]="!prof.isAvailable"
-                            (click)="toggleAvailability(prof)"
+                            (click)="openAvailabilityDialog(prof)"
                             [title]="prof.isAvailable ? 'Desactivar disponibilidad' : 'Activar disponibilidad'">
                             <mat-icon>{{ prof.isAvailable ? 'toggle_on' : 'toggle_off' }}</mat-icon>
                         </button>
