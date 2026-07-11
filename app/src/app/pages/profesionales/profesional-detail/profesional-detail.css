@@ -36,19 +36,22 @@
 
 .detail-card {
     border-radius: 16px;
-    padding: 1rem;
+    padding: 1.25rem;
     background: #ffffff;
     border: 1px solid #e6e6e6;
 }
 
 .detail-icon {
-    display: grid;
-    place-items: center;
-    width: 58px;
-    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
+    overflow: hidden;
     background: #edfaf4;
     color: #0c3c2c;
+    flex-shrink: 0;
 }
 
 .detail-icon mat-icon {
@@ -121,6 +124,41 @@
     font-size: 1rem;
     font-weight: 700;
     color: #1a1a1a;
+}
+
+.custom-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mat-mdc-card-header-text {
+    margin: 0;
+}
+
+mat-card-title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+mat-card-subtitle {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 @media (max-width: 600px) {

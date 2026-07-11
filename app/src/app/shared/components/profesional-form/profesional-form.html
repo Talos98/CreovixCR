@@ -31,6 +31,48 @@
                         </mat-form-field>
                     </div>
 
+                    <section class="form-section media-section">
+                        <div class="section-title">
+                            <div>
+                                <h3>Imagen de perfil</h3>
+                                <p>Seleccione una imagen en formato JPG, PNG o WEBP.</p>
+                            </div>
+                        </div>
+
+                        <div class="image-layout">
+
+                            <!-- BOTÓN SUBIR -->
+                            <div class="image-upload-box">
+                                <button mat-stroked-button type="button" color="primary" (click)="fileInput.click()">
+                                    <mat-icon>upload</mat-icon>
+                                    Seleccionar imagen
+                                </button>
+
+                                <input #fileInput hidden type="file" accept="image/jpeg,image/png,image/webp"
+                                    (change)="onImageSelected($event)" />
+
+                                @if (uploadingImage()) {
+                                <div class="uploading">
+                                    <mat-spinner diameter="28"></mat-spinner>
+                                    <span>Subiendo imagen...</span>
+                                </div>
+                                }
+                            </div>
+
+                            <!-- PREVIEW -->
+                            <div class="image-preview-box">
+                                @if (imagePreview()) {
+                                <img class="image-preview" [src]="imagePreview()" alt="Imagen del profesional" />
+                                } @else {
+                                <div class="empty-preview">
+                                    <mat-icon>image_not_supported</mat-icon>
+                                    <span>Sin imagen seleccionada</span>
+                                </div>
+                                }
+                            </div>
+
+                        </div>
+                    </section>
 
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Título profesional</mat-label>

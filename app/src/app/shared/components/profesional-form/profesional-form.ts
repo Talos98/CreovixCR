@@ -3,8 +3,10 @@ import {
     computed,
     input,
     output,
-    signal
+    signal,
+    inject
 } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import {
     FormField,
@@ -22,12 +24,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import {
     ProfessionalProfile,
     ProfessionalCreateDto,
     ProfessionalUpdateDto,
     ProfessionalFormModel
 } from '../../../core/models/professional.model';
+
+import { ImageService } from '../../../core/services/image.service';
 
 interface UserOption {
     id: number;
@@ -47,22 +53,30 @@ interface UserOption {
         MatButtonModule,
         MatIconModule,
         MatSelectModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatProgressSpinnerModule
     ],
     templateUrl: './profesional-form.html',
     styleUrl: './profesional-form.css'
 })
 export class ProfesionalForm {
+
+    // =====================
+    // INPUTS / OUTPUTS
+    // =====================
     profesional = input<ProfessionalProfile | null>(null);
     saving = input<boolean>(false);
+
     guardar = output<ProfessionalCreateDto | ProfessionalUpdateDto>();
     cancelar = output<void>();
 
+    // =====================
+    // STATE (SIGNALS)
+    // =====================
     profesionalModel = signal<ProfessionalFormModel>({
         name: '',
         lastName: '',
         email: '',
-
         title: '',
         description: '',
         yearsExperience: 0,
@@ -74,6 +88,9 @@ export class ProfesionalForm {
         profileImage: ''
     });
 
+    // =====================
+    // FORM
+    // =====================
     profesionalForm = form(this.profesionalModel, (path) => {
         required(path.name, {
             message: 'El nombre es obligatorio'
@@ -128,9 +145,27 @@ export class ProfesionalForm {
         });
     });
 
+    // =====================
+    // COMPUTED
+    // =====================
     isEdit = computed(() => this.profesional() !== null);
     isSubmitting = computed(() => this.saving());
 
+    // =====================
+    // SERVICES
+    // =====================
+    private readonly imageService = inject(ImageService);
+
+    // =====================
+    // IMAGE STATE
+    // =====================
+    uploadingImage = signal(false);
+    imagePreview = signal<string | null>(null);
+    selectedImageFile = signal<File | null>(null);
+
+    // =====================
+    // LIFECYCLE
+    // =====================
     ngOnChanges(): void {
         const prof = this.profesional();
         if (prof) {
@@ -138,6 +173,35 @@ export class ProfesionalForm {
         }
     }
 
+    // =====================
+    // PUBLIC METHODS (UI)
+    // =====================
+    onImageSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        if (!file) return;
+
+        this.selectedImageFile.set(file);
+        this.imagePreview.set(URL.createObjectURL(file));
+    }
+
+    submit() {
+        if (this.isSubmitting()) return;
+        this.markFieldsAsTouched();
+        if (this.isFormInvalid()) return;
+        const file = this.selectedImageFile()
+        if (file) {
+            this.subirImagenYGuardar(file)
+            return
+        }
+        this.emitirGuardar()
+
+
+    }
+
+    // =====================
+    // PRIVATE METHODS
+    // =====================
     private loadProfesional(prof: ProfessionalProfile) {
         this.profesionalModel.set({
             name: prof.user?.name ?? '',
@@ -155,17 +219,7 @@ export class ProfesionalForm {
         });
     }
 
-    submit() {
-        if (this.isSubmitting()) return;
-        this.markFieldsAsTouched();
-        if (this.isFormInvalid()) return;
-
-        const dto = this.buildDto();
-        this.guardar.emit(dto);
-    }
-
     private markFieldsAsTouched() {
-
         this.profesionalForm.name().markAsTouched();
         this.profesionalForm.lastName().markAsTouched();
         this.profesionalForm.email().markAsTouched();
@@ -180,12 +234,10 @@ export class ProfesionalForm {
     }
 
     private isFormInvalid(): boolean {
-
         return (
             this.profesionalForm.name().invalid() ||
             this.profesionalForm.lastName().invalid() ||
             this.profesionalForm.email().invalid() ||
-
             this.profesionalForm.title().invalid() ||
             this.profesionalForm.yearsExperience().invalid() ||
             this.profesionalForm.phone().invalid() ||
@@ -195,11 +247,36 @@ export class ProfesionalForm {
         );
     }
 
+    private subirImagenYGuardar(file: File) {
+        this.uploadingImage.set(true)
+        this.imageService.upload(file).subscribe({
+            next: (response) => {
+                this.profesionalModel.update((value) => ({
+                    ...value,
+                    profileImage: response.fileName,
+                }))
+                this.selectedImageFile.set(null)
+                this.emitirGuardar()
+            },
+            error: () => {
+                alert('No se pudo subir la imagen')
+            },
+            complete: () => {
+                this.uploadingImage.set(false)
+            },
+        })
+    }
+
+    private emitirGuardar() {
+        const dto = this.buildDto()
+        console.log('JSON enviado al API:', dto)
+        this.guardar.emit(dto)
+    }
+
     private buildDto(): ProfessionalCreateDto | ProfessionalUpdateDto {
         const value = this.profesionalModel();
 
         return {
-
             name: value.name.trim(),
             lastName: value.lastName.trim(),
             email: value.email.trim(),
