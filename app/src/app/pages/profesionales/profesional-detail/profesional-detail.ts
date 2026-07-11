@@ -53,7 +53,7 @@ export class ProfesionalDetail {
         });
     }
 
-    getImageUrl(imageName: string): string {
-        return this.professionalService.getImageUrl(imageName);
-    }
+  getImageUrl(imageName: string): string {
+    return this.professionalService.getImageUrl(imageName);
+  }
 }

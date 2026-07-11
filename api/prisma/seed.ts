@@ -63,6 +63,8 @@ async function main() {
 
             { name: "Carlos", lastName: "Mora", email: "carlos@creovixcr.com", password: "hash", role: Role.CLIENT },
             { name: "Ana", lastName: "Rojas", email: "ana@creovixcr.com", password: "hash", role: Role.CLIENT },
+            { name: "Ramon", lastName: "Morales", email: "ramon@creovixcr.com", password: "hash", role: Role.CLIENT },
+            { name: "Antonio", lastName: "Chaves", email: "antonio@creovixcr.com", password: "hash", role: Role.CLIENT },
         ],
     });
 
@@ -287,23 +289,92 @@ async function main() {
         }
     }));
 
-   
+
+    const clients = [
+        userMap["carlos@creovixcr.com"],
+        userMap["ana@creovixcr.com"],
+        userMap["ramon@creovixcr.com"],
+        userMap["antonio@creovixcr.com"],
+    ];
+
+    const professionalServices = [
+        {
+            professionalId: userMap["daniel@creovixcr.com"],
+            serviceId: services[0].id,
+        },
+        {
+            professionalId: userMap["maria@creovixcr.com"],
+            serviceId: services[1].id,
+        },
+        {
+            professionalId: userMap["luis@creovixcr.com"],
+            serviceId: services[3].id,
+        },
+        {
+            professionalId: userMap["sofia@creovixcr.com"],
+            serviceId: services[6].id,
+        },
+        {
+            professionalId: userMap["andres@creovixcr.com"],
+            serviceId: services[5].id,
+        },
+    ];
+
     for (let i = 0; i < 12; i++) {
+
+        const appointmentDate = new Date();
+        appointmentDate.setDate(
+            appointmentDate.getDate() + (i + 1)
+        );
+
+        const startHour = 8 + (i % 5);
+
+        const startTime = new Date(appointmentDate);
+        startTime.setHours(startHour, 0, 0, 0);
+
+        const endTime = new Date(appointmentDate);
+        endTime.setHours(startHour + 1, 0, 0, 0);
+
+        const assigned = professionalServices[i % professionalServices.length];
+
         await prisma.appointment.create({
             data: {
-                date: new Date(),
-                startTime: new Date(),
-                endTime: new Date(),
-                mode: ServiceMode.ONLINE,
-                status: i % 2 === 0 ? AppointmentStatus.COMPLETED : AppointmentStatus.PENDING,
-                clientId: userMap["carlos@creovixcr.com"],
-                professionalId: userMap["daniel@creovixcr.com"],
-                serviceId: services[0].id,
+                date: appointmentDate,
+                startTime,
+                endTime,
+
+                mode: i % 2 === 0
+                    ? ServiceMode.ONLINE
+                    : ServiceMode.IN_PERSON,
+
+                status: i % 3 === 0
+                    ? AppointmentStatus.COMPLETED
+                    : AppointmentStatus.PENDING,
+
+                clientId: clients[i % clients.length],
+                professionalId: assigned.professionalId,
+                serviceId: assigned.serviceId,
+
+                description: [
+                    "Necesito asesoría para crear la identidad visual de mi emprendimiento.",
+                    "Revisión de propuesta de logotipo y ajustes finales.",
+                    "Diseño de piezas gráficas para una campaña publicitaria.",
+                    "Análisis de experiencia de usuario para una aplicación web.",
+                    "Creación de contenido visual para redes sociales.",
+                    "Desarrollo de manual de marca corporativo.",
+                    "Diseño de ilustraciones personalizadas para un proyecto.",
+                    "Revisión de diseño y recomendaciones profesionales.",
+                    "Creación de banners promocionales para una campaña.",
+                    "Mejoras al diseño actual de la marca.",
+                    "Asesoría sobre colores, tipografías y estilo visual.",
+                    "Diseño de material gráfico para lanzamiento de producto."
+                ][i],
             }
         });
     }
 
-    console.log("Seed completado con éxito 🚀");
+
+    console.log("Seed completado con éxito");
 }
 
 main()
