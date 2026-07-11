@@ -7,10 +7,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { ProfessionalService } from '../../../core/services/professional.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ProfessionalProfile } from '../../../core/models/professional.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-profesional-admin-list',
@@ -32,6 +34,7 @@ import { ProfessionalProfile } from '../../../core/models/professional.model';
 export class ProfesionalAdminList {
     private readonly professionalService = inject(ProfessionalService);
     private readonly noti = inject(NotificationService);
+    private readonly dialog = inject(MatDialog);
 
     profesionales = signal<ProfessionalProfile[]>([]);
     search = signal('');
@@ -85,23 +88,56 @@ export class ProfesionalAdminList {
             },
         });
     }
+    openAvailabilityDialog(prof: ProfessionalProfile): void {
+        const isAvailable = prof.isAvailable;
 
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: '400px',
+            data: {
+                title: isAvailable
+                    ? 'Desactivar disponibilidad'
+                    : 'Activar disponibilidad',
+
+                message: `¿Deseas ${isAvailable ? 'desactivar' : 'activar'
+                    } la disponibilidad de ${prof.user?.name ?? 'este profesional'
+                    }?`,
+
+                warning: isAvailable
+                    ? 'El profesional dejará de aparecer como disponible.'
+                    : 'El profesional volverá a estar disponible para solicitudes.',
+
+                confirmText: isAvailable
+                    ? 'Desactivar'
+                    : 'Activar',
+            },
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.toggleAvailability(prof);
+            }
+        });
+    }
     toggleAvailability(prof: ProfessionalProfile): void {
-        const action = prof.isAvailable ? 'desactivar' : 'activar';
-        if (!confirm(`¿Desea ${action} la disponibilidad de ${prof.user?.name ?? 'este profesional'}?`)) {
-            return;
-        }
+        const isAvailable = prof.isAvailable;
 
         this.professionalService.toggleAvailability(prof.id).subscribe({
             next: () => {
-                this.noti.success(`Disponibilidad actualizada correctamente`);
+                this.noti.success(
+                    `Disponibilidad ${isAvailable ? 'desactivada' : 'activada'
+                    } correctamente`
+                );
+
                 this.loadProfesionales();
             },
             error: () => {
-                this.noti.error('No se pudo actualizar la disponibilidad');
+                this.noti.error(
+                    'No se pudo actualizar la disponibilidad'
+                );
             },
         });
     }
+
 
     onSearchChange(value: string): void {
         this.search.set(value);

@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { SpecialtyService } from '../../../core/services/specialty.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Specialty } from '../../../core/models/specialty.model';
 
 @Component({
@@ -27,6 +29,7 @@ import { Specialty } from '../../../core/models/specialty.model';
 export class EspecialidadAdminList {
   private readonly specialtyService = inject(SpecialtyService);
   private readonly notification = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
 
   especialidades = signal<Specialty[]>([]);
   search = signal('');
@@ -78,20 +81,59 @@ export class EspecialidadAdminList {
     this.statusFilter.set(value || null);
   }
 
-  toggleStatus(esp: Specialty): void {
-    const action = esp.status === 'ACTIVE' ? 'desactivar' : 'activar';
-    if (!confirm(`¿Está seguro de ${action} la especialidad "${esp.name}"?`)) {
-      return;
-    }
+ openStatusDialog(esp: Specialty): void {
+  const isActive = esp.status === 'ACTIVE';
 
-    this.specialtyService.toggleStatus(esp.id).subscribe({
-      next: () => {
-        this.notification.success(`Especialidad ${action === 'activar' ? 'activada' : 'desactivada'} correctamente.`);
-        this.loadEspecialidades();
-      },
-      error: () => {
-        this.notification.error(`No se pudo ${action} la especialidad.`);
-      },
-    });
-  }
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    width: '400px',
+    data: {
+      title: isActive
+        ? 'Desactivar especialidad'
+        : 'Activar especialidad',
+
+      message: `¿Deseas ${
+        isActive ? 'desactivar' : 'activar'
+      } la especialidad "${esp.name}"?`,
+
+      warning: isActive
+        ? 'La especialidad dejará de estar disponible para nuevos perfiles profesionales.'
+        : 'La especialidad volverá a estar disponible para asignaciones.',
+
+      confirmText: isActive
+        ? 'Desactivar'
+        : 'Activar',
+    },
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.toggleStatus(esp);
+    }
+  });
+}
+
+toggleStatus(esp: Specialty): void {
+  const isActive = esp.status === 'ACTIVE';
+
+  this.specialtyService.toggleStatus(esp.id).subscribe({
+    next: () => {
+      this.notification.success(
+        `Especialidad ${
+          isActive ? 'desactivada' : 'activada'
+        } correctamente.`
+      );
+
+      this.loadEspecialidades();
+    },
+
+    error: () => {
+      this.notification.error(
+        `No se pudo ${
+          isActive ? 'desactivar' : 'activar'
+        } la especialidad.`
+      );
+    },
+  });
+}
+
 }

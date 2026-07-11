@@ -118,7 +118,7 @@
           </a>
           <button mat-icon-button
             [class]="srv.status === 'ACTIVE' ? 'toggle-active' : 'toggle-inactive'"
-            (click)="toggleStatus(srv)"
+           (click)="openStatusDialog(srv)"
             [title]="srv.status === 'ACTIVE' ? 'Desactivar' : 'Activar'">
             <mat-icon>{{ srv.status === 'ACTIVE' ? 'toggle_on' : 'toggle_off' }}</mat-icon>
           </button>
