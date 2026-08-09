@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>Detalle de la cita</h2>
+
+<mat-dialog-content>
+
+    <div class="detail-item">
+        <strong>Cliente:</strong>
+        <span>{{ data.client?.name }}</span>
+    </div>
+
+    <div class="detail-item">
+        <strong>Profesional:</strong>
+        <span>{{ data.professional?.name }}</span>
+    </div>
+
+    <div class="detail-item">
+        <strong>Servicio:</strong>
+        <span>{{ data.service?.name }}</span>
+    </div>
+
+    <div class="detail-item">
+        <strong>Fecha:</strong>
+        <span>{{ data.date | date:'fullDate' }}</span>
+    </div>
+
+    <div class="detail-item">
+        <strong>Hora:</strong>
+        <span>{{ data.startTime | date:'shortTime' }}</span>
+    </div>
+
+   <div class="detail-item">
+  <strong>Estado:</strong>
+
+  <span
+    class="status-chip"
+    [ngClass]="getStatusClass(data.status)"
+  >
+    {{ getStatusLabel(data.status) }}
+  </span>
+</div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="goToDetail()">
+  Ver detalle completo
+</button>
+    <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

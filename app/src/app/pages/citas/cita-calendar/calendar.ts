@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { CitaDetailDialog } from '../../../shared/components/cita-detail-dialog/cita-detail-dialog.js';
+
+
+
 import {
   CalendarModule,
   CalendarView,
@@ -8,33 +15,39 @@ import {
 
 import { Appointment } from '../../../core/models/appointment.model';
 
+
 @Component({
   selector: 'app-citas-calendar',
   standalone: true,
-  imports: [CommonModule, CalendarModule],
+  imports: [CommonModule, CalendarModule, MatDialogModule],
   templateUrl: './calendar.html',
   styleUrl: './calendar.css',
 })
-export class CitasCalendar  {
+export class CitasCalendar {
+
+  constructor (private dialog: MatDialog,
+              private router: Router
+  ) {}
 
   citas = input<Appointment[]>([]);
 
-  view: CalendarView = CalendarView.Month;
-  viewDate: Date = new Date();
+  view = signal<CalendarView>(CalendarView.Month);
+
+  viewDate = signal<Date>(new Date());
 
   CalendarView = CalendarView;
 
   events = computed<CalendarEvent[]>(() =>
-  this.citas().map((appointment) =>
-    this.mapToEvent(appointment)
-  )
-);
+    this.citas().map((appointment) =>
+      this.mapToEvent(appointment)
+    )
+  );
 
   mapToEvent(appointment: Appointment): CalendarEvent {
     return {
       id: appointment.id,
 
-      title: appointment.description || 'Cita',
+      title: `${appointment.client?.name ?? 'Cliente'} - ${appointment.service?.name ?? ''}`,
 
       start: new Date(appointment.startTime),
       end: new Date(appointment.endTime),
@@ -45,10 +58,60 @@ export class CitasCalendar  {
     };
   }
 
-  handleEvent(event: CalendarEvent): void {
-    console.log('Cita:', event.meta);
+  calendarTitle = computed(() => {
+    if (this.view() === CalendarView.Month) {
+      return this.viewDate().toLocaleDateString('es-CR', {
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    const start = new Date(this.viewDate());
+
+    return `Semana del ${start.toLocaleDateString('es-CR', {
+      day: 'numeric',
+      month: 'short'
+    })}`;
+  });
+
+  previousPeriod(): void {
+    this.viewDate.set(this.movePeriod(-1));
   }
 
+  nextPeriod(): void {
+    this.viewDate.set(this.movePeriod(1));
+  }
+
+  goToToday(): void {
+    this.viewDate.set(new Date());
+  }
+
+  private movePeriod(direction: number): Date {
+    const date = new Date(this.viewDate());
+
+    if (this.view() === CalendarView.Month) {
+      date.setMonth(date.getMonth() + direction);
+    } else if (this.view() === CalendarView.Week) {
+      date.setDate(date.getDate() + direction * 7);
+    }
+
+    return date;
+  }
+
+handleEvent(event: CalendarEvent): void {
+  const cita = event.meta as Appointment;
+
+  const dialogRef = this.dialog.open(CitaDetailDialog, {
+    data: cita,
+    width: '400px'
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result === 'goToDetail') {
+      this.router.navigate(['/admin/citas', cita.id]);
+    }
+  });
+}
   getColor(status: string) {
 
     switch (status) {

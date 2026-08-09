@@ -1,20 +1,99 @@
-<div>
-  <button (click)="view = CalendarView.Month">Mes</button>
-  <button (click)="view = CalendarView.Week">Semana</button>
+<div class="calendar-header">
+
+  <div class="nav-buttons">
+    <button (click)="previousPeriod()">◀</button>
+    <button (click)="goToToday()">Hoy</button>
+    <button (click)="nextPeriod()">▶</button>
+  </div>
+
+  <h2 class="calendar-title">
+    {{ calendarTitle() }}
+  </h2>
+
+  <div class="view-buttons">
+    <button (click)="view.set(CalendarView.Month)">Mes</button>
+    <button (click)="view.set(CalendarView.Week)">Semana</button>
+  </div>
+
+</div>
+<div class="calendar-legend">
+
+  <div class="legend-item">
+    <span class="legend-color accepted"></span>
+    <span>Aceptada</span>
+  </div>
+
+  <div class="legend-item">
+    <span class="legend-color pending"></span>
+    <span>Pendiente</span>
+  </div>
+
+  <div class="legend-item">
+    <span class="legend-color cancelled"></span>
+    <span>Cancelada</span>
+  </div>
+
+  <div class="legend-item">
+    <span class="legend-color rejected"></span>
+    <span>Rechazada</span>
+  </div>
+
+  <div class="legend-item">
+    <span class="legend-color completed"></span>
+    <span>Completada</span>
+  </div>
+
 </div>
 
-<div [ngSwitch]="view">
-  <mwl-calendar-month-view
-    *ngSwitchCase="CalendarView.Month"
-    [viewDate]="viewDate"
-   [events]="events()"
+
+<div class="calendar-toolbar">
+
+  <div class="calendar-navigation">
+
+    <button type="button" (click)="previousPeriod()">
+      ←
+    </button>
+
+    <button type="button" (click)="goToToday()">
+      Hoy
+    </button>
+
+    <button type="button" (click)="nextPeriod()">
+      →
+    </button>
+
+  </div>
+
+
+  <h2>
+    {{ calendarTitle() }}
+  </h2>
+
+
+  <div class="calendar-view-buttons">
+
+    <button type="button" [class.active]="view() === CalendarView.Month" (click)="view.set(CalendarView.Month)">
+      Mes
+    </button>
+
+    <button type="button" [class.active]="view() === CalendarView.Week" (click)="view.set(CalendarView.Week)">
+      Semana
+    </button>
+
+  </div>
+
+</div>
+
+
+<div [ngSwitch]="view()">
+
+  <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate()" [events]="events()"
     (eventClicked)="handleEvent($event.event)">
   </mwl-calendar-month-view>
 
-  <mwl-calendar-week-view
-    *ngSwitchCase="CalendarView.Week"
-    [viewDate]="viewDate"
-    [events]="events()"
+
+  <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate()" [events]="events()"
     (eventClicked)="handleEvent($event.event)">
   </mwl-calendar-week-view>
+
 </div>
