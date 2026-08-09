@@ -1,0 +1,46 @@
+<div class="actions">
+
+  <button (click)="viewMode = 'list'">
+    📋 Lista
+  </button>
+
+  <button (click)="viewMode = 'calendar'">
+    📅 Calendario
+  </button>
+
+</div>
+
+
+@if (loading()) {
+
+<div class="loading-container">
+  <p>Cargando citas...</p>
+</div>
+
+} @else if (error()) {
+
+<div class="error-container">
+  <p>{{ error() }}</p>
+
+  <button mat-flat-button (click)="loadCitas()">
+    Reintentar
+  </button>
+</div>
+
+} @else {
+
+@if (viewMode === 'list') {
+
+<app-citas-list [citas]="citas()">
+</app-citas-list>
+
+}
+
+@if (viewMode === 'calendar') {
+
+<app-citas-calendar [citas]="citas()">
+</app-citas-calendar>
+
+}
+
+}

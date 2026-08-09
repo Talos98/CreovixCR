@@ -55,7 +55,11 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/material-theme.scss", "src/styles.css"]
+            "styles": [
+              "src/material-theme.scss",
+              "node_modules/angular-calendar/css/angular-calendar.css",
+              "src/styles.css"
+            ]
           },
           "configurations": {
             "production": {
