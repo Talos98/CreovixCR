@@ -1,0 +1,20 @@
+<div>
+  <button (click)="view = CalendarView.Month">Mes</button>
+  <button (click)="view = CalendarView.Week">Semana</button>
+</div>
+
+<div [ngSwitch]="view">
+  <mwl-calendar-month-view
+    *ngSwitchCase="CalendarView.Month"
+    [viewDate]="viewDate"
+   [events]="events()"
+    (eventClicked)="handleEvent($event.event)">
+  </mwl-calendar-month-view>
+
+  <mwl-calendar-week-view
+    *ngSwitchCase="CalendarView.Week"
+    [viewDate]="viewDate"
+    [events]="events()"
+    (eventClicked)="handleEvent($event.event)">
+  </mwl-calendar-week-view>
+</div>

@@ -67,9 +67,9 @@ export const appointmentService = {
     // CREATE APPOINTMENT
     // =====================
     async create(data: {
-        date: Date;
-        startTime: Date;
-        endTime: Date;
+        date: string;
+        startTime: string;
+        endTime: string;
         mode: ServiceMode;
         clientId: number;
         professionalId: number;
@@ -81,33 +81,51 @@ export const appointmentService = {
         await this.validateUser(data.professionalId);
         await this.validateService(data.serviceId);
 
-        const date = new Date(data.date);
+        const COSTA_RICA_OFFSET = '-06:00';
 
-        const startDateTime = new Date(`${data.date}T${data.startTime}`);
-        const endDateTime = new Date(`${data.date}T${data.endTime}`);
+        
+        const date = new Date(
+            `${data.date}T12:00:00${COSTA_RICA_OFFSET}`
+        );
 
-        if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+       
+        const startDateTime = new Date(
+            `${data.date}T${data.startTime}:00${COSTA_RICA_OFFSET}`
+        );
+
+        const endDateTime = new Date(
+            `${data.date}T${data.endTime}:00${COSTA_RICA_OFFSET}`
+        );
+
+        if (
+            isNaN(date.getTime()) ||
+            isNaN(startDateTime.getTime()) ||
+            isNaN(endDateTime.getTime())
+        ) {
             throw AppError.badRequest("Fecha u hora inválida");
         }
 
         if (endDateTime <= startDateTime) {
-            throw AppError.badRequest("La hora de finalización debe ser mayor a la de inicio");
+            throw AppError.badRequest(
+                "La hora de finalización debe ser mayor a la de inicio"
+            );
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
 
-        const appointmentDate = new Date(data.date);
+        const todayString = new Date().toLocaleDateString('en-CA', {
+            timeZone: 'America/Costa_Rica'
+        });
 
-        if (appointmentDate < today) {
-            throw AppError.badRequest("La fecha no puede ser pasada");
+        if (data.date < todayString) {
+            throw AppError.badRequest(
+                "La fecha no puede ser pasada"
+            );
         }
-
 
         const overlapping = await prisma.appointment.findFirst({
             where: {
                 professionalId: data.professionalId,
-                date: new Date(data.date),
+                date: date,
                 AND: [
                     { startTime: { lt: endDateTime } },
                     { endTime: { gt: startDateTime } }
@@ -116,14 +134,14 @@ export const appointmentService = {
         });
 
         if (overlapping) {
-            throw AppError.badRequest("El profesional ya tiene una cita en ese horario");
+            throw AppError.badRequest(
+                "El profesional ya tiene una cita en ese horario"
+            );
         }
-
-
 
         return prisma.appointment.create({
             data: {
-                date: date,
+                date,
                 startTime: startDateTime,
                 endTime: endDateTime,
                 mode: data.mode,
@@ -140,7 +158,6 @@ export const appointmentService = {
             }
         });
     },
-
     // =====================
     // UPDATE STATUS
     // =====================

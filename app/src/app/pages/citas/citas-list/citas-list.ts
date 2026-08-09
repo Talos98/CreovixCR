@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +7,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { AppointmentService } from '../../../core/services/appointment.service';
 import { Appointment } from '../../../core/models/appointment.model';
 
 @Component({
@@ -27,11 +26,9 @@ import { Appointment } from '../../../core/models/appointment.model';
     styleUrl: './citas-list.css',
 })
 export class CitasList {
-    private readonly appointmentService = inject(AppointmentService);
 
-    citas = signal<Appointment[]>([]);
-    loading = signal(false);
-    error = signal<string | null>(null);
+    citas = input<Appointment[]>([]);
+
 
     statusFilter = signal<string | null>(null);
     professionalFilter = signal<number | null>(null);
@@ -76,25 +73,6 @@ export class CitasList {
         return result;
     });
 
-    ngOnInit(): void {
-        this.loadCitas();
-    }
-
-    loadCitas(): void {
-        this.loading.set(true);
-        this.error.set(null);
-
-        this.appointmentService.listar().subscribe({
-            next: (response) => {
-                this.citas.set(response.data);
-                this.loading.set(false);
-            },
-            error: () => {
-                this.error.set('No se pudieron cargar las citas.');
-                this.loading.set(false);
-            },
-        });
-    }
 
     formatDate(dateStr: string): string {
         if (!dateStr) return '—';

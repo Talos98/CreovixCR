@@ -10,7 +10,7 @@ import { ProfesionalAdminList } from './pages/profesionales/profesional-admin-li
 import { ProfesionalCreatePage } from './pages/profesionales/profesional-create-page/profesional-create-page';
 import { ProfesionalEditPage } from './pages/profesionales/profesional-edit-page/profesional-edit-page';
 import { ProfesionalDetail } from './pages/profesionales/profesional-detail/profesional-detail';
-import { CitasList } from './pages/citas/citas-list/citas-list';
+import { CitaPage } from './pages/citas/cita-page/cita-page';
 import { CitaDetail } from './pages/citas/cita-detail/cita-detail';
 import { CitaCreatePage } from './pages/citas/cita-create-page/cita-create-page';
 import { UsuariosList } from './pages/usuarios/usuarios-list/usuarios-list';
@@ -32,7 +32,7 @@ export const routes: Routes = [
             { path: 'admin/profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional' },
             { path: 'admin/profesionales/editar/:id', component: ProfesionalEditPage, title: 'Editar profesional' },
             { path: 'profesionales/:id', component: ProfesionalDetail, title: 'Detalle del profesional' },
-            { path: 'admin/citas', component: CitasList, title: 'Gestión de citas' },
+            { path: 'admin/citas', component: CitaPage, title: 'Gestión de citas' },
             { path: 'admin/citas/crear', component: CitaCreatePage, title: 'Registrar cita' },
             { path: 'admin/citas/:id', component: CitaDetail, title: 'Detalle de cita' },
             { path: 'admin/usuarios', component: UsuariosList, title: 'Gestión de usuarios' },
