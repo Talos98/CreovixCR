@@ -4,11 +4,12 @@ import { CitasCalendar } from '../cita-calendar/calendar';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { Appointment } from '../../../core/models/appointment.model';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule, MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-cita-page',
   standalone: true,
-  imports: [CitasList, CitasCalendar, MatButtonModule],
+  imports: [CitasList, CitasCalendar, MatButtonModule, MatIcon],
   templateUrl: './cita-page.html',
   styleUrl: './cita-page.css',
 })
