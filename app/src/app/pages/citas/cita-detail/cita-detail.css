@@ -155,6 +155,69 @@
     margin: 0;
 }
 
+/* Botones de cambio de estado */
+.status-actions {
+    padding: 0.5rem 0;
+}
+
+.status-actions strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.btn-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    max-width: 560px;
+}
+
+.btn-group button {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    border-right: 1px solid #ccc;
+    background: #fafafa;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-group button:last-child {
+    border-right: none;
+}
+
+.btn-group button:hover:not(:disabled) {
+    background: #e8e8e8;
+}
+
+.btn-group button:disabled {
+    cursor: default;
+}
+
+.btn-group button.active {
+    background: #2e7d32;
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-group button:nth-child(2).active {
+    background: #c62828;
+}
+
+.btn-group button:nth-child(3).active {
+    background: #1565c0;
+}
+
+.btn-group button:nth-child(4).active {
+    background: #5d4037;
+}
+
 @media (max-width: 600px) {
     .info-grid {
         grid-template-columns: 1fr;

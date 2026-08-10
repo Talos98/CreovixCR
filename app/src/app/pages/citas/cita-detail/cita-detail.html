@@ -162,6 +162,18 @@
                 }
 
             </mat-card-content>
+
+            <mat-card-actions>
+                <div class="status-actions">
+                    <strong>Cambiar estado:</strong>
+                    <div class="btn-group">
+                        <button [class.active]="c.status === 'ACCEPTED'" (click)="changeStatus('ACCEPTED')" [disabled]="updating() || c.status === 'ACCEPTED'">Aceptar</button>
+                        <button [class.active]="c.status === 'REJECTED'" (click)="changeStatus('REJECTED')" [disabled]="updating() || c.status === 'REJECTED'">Rechazar</button>
+                        <button [class.active]="c.status === 'COMPLETED'" (click)="changeStatus('COMPLETED')" [disabled]="updating() || c.status === 'COMPLETED'">Completar</button>
+                        <button [class.active]="c.status === 'CANCELLED'" (click)="changeStatus('CANCELLED')" [disabled]="updating() || c.status === 'CANCELLED'">Cancelar</button>
+                    </div>
+                </div>
+            </mat-card-actions>
         </mat-card>
 
     </div>

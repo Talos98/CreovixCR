@@ -19,6 +19,11 @@ export class AppointmentRoutes {
             asyncHandler(controller.create)
         );
 
+        router.patch(
+            "/:id/status",
+            asyncHandler(controller.updateStatus)
+        );
+
         return router
     }
 }

@@ -20,4 +20,8 @@ export class AppointmentService {
     crear(data: AppointmentCreateDto) {
         return this.http.post<ApiResponse<Appointment>>(this.apiUrl, data);
     }
+
+    cambiarEstado(id: number, status: string) {
+        return this.http.patch<ApiResponse<Appointment>>(`${this.apiUrl}/${id}/status`, { status });
+    }
 }

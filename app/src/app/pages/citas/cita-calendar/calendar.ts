@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,6 +31,7 @@ export class CitasCalendar {
   ) {}
 
   citas = input<Appointment[]>([]);
+  statusChanged = output<void>();
 
   view = signal<CalendarView>(CalendarView.Month);
 
@@ -116,6 +117,8 @@ handleEvent(event: CalendarEvent): void {
   dialogRef.afterClosed().subscribe((result) => {
     if (result === 'goToDetail') {
       this.router.navigate(['/admin/citas', cita.id]);
+    } else if (result === 'statusChanged') {
+      this.statusChanged.emit();
     }
   });
 }
