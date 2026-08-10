@@ -12,7 +12,7 @@
 
   <div class="view-buttons">
     <button (click)="view.set(CalendarView.Month)">Mes</button>
-    <button (click)="view.set(CalendarView.Week)">Semana</button>
+    <button (click)="view.set(CalendarView.Week)">Semana</button> 
   </div>
 
 </div>
@@ -44,46 +44,6 @@
   </div>
 
 </div>
-
-
-<div class="calendar-toolbar">
-
-  <div class="calendar-navigation">
-
-    <button type="button" (click)="previousPeriod()">
-      ←
-    </button>
-
-    <button type="button" (click)="goToToday()">
-      Hoy
-    </button>
-
-    <button type="button" (click)="nextPeriod()">
-      →
-    </button>
-
-  </div>
-
-
-  <h2>
-    {{ calendarTitle() }}
-  </h2>
-
-
-  <div class="calendar-view-buttons">
-
-    <button type="button" [class.active]="view() === CalendarView.Month" (click)="view.set(CalendarView.Month)">
-      Mes
-    </button>
-
-    <button type="button" [class.active]="view() === CalendarView.Week" (click)="view.set(CalendarView.Week)">
-      Semana
-    </button>
-
-  </div>
-
-</div>
-
 
 <div [ngSwitch]="view()">
 

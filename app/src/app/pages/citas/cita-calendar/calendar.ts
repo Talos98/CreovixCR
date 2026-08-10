@@ -59,21 +59,27 @@ export class CitasCalendar {
     };
   }
 
-  calendarTitle = computed(() => {
+
+calendarTitle = computed(() => {
     if (this.view() === CalendarView.Month) {
-      return this.viewDate().toLocaleDateString('es-CR', {
-        month: 'long',
-        year: 'numeric'
-      });
+        return this.viewDate().toLocaleDateString('es-CR', {
+            month: 'long',
+            year: 'numeric'
+        });
     }
 
     const start = new Date(this.viewDate());
 
-    return `Semana del ${start.toLocaleDateString('es-CR', {
-      day: 'numeric',
-      month: 'short'
-    })}`;
-  });
+    let month = start.toLocaleDateString('es-CR', {
+        month: 'short'
+    });
+
+    month = month.charAt(0).toUpperCase() + month.slice(1);
+
+    return `Semana del ${start.getDate()} ${month}`;
+});
+
+
 
   previousPeriod(): void {
     this.viewDate.set(this.movePeriod(-1));
