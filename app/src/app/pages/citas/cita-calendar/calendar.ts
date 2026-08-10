@@ -8,7 +8,8 @@ import { CitaDetailDialog } from '../../../shared/components/cita-detail-dialog/
 
 
 import {
-  CalendarModule,
+  CalendarMonthViewComponent,
+  CalendarWeekViewComponent,
   CalendarView,
   CalendarEvent
 } from 'angular-calendar';
@@ -19,7 +20,7 @@ import { Appointment } from '../../../core/models/appointment.model';
 @Component({
   selector: 'app-citas-calendar',
   standalone: true,
-  imports: [CommonModule, CalendarModule, MatDialogModule],
+  imports: [CommonModule, CalendarMonthViewComponent, CalendarWeekViewComponent, MatDialogModule],
   templateUrl: './calendar.html',
   styleUrl: './calendar.css',
 })
