@@ -86,4 +86,22 @@ export class CitaDetail {
         };
         return classes[status] ?? '';
     }
+
+    updating = signal(false);
+
+    changeStatus(status: string): void {
+        const cita = this.cita();
+        if (!cita) return;
+
+        this.updating.set(true);
+        this.appointmentService.cambiarEstado(cita.id, status).subscribe({
+            next: (response) => {
+                this.cita.set(response.data);
+                this.updating.set(false);
+            },
+            error: () => {
+                this.updating.set(false);
+            }
+        });
+    }
 }

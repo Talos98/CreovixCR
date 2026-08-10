@@ -17,7 +17,7 @@ export class ServiceController {
                 meta: result.meta,
                 data: result.data
             });
-        } catch (error) {
+        } catch (error) {  
             next(error);
         }
     };

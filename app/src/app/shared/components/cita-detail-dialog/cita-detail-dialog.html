@@ -40,9 +40,17 @@
 
 </mat-dialog-content>
 
+<div class="status-actions">
+    <strong>Cambiar estado:</strong>
+    <div class="btn-group">
+        <button [class.active]="data.status === 'ACCEPTED'" (click)="changeStatus('ACCEPTED')" [disabled]="updating() || data.status === 'ACCEPTED'">Aceptar</button>
+        <button [class.active]="data.status === 'REJECTED'" (click)="changeStatus('REJECTED')" [disabled]="updating() || data.status === 'REJECTED'">Rechazar</button>
+        <button [class.active]="data.status === 'COMPLETED'" (click)="changeStatus('COMPLETED')" [disabled]="updating() || data.status === 'COMPLETED'">Completar</button>
+        <button [class.active]="data.status === 'CANCELLED'" (click)="changeStatus('CANCELLED')" [disabled]="updating() || data.status === 'CANCELLED'">Cancelar</button>
+    </div>
+</div>
+
 <mat-dialog-actions align="end">
-    <button mat-button (click)="goToDetail()">
-  Ver detalle completo
-</button>
+    <button mat-button (click)="goToDetail()">Ver detalle completo</button>
     <button mat-button mat-dialog-close>Cerrar</button>
 </mat-dialog-actions>

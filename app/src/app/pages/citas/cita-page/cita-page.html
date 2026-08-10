@@ -40,7 +40,7 @@
 
 @if (viewMode === 'calendar') {
 
-<app-citas-calendar [citas]="citas()">
+<app-citas-calendar [citas]="citas()" (statusChanged)="loadCitas()">
 </app-citas-calendar>
 
 }
