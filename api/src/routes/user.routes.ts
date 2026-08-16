@@ -2,7 +2,8 @@ import { Router } from "express"
 import { UserController } from "../controllers/user.controller"
 import { asyncHandler } from "../middlewares/async-handler.middleware"
 import { validateRequest } from "../middlewares/validate-request.middleware"
-import { createUserSchema, updateUserSchema } from "../dtos/user.dto"
+import { createUserSchema, updateUserSchema, loginUserSchema } from "../dtos/user.dto"
+import { authenticateToken } from "../middlewares/auth.middleware"
 
 export class UserRoutes {
     static get routes(): Router {
@@ -11,14 +12,27 @@ export class UserRoutes {
 
         //Routes
         //localhost:3000/category/
-        router.get('/', asyncHandler(controller.list))
-        router.get('/:id', asyncHandler(controller.getById))
+        router.get('/', asyncHandler(controller.list));
+        router.get('/:id', asyncHandler(controller.getById));
 
         router.post(
             "/",
             validateRequest(createUserSchema),
             asyncHandler(controller.create)
-        )
+        );
+        router.post(
+            "/login",
+            validateRequest(loginUserSchema),
+            asyncHandler(controller.login)
+
+        );
+
+        router.get(
+            "/profile",
+            authenticateToken,
+            asyncHandler(controller.profile)
+
+        );
 
         router.put(
             "/:id",

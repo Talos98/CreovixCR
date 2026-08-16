@@ -1,3 +1,4 @@
+import passport from "passport";
 import { z } from "zod";
 
 export const createUserSchema = z.object({
@@ -8,6 +9,14 @@ export const createUserSchema = z.object({
 });
 
 export const updateUserSchema = createUserSchema.partial();
+export const loginUserSchema = z.object({
+    email: z
+    .email({error: "Debe ingresar un correo válido"}),
+    password: z
+    .string()
+    .min(6, {error: "La contraseña debe tener al menos 6 caracteres"}),
+})
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;
 export type UpdateUserDto = z.infer<typeof updateUserSchema>;
+export type LoginUserDto= z.infer<typeof loginUserSchema>;

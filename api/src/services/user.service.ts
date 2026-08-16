@@ -1,6 +1,9 @@
 import { prisma } from "../config/prisma";
 import { AppError } from "../utils/app-error";
 import { Role, Status } from "../../generated/prisma/enums";
+import bcrypt from "bcryptjs";
+import { error } from "node:console";
+import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
 export const userService = {
 
@@ -69,7 +72,7 @@ export const userService = {
     // =====================
     async create(data: {
         name: string;
-        lastName:string;
+        lastName: string;
         email: string;
         password: string;
         role?: Role;
@@ -81,15 +84,17 @@ export const userService = {
         });
 
         if (existingUser) {
-            throw AppError.badRequest("Email already exists");
+            throw AppError.badRequest("El correo ya está registrado");
         }
 
-        return prisma.user.create({
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        const user = await prisma.user.create({
             data: {
                 name: data.name,
                 lastName: data.lastName,
                 email: data.email,
-                password: data.password,
+                password: hashedPassword,
                 role: data.role ?? Role.CLIENT,
                 status: Status.ACTIVE
             },
@@ -97,6 +102,53 @@ export const userService = {
                 professionalProfile: true
             }
         });
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+
+    },
+
+    async login(data: { email: string; password: string }) {
+        const user = await prisma.user.findUnique({
+            where: { email: data.email }
+        });
+
+        if (!user) {
+            throw new Error("Correo o contraseña incorrectos");
+        }
+        const isPasswordValid = await bcrypt.compare(data.password, user.password);
+        if (!isPasswordValid) {
+            throw new Error("Correo o contraseña incorrectos");
+
+        }
+        const payload = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+        };
+        const secret: Secret = process.env.JWT_SECRET || "vj_utn_2026";
+        const options: SignOptions = {
+            expiresIn: "2h",
+        };
+
+        const token = jwt.sign(payload, secret, options);
+        return {
+            token
+        };
+    },
+
+    async profile(userId: number) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            throw new Error("El usuario no existe");
+
+        }
+
+        const { password, ...userWihoutPassword } = user;
+
+        return userWihoutPassword;
     },
 
     // =====================
