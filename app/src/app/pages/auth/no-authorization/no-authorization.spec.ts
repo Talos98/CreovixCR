@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing'
-import {describe, beforeEach, it, expect} from 'vitest'
-import {NoAuthorization} from './no-authorization'
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {describe, beforeEach, it, expect} from 'vitest';
+import {NoAuthorization} from './no-authorization';
 
 describe('NoAuthorization', () => {
   let component: NoAuthorization;
