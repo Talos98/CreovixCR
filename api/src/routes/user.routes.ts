@@ -12,7 +12,16 @@ export class UserRoutes {
 
         //Routes
         //localhost:3000/category/
+
         router.get('/', asyncHandler(controller.list));
+
+        // IMPORTANTE: /profile debe ir antes de /:id
+        router.get(
+            "/profile",
+            authenticateToken,
+            asyncHandler(controller.profile)
+        );
+
         router.get('/:id', asyncHandler(controller.getById));
 
         router.post(
@@ -20,27 +29,23 @@ export class UserRoutes {
             validateRequest(createUserSchema),
             asyncHandler(controller.create)
         );
+
         router.post(
             "/login",
             validateRequest(loginUserSchema),
             asyncHandler(controller.login)
-
-        );
-
-        router.get(
-            "/profile",
-            authenticateToken,
-            asyncHandler(controller.profile)
-
         );
 
         router.put(
             "/:id",
             validateRequest(updateUserSchema),
             asyncHandler(controller.update)
-        )
+        );
 
-        router.patch("/:id/status", asyncHandler(controller.toggleStatus))
+        router.patch(
+            "/:id/status",
+            asyncHandler(controller.toggleStatus)
+        );
 
         return router
     }

@@ -78,6 +78,9 @@ export const userService = {
         role?: Role;
     }) {
 
+    console.log("DATA RECIBIDA EN SERVICE:", data);
+    console.log("LAST NAME:", data.lastName);
+
         // 1. Validar email único
         const existingUser = await prisma.user.findUnique({
             where: { email: data.email }
@@ -108,14 +111,23 @@ export const userService = {
     },
 
     async login(data: { email: string; password: string }) {
+
+        console.log("LOGIN DATA:", {
+            email: data.email,
+            passwordReceived: !!data.password
+        });
         const user = await prisma.user.findUnique({
             where: { email: data.email }
         });
+
+        console.log("USER FOUND:", !!user);
 
         if (!user) {
             throw new Error("Correo o contraseña incorrectos");
         }
         const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+        console.log("PASSWORD VALID:", isPasswordValid);
         if (!isPasswordValid) {
             throw new Error("Correo o contraseña incorrectos");
 

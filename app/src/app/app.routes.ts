@@ -16,30 +16,233 @@ import { CitaCreatePage } from './pages/citas/cita-create-page/cita-create-page'
 import { UsuariosList } from './pages/usuarios/usuarios-list/usuarios-list';
 import { CategoriaAdminList } from './pages/categorias/categoria-admin-list/categoria-admin-list';
 import { EspecialidadAdminList } from './pages/especialidades/especialidad-admin-list/especialidad-admin-list';
+import { Profile } from './pages/profile/profile';
+import { Role } from './core/models/role.model';
+import { NoAuthorization } from './pages/auth/no-authorization/no-authorization';
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { Login } from './pages/usuarios/login/login';
 
 export const routes: Routes = [
     {
         path: '',
         component: MainLayout,
         children: [
-            { path: '', component: Home, title: 'Inicio' },
-            { path: 'servicios', component: ServiciosList, title: 'Catálogo de servicios' },
-            { path: 'servicios/:id', component: ServicioDetail, title: 'Detalle del servicio' },
-            { path: 'admin/servicios', component: ServicioAdminList, title: 'Mantenimiento servicios' },
-            { path: 'admin/servicios/crear', component: ServicioCreatePage, title: 'Registrar servicio' },
-            { path: 'admin/servicios/editar/:id', component: ServicioEditPage, title: 'Editar servicio' },
-            { path: 'admin/profesionales', component: ProfesionalAdminList, title: 'Mantenimiento profesionales' },
-            { path: 'admin/profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional' },
-            { path: 'admin/profesionales/editar/:id', component: ProfesionalEditPage, title: 'Editar profesional' },
-            { path: 'profesionales/:id', component: ProfesionalDetail, title: 'Detalle del profesional' },
-            { path: 'admin/citas', component: CitaPage, title: 'Gestión de citas' },
-            { path: 'admin/citas/crear', component: CitaCreatePage, title: 'Registrar cita' },
-            { path: 'admin/citas/:id', component: CitaDetail, title: 'Detalle de cita' },
-            { path: 'admin/usuarios', component: UsuariosList, title: 'Gestión de usuarios' },
-            { path: 'admin/categorias', component: CategoriaAdminList, title: 'Mantenimiento categorías' },
-            { path: 'admin/especialidades', component: EspecialidadAdminList, title: 'Mantenimiento especialidades' },
+
+            // =========================
+            // RUTAS PÚBLICAS
+            // =========================
+
+            {
+                path: '',
+                component: Home,
+                title: 'Inicio'
+            },
+
+            {
+                path: 'servicios',
+                component: ServiciosList,
+                title: 'Catálogo de servicios'
+            },
+
+            {
+                path: 'servicios/:id',
+                component: ServicioDetail,
+                title: 'Detalle del servicio'
+            },
+
+            {
+                path: 'profesionales/:id',
+                component: ProfesionalDetail,
+                title: 'Detalle del profesional'
+            },
+
+            // =========================
+            // AUTENTICACIÓN
+            // =========================
+
+            {
+                path: 'login',
+                component: Login,
+
+
+                title: 'Iniciar sesión'
+            },
+
+            {
+                path: 'sin-autorizacion',
+                component: NoAuthorization,
+                title: 'No autorizado'
+            },
+
+            // =========================
+            // RUTAS AUTENTICADAS
+            // =========================
+
+            {
+                path: 'citas',
+                component: CitaPage,
+                title: 'Mis citas',
+                canActivate: [authGuard],
+            },
+
+            {
+                path: 'perfil',
+                component: Profile,
+                title: 'Mi perfil',
+                canActivate: [authGuard],
+            },
+
+            // =========================
+            // ADMIN - SERVICIOS
+            // =========================
+
+            {
+                path: 'admin/servicios',
+                component: ServicioAdminList,
+                title: 'Mantenimiento de servicios',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            {
+                path: 'admin/servicios/crear',
+                component: ServicioCreatePage,
+                title: 'Registrar servicio',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            {
+                path: 'admin/servicios/editar/:id',
+                component: ServicioEditPage,
+                title: 'Editar servicio',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            // =========================
+            // ADMIN - PROFESIONALES
+            // =========================
+
+            {
+                path: 'admin/profesionales',
+                component: ProfesionalAdminList,
+                title: 'Mantenimiento de profesionales',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            {
+                path: 'admin/profesionales/crear',
+                component: ProfesionalCreatePage,
+                title: 'Registrar profesional',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            {
+                path: 'admin/profesionales/editar/:id',
+                component: ProfesionalEditPage,
+                title: 'Editar profesional',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            // =========================
+            // ADMIN - CITAS
+            // =========================
+
+            {
+                path: 'admin/citas',
+                component: CitaPage,
+                title: 'Gestión de citas',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            {
+                path: 'admin/citas/crear',
+                component: CitaCreatePage,
+                title: 'Registrar cita',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            {
+                path: 'admin/citas/:id',
+                component: CitaDetail,
+                title: 'Detalle de cita',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            // =========================
+            // ADMIN - USUARIOS
+            // =========================
+
+            {
+                path: 'admin/usuarios',
+                component: UsuariosList,
+                title: 'Gestión de usuarios',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            // =========================
+            // ADMIN - CATEGORÍAS
+            // =========================
+
+            {
+                path: 'admin/categorias',
+                component: CategoriaAdminList,
+                title: 'Mantenimiento de categorías',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            // =========================
+            // ADMIN - ESPECIALIDADES
+            // =========================
+
+            {
+                path: 'admin/especialidades',
+                component: EspecialidadAdminList,
+                title: 'Mantenimiento de especialidades',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
         ],
     },
+
+    // =========================
+    // RUTA NO ENCONTRADA
+    // =========================
+
     {
         path: '**',
         redirectTo: '',

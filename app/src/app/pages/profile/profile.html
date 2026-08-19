@@ -20,12 +20,12 @@
                     <div class="avatar" aria-hidden="true">
                         {{ iniciales() }}
                     </div>
-                    <h2>{{ usuarioActual.nombre }}</h2>
-                    <p class="email">{{ usuarioActual.email }}</p>
+                    <h2>{{ currentUser.name }}</h2>
+                    <p class="email">{{ currentUser.email }}</p>
                     <mat-chip-set class="role-chip" aria-label="Rol del usuario">
                         <mat-chip>
                             <mat-icon matChipAvatar>{{ iconoRol() }}</mat-icon>
-                            {{ rolDescripcion() }}
+                            {{ rolDescription() }}
                         </mat-chip>
                     </mat-chip-set>
                     <mat-divider></mat-divider>
@@ -54,7 +54,7 @@
                                 </div>
                                 <div>
                                     <span class="detail-label">Nombre completo</span>
-                                    <strong>{{ currentUser.nombre }}</strong>
+                                    <strong>{{ currentUser.name }}</strong>
                                 </div>
                             </article>
                             <article class="detail-item">

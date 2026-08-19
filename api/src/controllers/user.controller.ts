@@ -49,6 +49,8 @@ export class UserController {
 
     create = async (req: Request, res: Response, next: NextFunction) => {
         try {
+
+              console.log("BODY RECIBIDO:", req.body);
             const user = await userService.create(req.body);
 
             return res.status(StatusCodes.CREATED).json({
@@ -69,7 +71,7 @@ export class UserController {
             return sendSuccess(
                 response,
                 result,
-                "Inicio de sensón correcto"
+                "Inicio de sesión correcto"
             );
 
         } catch (error) {
