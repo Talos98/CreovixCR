@@ -243,6 +243,36 @@ h1 {
     }
 }
 
+/* Formulario de edición */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.edit-form mat-form-field {
+    width: 100%;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+.edit-button {
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    border-radius: 12px;
+}
+
+.save-button {
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    border-radius: 12px;
+}
+
 .permissions-icon {
     width: 52px;
     height: 52px;

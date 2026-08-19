@@ -6,7 +6,7 @@
                 <p class="eyebrow">Mi cuenta</p>
                 <h1>Perfil de usuario</h1>
                 <p class="page-description">
-                    Consulte la información asociada a su sesión actual.
+                    Consulte y edite la información asociada a su sesión actual.
                 </p>
             </div>
             <button mat-stroked-button type="button" (click)="returnToInicio()">
@@ -20,7 +20,7 @@
                     <div class="avatar" aria-hidden="true">
                         {{ iniciales() }}
                     </div>
-                    <h2>{{ currentUser.name }}</h2>
+                    <h2>{{ currentUser.name }} {{ currentUser.lastName }}</h2>
                     <p class="email">{{ currentUser.email }}</p>
                     <mat-chip-set class="role-chip" aria-label="Rol del usuario">
                         <mat-chip>
@@ -36,6 +36,9 @@
                 </mat-card-content>
             </mat-card>
             <section class="details-column">
+
+                <!-- Modo lectura -->
+                @if (!editando()) {
                 <mat-card class="details-card" appearance="outlined">
                     <mat-card-header>
                         <div mat-card-avatar class="header-icon">
@@ -53,8 +56,17 @@
                                     <mat-icon>person</mat-icon>
                                 </div>
                                 <div>
-                                    <span class="detail-label">Nombre completo</span>
+                                    <span class="detail-label">Nombre</span>
                                     <strong>{{ currentUser.name }}</strong>
+                                </div>
+                            </article>
+                            <article class="detail-item">
+                                <div class="detail-icon">
+                                    <mat-icon>person_outline</mat-icon>
+                                </div>
+                                <div>
+                                    <span class="detail-label">Apellidos</span>
+                                    <strong>{{ currentUser.lastName }}</strong>
                                 </div>
                             </article>
                             <article class="detail-item">
@@ -86,7 +98,75 @@
                             </article>
                         </div>
                     </mat-card-content>
+                    <mat-card-actions align="end">
+                        <button mat-flat-button class="edit-button" (click)="activarEdicion()">
+                            <mat-icon>edit</mat-icon>
+                            Editar perfil
+                        </button>
+                    </mat-card-actions>
                 </mat-card>
+                }
+
+                <!-- Modo edición -->
+                @if (editando()) {
+                <mat-card class="details-card" appearance="outlined">
+                    <mat-card-header>
+                        <div mat-card-avatar class="header-icon">
+                            <mat-icon>edit</mat-icon>
+                        </div>
+                        <mat-card-title>Editar información</mat-card-title>
+                        <mat-card-subtitle>
+                            Modifique los datos de su perfil
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <form (submit)="$event.preventDefault(); guardarPerfil()" class="edit-form">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre</mat-label>
+                                <mat-icon matPrefix>person</mat-icon>
+                                <input matInput [formField]="profileForm.name" />
+                                @if (profileForm.name().touched() && profileForm.name().invalid()) {
+                                    <mat-error>{{ profileForm.name().errors()[0].message }}</mat-error>
+                                }
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label>Apellidos</mat-label>
+                                <mat-icon matPrefix>person_outline</mat-icon>
+                                <input matInput [formField]="profileForm.lastName" />
+                                @if (profileForm.lastName().touched() && profileForm.lastName().invalid()) {
+                                    <mat-error>{{ profileForm.lastName().errors()[0].message }}</mat-error>
+                                }
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label>Correo electrónico</mat-label>
+                                <mat-icon matPrefix>mail</mat-icon>
+                                <input matInput type="email" [formField]="profileForm.email" />
+                                @if (profileForm.email().touched() && profileForm.email().invalid()) {
+                                    <mat-error>{{ profileForm.email().errors()[0].message }}</mat-error>
+                                }
+                            </mat-form-field>
+
+                            <div class="edit-actions">
+                                <button mat-stroked-button type="button" (click)="cancelarEdicion()" [disabled]="guardando()">
+                                    Cancelar
+                                </button>
+                                <button mat-flat-button class="save-button" type="submit" [disabled]="guardando()">
+                                    @if (guardando()) {
+                                        <mat-spinner diameter="20"></mat-spinner>
+                                        <span>Guardando...</span>
+                                    } @else {
+                                        <mat-icon>save</mat-icon>
+                                        <span>Guardar cambios</span>
+                                    }
+                                </button>
+                            </div>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+                }
+
                 @if (isAdministrator()) {
                 <mat-card class="permissions-card" appearance="outlined">
                     <mat-card-content>
