@@ -1,0 +1,27 @@
+<h1>Registrar Servicio</h1>
+
+@if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Cargando formulario...</p>
+    </div>
+}
+
+@if (error()) {
+    <div class="error-container">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-flat-button class="primary-button" (click)="cargarDatosFormulario()">Reintentar</button>
+    </div>
+}
+
+@if (!loading() && !error()) {
+    <app-servicio-form
+        [categorias]="categorias()"
+        [especialidades]="especialidades()"
+        [profesionales]="profesionales()"
+        [saving]="saving()"
+        (guardar)="guardar($event)"
+        (cancelar)="cancelar()"
+    />
+}
