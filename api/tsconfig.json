@@ -10,9 +10,7 @@
     "skipLibCheck": true,
     "ignoreDeprecations": "6.0",
     "types": [
-      "node",
-      "express",
-      "multer"
+      "node"
     ]
   }
 }

@@ -87,21 +87,53 @@
 .user-chip {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.75rem;
+    gap: 0.65rem;
+    padding: 0.35rem 0.75rem;
     border-radius: 999px;
     background: #f2f2f2;
     border: 1px solid #e6e6e6;
-    font-size: 0.82rem;
+    color: #333333;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+    background: #0c3c2c;
+    color: #ffffff;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    line-height: 1.1;
+}
+
+.user-info strong {
+    font-size: 0.85rem;
+    font-weight: 600;
     color: #333333;
 
-    strong {
-        font-size: 0.7rem;
-        padding: 0.15rem 0.45rem;
-        border-radius: 999px;
-        color: #ffffff;
-        background: #e85320;
-    }
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-info small {
+    margin-top: 0.2rem;
+    font-size: 0.7rem;
+    color: #777777;
+
+    white-space: nowrap;
 }
 
 .mobile-menu-button {

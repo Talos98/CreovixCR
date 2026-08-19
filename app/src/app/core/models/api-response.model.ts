@@ -1,12 +1,23 @@
 export interface ApiResponse<T> {
-    data: T;
+    success: boolean;
     message?: string;
+    data: T;
+}
+export interface ApiErrorResponse {
+    success: false;
+    message: string;
+    errors?: Record<string, string[]>;
+}
+export interface ApiPaginationMeta {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
 }
 
 export interface ApiPaginatedResponse<T> {
-    data: T[];
-    total?: number;
-    page?: number;
-    pageSize?: number;
+    success: boolean;
     message?: string;
+    meta: ApiPaginationMeta;
+    data: T[];
 }

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { AuthRequest } from "../middlewares/auth.middleware";
 import { StatusCodes } from "http-status-codes";
 import { professionalProfileService } from "../services/professionalProfile.service";
 import { parseId } from "../utils/parse-id";
@@ -64,11 +65,28 @@ export class ProfessionalProfileController {
         }
     };
 
-    update = async (req: Request, res: Response, next: NextFunction) => {
+    update = async (
+        req: AuthRequest,
+        res: Response,
+        next: NextFunction
+    ) => {
         try {
             const id = parseId(req.params.id);
 
-            const profile = await professionalProfileService.update(id, req.body);
+            const userId = req.user?.id;
+
+            if (!userId) {
+                return res.status(StatusCodes.UNAUTHORIZED).json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+            }
+
+            const profile = await professionalProfileService.update(
+                id,
+                req.body,
+                userId
+            );
 
             return res.status(StatusCodes.OK).json({
                 success: true,
