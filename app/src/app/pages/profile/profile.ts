@@ -1,4 +1,4 @@
-import { Compiler, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 

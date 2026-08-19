@@ -15,7 +15,7 @@ export class UserRoutes {
 
         router.get('/', asyncHandler(controller.list));
 
-        // IMPORTANTE: /profile debe ir antes de /:id
+    
         router.get(
             "/profile",
             authenticateToken,

@@ -4,9 +4,7 @@ import { Role, ServiceMode } from "../../generated/prisma/enums";
 
 export const professionalProfileService = {
 
-    // =====================
-    // LIST PROFILES
-    // =====================
+ 
     async list(page: number = 1, limit: number = 0) {
 
         const paginar = limit > 0;
@@ -58,9 +56,7 @@ export const professionalProfileService = {
         return profile;
     },
 
-    // =====================
-    // CREATE PROFILE
-    // =====================
+  
     async create(data: {
         userId: number;
         title: string;
@@ -116,9 +112,17 @@ export const professionalProfileService = {
     // =====================
     // UPDATE PROFILE
     // =====================
-    async update(id: number, data: any) {
+    async update(id: number, data: any, authenticatedUserId: number) {
 
         await this.getById(id);
+
+        const profile = await this.getById(id);
+
+        if (profile.userId !== authenticatedUserId) {
+            throw AppError.forbidden(
+                "No tiene permiso para modificar este perfil profesional"
+            );
+        }
 
         return prisma.professionalProfile.update({
             where: { id },

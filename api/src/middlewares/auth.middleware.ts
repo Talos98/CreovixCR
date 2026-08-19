@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import jwt, { JwtPayload, Secret } from "jsonwebtoken"
+import { Role } from "../../generated/prisma/enums"
+
 
 export interface AuthTokenPayload extends JwtPayload {
     id: number
     email: string
-    role: string
+    role: Role
 }
 
 export interface AuthRequest extends Request {
@@ -49,7 +51,8 @@ export function authenticateToken(
             typeof decodedToken === "string" ||
             !decodedToken.id ||
             !decodedToken.email ||
-            !decodedToken.role
+            !decodedToken.role ||
+            !Object.values(Role).includes(decodedToken.role as Role)
         ) {
             return response
                 .status(StatusCodes.UNAUTHORIZED)
@@ -62,7 +65,7 @@ export function authenticateToken(
         request.user = {
             id: Number(decodedToken.id),
             email: String(decodedToken.email),
-            role: String(decodedToken.role)
+            role: decodedToken.role as Role
         };
 
         next();
