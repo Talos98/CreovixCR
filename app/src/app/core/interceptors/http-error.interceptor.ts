@@ -5,11 +5,11 @@ import {
 } from '@angular/common/http'
 import { catchError, throwError } from 'rxjs'
 import { NotificationService } from '../services/notification.service'
+import { AuthService } from '../services/auth.service'
 
 export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
     const noti = inject(NotificationService)
-
-    console.log('Request URL:', request.url)
+    const authService = inject(AuthService)
 
     return next(request).pipe(
         catchError((error: HttpErrorResponse) => {
@@ -26,7 +26,10 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
                         message = 'Solicitud incorrecta'
                         break
                     case 401:
-                        message = 'No autorizado'
+                        message = 'Su sesión ha expirado o no es válida'
+                        if (!request.url.includes('/login')) {
+                            authService.logout()
+                        }
                         break
                     case 403:
                         message = 'Acceso denegado'

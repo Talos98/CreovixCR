@@ -36,9 +36,26 @@ export class MainLayout {
       path: '/citas',
       icon: 'calendar_today',
       roles: [
-        Role.ADMIN,
         Role.PROFESSIONAL,
         Role.CLIENT]
+    },
+    {
+      label: 'Mis servicios',
+      path: '/mis-servicios',
+      icon: 'work_outline',
+      roles: [Role.PROFESSIONAL]
+    },
+    {
+      label: 'Mi perfil profesional',
+      path: '/mi-perfil-profesional',
+      icon: 'badge',
+      roles: [Role.PROFESSIONAL]
+    },
+    {
+      label: 'Mis reportes',
+      path: '/mis-reportes',
+      icon: 'bar_chart',
+      roles: [Role.PROFESSIONAL]
     },
   ]);
 
@@ -46,22 +63,26 @@ export class MainLayout {
     {
       label: 'Servicios',
       path: '/admin/servicios',
-      icon: 'work'
+      icon: 'work',
+      roles: [Role.ADMIN]
     },
     {
       label: 'Profesionales',
       path: '/admin/profesionales',
-      icon: 'person'
+      icon: 'person',
+      roles: [Role.ADMIN]
     },
     {
       label: 'Categorías',
       path: '/admin/categorias',
-      icon: 'category'
+      icon: 'category',
+      roles: [Role.ADMIN]
     },
     {
       label: 'Especialidades',
       path: '/admin/especialidades',
-      icon: 'school'
+      icon: 'school',
+      roles: [Role.ADMIN]
     },
   ]);
 
@@ -69,17 +90,20 @@ export class MainLayout {
     {
       label: 'Citas',
       path: '/admin/citas',
-      icon: 'calendar_today'
+      icon: 'calendar_today',
+      roles: [Role.ADMIN]
     },
     {
       label: 'Usuarios',
       path: '/admin/usuarios',
-      icon: 'group'
+      icon: 'group',
+      roles: [Role.ADMIN]
     },
     {
-      label: 'Reseñas',
-      path: '/admin/resenas',
-      icon: 'star'
+      label: 'Reportes',
+      path: '/admin/reportes',
+      icon: 'bar_chart',
+      roles: [Role.ADMIN]
     },
   ]);
 }

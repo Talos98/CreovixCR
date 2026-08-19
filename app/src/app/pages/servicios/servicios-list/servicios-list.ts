@@ -36,6 +36,10 @@ export class ServiciosList {
   servicios = signal<Service[]>([]);
   search = signal('');
   categoriaId = signal<number | null>(null);
+  especialidadId = signal<number | null>(null);
+  modeFilter = signal<string>('');
+  priceMin = signal<number | null>(null);
+  priceMax = signal<number | null>(null);
   loading = signal(false);
   error = signal<string | null>(null);
 
@@ -49,9 +53,23 @@ export class ServiciosList {
     return Array.from(map.values());
   });
 
+  especialidades = computed(() => {
+    const map = new Map<number, { id: number; name: string }>();
+    this.servicios().forEach((srv) => {
+      srv.specialties?.forEach((esp) => {
+        map.set(esp.id, esp);
+      });
+    });
+    return Array.from(map.values());
+  });
+
   serviciosFiltrados = computed(() => {
     const texto = this.search().trim().toLowerCase();
     const categoriaSeleccionada = this.categoriaId();
+    const especialidadSeleccionada = this.especialidadId();
+    const mode = this.modeFilter();
+    const minPrice = this.priceMin();
+    const maxPrice = this.priceMax();
 
     return this.servicios().filter((srv) => {
       const nombre = srv.name?.toLowerCase() ?? '';
@@ -69,7 +87,21 @@ export class ServiciosList {
         srv.categoryId === categoriaSeleccionada ||
         srv.category?.id === categoriaSeleccionada;
 
-      return coincideTexto && coincideCategoria;
+      const coincideEspecialidad =
+        especialidadSeleccionada === null ||
+        srv.specialties?.some((e) => e.id === especialidadSeleccionada);
+
+      const coincideModalidad =
+        mode === '' || srv.mode === mode;
+
+      const coincidePrecioMin =
+        minPrice === null || srv.price >= minPrice;
+
+      const coincidePrecioMax =
+        maxPrice === null || srv.price <= maxPrice;
+
+      return coincideTexto && coincideCategoria && coincideEspecialidad
+        && coincideModalidad && coincidePrecioMin && coincidePrecioMax;
     });
   });
 
@@ -98,6 +130,10 @@ export class ServiciosList {
   clearFilters(): void {
     this.search.set('');
     this.categoriaId.set(null);
+    this.especialidadId.set(null);
+    this.modeFilter.set('');
+    this.priceMin.set(null);
+    this.priceMax.set(null);
   }
 
   getImageUrl(imageName: string): string {

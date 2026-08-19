@@ -52,7 +52,8 @@ export const appointmentService = {
                 client: true,
                 professional: true,
                 service: true,
-                review: true
+                review: true,
+                statusLogs: { orderBy: { changedAt: "desc" } }
             }
         });
 
@@ -161,19 +162,33 @@ export const appointmentService = {
     // =====================
     // UPDATE STATUS
     // =====================
-    async updateStatus(id: number, status: AppointmentStatus) {
+    async updateStatus(id: number, status: AppointmentStatus, comment?: string) {
 
-        await this.getById(id);
+        const appointment = await this.getById(id);
+        const fromStatus = appointment.status;
 
-        return prisma.appointment.update({
-            where: { id },
-            data: { status },
-            include: {
-                client: true,
-                professional: true,
-                service: true
-            }
-        });
+        const [updated] = await prisma.$transaction([
+            prisma.appointment.update({
+                where: { id },
+                data: { status },
+                include: {
+                    client: true,
+                    professional: true,
+                    service: true,
+                    statusLogs: { orderBy: { changedAt: "desc" } }
+                }
+            }),
+            prisma.appointmentStatusLog.create({
+                data: {
+                    appointmentId: id,
+                    fromStatus,
+                    toStatus: status,
+                    comment: comment ?? null
+                }
+            })
+        ]);
+
+        return updated;
     },
 
     // =====================

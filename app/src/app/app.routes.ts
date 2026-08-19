@@ -17,6 +17,12 @@ import { UsuariosList } from './pages/usuarios/usuarios-list/usuarios-list';
 import { CategoriaAdminList } from './pages/categorias/categoria-admin-list/categoria-admin-list';
 import { EspecialidadAdminList } from './pages/especialidades/especialidad-admin-list/especialidad-admin-list';
 import { Profile } from './pages/profile/profile';
+import { ServicioMisServicios } from './pages/servicios/servicio-mis-servicios/servicio-mis-servicios';
+import { ServicioMisCrear } from './pages/servicios/servicio-mis-crear/servicio-mis-crear';
+import { ServicioMisEditar } from './pages/servicios/servicio-mis-editar/servicio-mis-editar';
+import { ProfesionalMiPerfil } from './pages/profesionales/profesional-mi-perfil/profesional-mi-perfil';
+import { ReporteAdmin } from './pages/reportes/reporte-admin/reporte-admin';
+import { ReporteProfesional } from './pages/reportes/reporte-profesional/reporte-profesional';
 import { Role } from './core/models/role.model';
 import { NoAuthorization } from './pages/auth/no-authorization/no-authorization';
 import { authGuard } from './core/guards/auth.guard';
@@ -83,7 +89,10 @@ export const routes: Routes = [
                 path: 'citas',
                 component: CitaPage,
                 title: 'Mis citas',
-                canActivate: [authGuard],
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.CLIENT, Role.PROFESSIONAL]
+                },
             },
 
             {
@@ -91,6 +100,68 @@ export const routes: Routes = [
                 component: Profile,
                 title: 'Mi perfil',
                 canActivate: [authGuard],
+            },
+
+            // =========================
+            // PROFESIONAL - SERVICIOS
+            // =========================
+
+            {
+                path: 'mis-servicios',
+                component: ServicioMisServicios,
+                title: 'Mis servicios',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.PROFESSIONAL]
+                },
+            },
+
+            {
+                path: 'mis-servicios/crear',
+                component: ServicioMisCrear,
+                title: 'Registrar mi servicio',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.PROFESSIONAL]
+                },
+            },
+
+            {
+                path: 'mis-servicios/editar/:id',
+                component: ServicioMisEditar,
+                title: 'Editar mi servicio',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.PROFESSIONAL]
+                },
+            },
+
+            // =========================
+            // PROFESIONAL - PERFIL
+            // =========================
+
+            {
+                path: 'mi-perfil-profesional',
+                component: ProfesionalMiPerfil,
+                title: 'Mi perfil profesional',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.PROFESSIONAL]
+                },
+            },
+
+            // =========================
+            // PROFESIONAL - REPORTES
+            // =========================
+
+            {
+                path: 'mis-reportes',
+                component: ReporteProfesional,
+                title: 'Mis reportes',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.PROFESSIONAL]
+                },
             },
 
             // =========================
@@ -231,6 +302,20 @@ export const routes: Routes = [
                 path: 'admin/especialidades',
                 component: EspecialidadAdminList,
                 title: 'Mantenimiento de especialidades',
+                canActivate: [authGuard, roleGuard],
+                data: {
+                    roles: [Role.ADMIN]
+                },
+            },
+
+            // =========================
+            // ADMIN - REPORTES
+            // =========================
+
+            {
+                path: 'admin/reportes',
+                component: ReporteAdmin,
+                title: 'Reportes generales',
                 canActivate: [authGuard, roleGuard],
                 data: {
                     roles: [Role.ADMIN]

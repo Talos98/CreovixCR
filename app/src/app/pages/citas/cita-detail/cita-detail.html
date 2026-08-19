@@ -163,6 +163,56 @@
 
             </mat-card-content>
 
+            @if (c.review) {
+                <div class="review-section">
+                    <h3><mat-icon>star</mat-icon> Calificación</h3>
+                    <div class="review-rating">
+                        @for (star of [1,2,3,4,5]; track star) {
+                            <mat-icon [class.filled]="star <= c.review.rating">star</mat-icon>
+                        }
+                        <span>({{ c.review.rating }}/5)</span>
+                    </div>
+                    @if (c.review.comment) {
+                        <p class="review-comment">{{ c.review.comment }}</p>
+                    }
+                </div>
+            }
+
+            @if (!c.review && rol() === Role.CLIENT && c.status === 'COMPLETED') {
+                @if (!showReviewForm()) {
+                    <div class="review-action">
+                        <button mat-stroked-button (click)="showReviewForm.set(true)">
+                            <mat-icon>star_rate</mat-icon>
+                            Calificar esta cita
+                        </button>
+                    </div>
+                } @else {
+                    <div class="review-form">
+                        <h3><mat-icon>star</mat-icon> Calificar cita</h3>
+                        <div class="rating-select">
+                            <label>Puntuación:</label>
+                            <div class="star-buttons">
+                                @for (star of [1,2,3,4,5]; track star) {
+                                    <button class="star-btn" [class.filled]="star <= reviewRating()" (click)="reviewRating.set(star)">
+                                        <mat-icon>star</mat-icon>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Comentario (opcional)</mat-label>
+                            <textarea matInput rows="3" [value]="reviewComment()" (input)="reviewComment.set($any($event.target).value)"></textarea>
+                        </mat-form-field>
+                        <div class="review-form-actions">
+                            <button mat-button (click)="showReviewForm.set(false)" [disabled]="submittingReview()">Cancelar</button>
+                            <button mat-flat-button color="primary" (click)="submitReview()" [disabled]="submittingReview()">
+                                @if (submittingReview()) { Enviando... } @else { Enviar calificación }
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+
             <mat-card-actions>
                 <div class="status-actions">
                     <strong>Cambiar estado:</strong>

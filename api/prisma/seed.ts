@@ -51,20 +51,23 @@ async function main() {
     // ========================
     // USUARIOS (8)
     // ========================
+    // Hash de bcrypt para la contraseña '123456'
+    const defaultPassword = "$2b$10$Azn3n9yLD/uSt6EE8C3bH.Z7bYEZ95axACX8S1JedyOagpXjlA1km";
+
     await prisma.user.createMany({
         data: [
-            { name: "Josué", lastName: "Calderón", email: "admin@creovixcr.com", password: "hash", role: Role.ADMIN },
+            { name: "Josué", lastName: "Calderón", email: "admin@creovixcr.com", password: defaultPassword, role: Role.ADMIN },
 
-            { name: "Daniel", lastName: "Vargas", email: "daniel@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
-            { name: "María", lastName: "Fernández", email: "maria@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
-            { name: "Luis", lastName: "Ramírez", email: "luis@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
-            { name: "Sofía", lastName: "Gómez", email: "sofia@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
-            { name: "Andrés", lastName: "Castro", email: "andres@creovixcr.com", password: "hash", role: Role.PROFESSIONAL },
+            { name: "Daniel", lastName: "Vargas", email: "daniel@creovixcr.com", password: defaultPassword, role: Role.PROFESSIONAL },
+            { name: "María", lastName: "Fernández", email: "maria@creovixcr.com", password: defaultPassword, role: Role.PROFESSIONAL },
+            { name: "Luis", lastName: "Ramírez", email: "luis@creovixcr.com", password: defaultPassword, role: Role.PROFESSIONAL },
+            { name: "Sofía", lastName: "Gómez", email: "sofia@creovixcr.com", password: defaultPassword, role: Role.PROFESSIONAL },
+            { name: "Andrés", lastName: "Castro", email: "andres@creovixcr.com", password: defaultPassword, role: Role.PROFESSIONAL },
 
-            { name: "Carlos", lastName: "Mora", email: "carlos@creovixcr.com", password: "hash", role: Role.CLIENT },
-            { name: "Ana", lastName: "Rojas", email: "ana@creovixcr.com", password: "hash", role: Role.CLIENT },
-            { name: "Ramon", lastName: "Morales", email: "ramon@creovixcr.com", password: "hash", role: Role.CLIENT },
-            { name: "Antonio", lastName: "Chaves", email: "antonio@creovixcr.com", password: "hash", role: Role.CLIENT },
+            { name: "Carlos", lastName: "Mora", email: "carlos@creovixcr.com", password: defaultPassword, role: Role.CLIENT },
+            { name: "Ana", lastName: "Rojas", email: "ana@creovixcr.com", password: defaultPassword, role: Role.CLIENT },
+            { name: "Ramon", lastName: "Morales", email: "ramon@creovixcr.com", password: defaultPassword, role: Role.CLIENT },
+            { name: "Antonio", lastName: "Chaves", email: "antonio@creovixcr.com", password: defaultPassword, role: Role.CLIENT },
         ],
     });
 

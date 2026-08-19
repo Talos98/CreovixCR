@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { ApiPaginatedResponse } from '../models/api-response.model';
+import { ApiPaginatedResponse, ApiResponse } from '../models/api-response.model';
 import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
@@ -11,6 +11,10 @@ export class UserService {
 
     listar() {
         return this.http.get<ApiPaginatedResponse<User>>(this.apiUrl);
+    }
+
+    actualizar(id: number, data: Partial<User>) {
+        return this.http.put<ApiResponse<User>>(`${this.apiUrl}/${id}`, data);
     }
 
     toggleStatus(id: number) {

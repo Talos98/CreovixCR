@@ -21,7 +21,7 @@ export class AppointmentService {
         return this.http.post<ApiResponse<Appointment>>(this.apiUrl, data);
     }
 
-    cambiarEstado(id: number, status: string) {
-        return this.http.patch<ApiResponse<Appointment>>(`${this.apiUrl}/${id}/status`, { status });
+    cambiarEstado(id: number, status: string, comment?: string) {
+        return this.http.patch<ApiResponse<Appointment>>(`${this.apiUrl}/${id}/status`, { status, comment });
     }
 }

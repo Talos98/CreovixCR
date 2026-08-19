@@ -1,0 +1,102 @@
+<h1>Reportes Generales</h1>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Cargando reportes...</p>
+  </div>
+}
+
+@if (error()) {
+  <div class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-flat-button (click)="loadData()">Reintentar</button>
+  </div>
+}
+
+@if (!loading() && !error()) {
+  <section class="report-section">
+    <h2><mat-icon>calendar_today</mat-icon> Citas</h2>
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <span class="stat-number">{{ totalCitas() }}</span>
+          <span class="stat-label">Total citas</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card pending">
+        <mat-card-content>
+          <span class="stat-number">{{ citasPendientes() }}</span>
+          <span class="stat-label">Pendientes</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card accepted">
+        <mat-card-content>
+          <span class="stat-number">{{ citasAceptadas() }}</span>
+          <span class="stat-label">Aceptadas</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card completed">
+        <mat-card-content>
+          <span class="stat-number">{{ citasCompletadas() }}</span>
+          <span class="stat-label">Completadas</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card rejected">
+        <mat-card-content>
+          <span class="stat-number">{{ citasRechazadas() }}</span>
+          <span class="stat-label">Rechazadas</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card cancelled">
+        <mat-card-content>
+          <span class="stat-number">{{ citasCanceladas() }}</span>
+          <span class="stat-label">Canceladas</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <section class="report-section">
+    <h2><mat-icon>work</mat-icon> Servicios</h2>
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <span class="stat-number">{{ totalServicios() }}</span>
+          <span class="stat-label">Total servicios</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card accepted">
+        <mat-card-content>
+          <span class="stat-number">{{ serviciosActivos() }}</span>
+          <span class="stat-label">Activos</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <section class="report-section">
+    <h2><mat-icon>group</mat-icon> Usuarios</h2>
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <span class="stat-number">{{ totalUsuarios() }}</span>
+          <span class="stat-label">Total usuarios</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <span class="stat-number">{{ totalProfesionales() }}</span>
+          <span class="stat-label">Profesionales</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <span class="stat-number">{{ totalClientes() }}</span>
+          <span class="stat-label">Clientes</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+}

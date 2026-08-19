@@ -1,5 +1,6 @@
 import { User } from './user.model';
 import { Service } from './service.model';
+import { Review } from './review.model';
 
 export interface Appointment {
     id: number;
@@ -15,6 +16,7 @@ export interface Appointment {
     client?: User;
     professional?: User;
     service?: Service;
+    review?: Review;
     createdAt?: string;
 }
 
