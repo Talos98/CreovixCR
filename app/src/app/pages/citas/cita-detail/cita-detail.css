@@ -218,6 +218,127 @@
     background: #5d4037;
 }
 
+/* Review section */
+.review-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e6e6e6;
+}
+
+.review-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+}
+
+.review-rating mat-icon {
+    color: #ccc;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.review-rating mat-icon.filled {
+    color: #f59e0b;
+}
+
+.review-rating span {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.review-comment {
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+    color: #555;
+    font-style: italic;
+}
+
+/* Review form */
+.review-action {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e6e6e6;
+}
+
+.review-form {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-top: 1px solid #e6e6e6;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.review-form h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.rating-select {
+    margin-bottom: 1rem;
+}
+
+.rating-select label {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.35rem;
+}
+
+.star-buttons {
+    display: flex;
+    gap: 0.15rem;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+}
+
+.star-btn mat-icon {
+    color: #ccc;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    transition: color 0.15s;
+}
+
+.star-btn.filled mat-icon {
+    color: #f59e0b;
+}
+
+.star-btn:hover mat-icon {
+    color: #f59e0b;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.review-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
 @media (max-width: 600px) {
     .info-grid {
         grid-template-columns: 1fr;

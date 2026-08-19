@@ -4,8 +4,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { Appointment } from '../../../core/models/appointment.model';
+import { ReviewService } from '../../../core/services/review.service';
+import { ReviewCreateDto } from '../../../core/models/review.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { Role } from '../../../core/models/role.model';
 
 @Component({
     selector: 'app-cita-detail',
@@ -16,6 +22,8 @@ import { Appointment } from '../../../core/models/appointment.model';
         MatCardModule,
         MatIconModule,
         MatProgressSpinnerModule,
+        MatFormFieldModule,
+        MatInputModule,
     ],
     templateUrl: './cita-detail.html',
     styleUrl: './cita-detail.css',
@@ -23,10 +31,20 @@ import { Appointment } from '../../../core/models/appointment.model';
 export class CitaDetail {
     private readonly route = inject(ActivatedRoute);
     private readonly appointmentService = inject(AppointmentService);
+    private readonly reviewService = inject(ReviewService);
+    private readonly authService = inject(AuthService);
+
+    readonly rol = this.authService.rol;
+    readonly Role = Role;
 
     cita = signal<Appointment | null>(null);
     loading = signal(false);
     error = signal<string | null>(null);
+
+    showReviewForm = signal(false);
+    reviewRating = signal(5);
+    reviewComment = signal('');
+    submittingReview = signal(false);
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -102,6 +120,34 @@ export class CitaDetail {
             error: () => {
                 this.updating.set(false);
             }
+        });
+    }
+
+    submitReview(): void {
+        const cita = this.cita();
+        if (!cita) return;
+
+        this.submittingReview.set(true);
+
+        const data: ReviewCreateDto = {
+            clientId: cita.clientId,
+            professionalId: cita.professionalId,
+            appointmentId: cita.id,
+            rating: this.reviewRating(),
+            comment: this.reviewComment() || undefined,
+        };
+
+        this.reviewService.crear(data).subscribe({
+            next: () => {
+                this.loadCita(cita.id);
+                this.reviewRating.set(5);
+                this.reviewComment.set('');
+                this.showReviewForm.set(false);
+                this.submittingReview.set(false);
+            },
+            error: () => {
+                this.submittingReview.set(false);
+            },
         });
     }
 }
