@@ -54,9 +54,9 @@ export class AppointmentController {
     updateStatus = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const id = parseId(req.params.id);
-            const { status } = req.body;
+            const { status, comment } = req.body;
 
-            const appointment = await appointmentService.updateStatus(id, status);
+            const appointment = await appointmentService.updateStatus(id, status, comment);
 
             return res.status(StatusCodes.OK).json({
                 success: true,
