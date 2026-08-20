@@ -47,7 +47,10 @@
 
 <div [ngSwitch]="view()">
 
-  <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate()" [events]="events()"
+  <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" 
+    [viewDate]="viewDate()" 
+    [events]="events()"
+    [cellTemplate]="monthCellTemplate"
     (eventClicked)="handleEvent($event.event)">
   </mwl-calendar-month-view>
 
@@ -55,5 +58,21 @@
   <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate()" [events]="events()"
     (eventClicked)="handleEvent($event.event)">
   </mwl-calendar-week-view>
+
+  <ng-template #monthCellTemplate let-day="day" let-locale="locale">
+    <div class="cal-cell-top">
+      <span class="cal-day-number">{{ day.date | date:'d'}}</span>
+    </div>
+    <div class='cal-events-bar'>
+      @for (event of day.events; track event.id) {
+        <div class="event-bar"
+          [style.background]="event.color?.secondary"
+          [style.border-left-color]="event.color?.primary"
+          (click)="handleEvent(event)">
+          {{ event.title }}
+        </div>
+      }
+    </div>
+  </ng-template>
 
 </div>
