@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, input, output, signal } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, computed, input, output, signal, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,14 +15,16 @@ import {
 } from 'angular-calendar';
 
 import { Appointment } from '../../../core/models/appointment.model';
+import { CdkNoDataRow } from "@angular/cdk/table";
 
 
 @Component({
   selector: 'app-citas-calendar',
   standalone: true,
-  imports: [CommonModule, CalendarMonthViewComponent, CalendarWeekViewComponent, MatDialogModule],
+  imports: [CommonModule, DatePipe, CalendarMonthViewComponent, CalendarWeekViewComponent, MatDialogModule, CdkNoDataRow],
   templateUrl: './calendar.html',
   styleUrl: './calendar.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class CitasCalendar {
 
@@ -49,7 +51,7 @@ export class CitasCalendar {
     return {
       id: appointment.id,
 
-      title: `${appointment.client?.name ?? 'Cliente'} - ${appointment.service?.name ?? ''}`,
+      title: `${appointment.client?.name ?? 'Cliente'} ${appointment.client?.lastName ?? ''} - ${appointment.service?.name ?? ''}`,
 
       start: new Date(appointment.startTime),
       end: new Date(appointment.endTime),
