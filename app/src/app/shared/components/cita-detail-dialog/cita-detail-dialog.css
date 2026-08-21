@@ -45,7 +45,7 @@
 
 /* Botones de cambio de estado */
 .status-actions {
-  padding: 12px 0;
+  padding: 12px 24px;
   border-top: 1px solid #e0e0e0;
   margin-top: 8px;
 }
