@@ -123,10 +123,13 @@ export const appointmentService = {
             );
         }
 
+        const dayStart = new Date(`${data.date}T00:00:00${COSTA_RICA_OFFSET}`);
+        const dayEnd = new Date(`${data.date}T23:59:59${COSTA_RICA_OFFSET}`);
+
         const overlapping = await prisma.appointment.findFirst({
             where: {
                 professionalId: data.professionalId,
-                date: date,
+                date: { gte: dayStart, lte: dayEnd },
                 AND: [
                     { startTime: { lt: endDateTime } },
                     { endTime: { gt: startDateTime } }
