@@ -106,3 +106,7 @@
 .btn-group button:nth-child(4).active {
   background: #5d4037;
 }
+
+.detail-item strong {
+    margin-right: 0.2rem;
+}
