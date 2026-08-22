@@ -81,6 +81,11 @@ export class EspecialidadAdminList {
     this.statusFilter.set(value || null);
   }
 
+  clearFilters(): void {
+    this.search.set('');
+    this.statusFilter.set(null);
+  }
+
  openStatusDialog(esp: Specialty): void {
   const isActive = esp.status === 'ACTIVE';
 

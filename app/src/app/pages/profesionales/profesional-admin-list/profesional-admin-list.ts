@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -35,6 +35,8 @@ export class ProfesionalAdminList {
     private readonly professionalService = inject(ProfessionalService);
     private readonly noti = inject(NotificationService);
     private readonly dialog = inject(MatDialog);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
 
     profesionales = signal<ProfessionalProfile[]>([]);
     search = signal('');
@@ -69,6 +71,11 @@ export class ProfesionalAdminList {
     });
 
     ngOnInit(): void {
+        const params = this.route.snapshot.queryParams;
+        if (params['search']) this.search.set(params['search']);
+        if (params['mode']) this.modeFilter.set(params['mode']);
+        if (params['availability']) this.availabilityFilter.set(params['availability'] === 'true');
+
         this.loadProfesionales();
     }
 
@@ -88,6 +95,14 @@ export class ProfesionalAdminList {
             },
         });
     }
+
+    clearFilters(): void {
+        this.search.set('');
+        this.modeFilter.set(null);
+        this.availabilityFilter.set(null);
+        this.syncQueryParams()
+    }
+
     openAvailabilityDialog(prof: ProfessionalProfile): void {
         const isAvailable = prof.isAvailable;
 
@@ -141,13 +156,25 @@ export class ProfesionalAdminList {
 
     onSearchChange(value: string): void {
         this.search.set(value);
+        this.syncQueryParams()
     }
 
     onModeChange(value: 'ONLINE' | 'IN_PERSON' | null): void {
         this.modeFilter.set(value);
+        this.syncQueryParams()
     }
 
     onAvailabilityChange(value: boolean | null): void {
         this.availabilityFilter.set(value);
+        this.syncQueryParams()
+    }
+
+    protected syncQueryParams(): void {
+        const params: any = {};
+        if (this.search()) params.search = this.search();
+        if (this.modeFilter() !== null) params.mode = this.modeFilter();
+        if (this.availabilityFilter() !== null) params.availability = this.availabilityFilter();
+
+        this.router.navigate([], { queryParams: params, replaceUrl: true });
     }
 }

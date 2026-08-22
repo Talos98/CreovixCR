@@ -10,7 +10,7 @@
         <mat-icon>error_outline</mat-icon>
         <p>{{ error() }}</p>
 
-        <button mat-button routerLink="/citas">
+        <button mat-button (click)="volver()">
             <mat-icon>arrow_back</mat-icon>
             Volver a citas
         </button>
@@ -23,7 +23,7 @@
 
        
         <div class="back-button-container">
-            <button mat-button routerLink="/admin/citas">
+            <button mat-button (click)="volver()">
                 <mat-icon>arrow_back</mat-icon>
                 Volver a citas
             </button>

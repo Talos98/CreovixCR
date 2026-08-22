@@ -131,4 +131,10 @@ export class UsuariosList {
     };
     return labels[role] || role;
   }
+
+  clearFilters(): void {
+    this.search.set('');
+    this.roleFilter.set(null);
+  }
+
 }

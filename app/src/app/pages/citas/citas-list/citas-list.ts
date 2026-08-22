@@ -1,5 +1,5 @@
-import { Component, computed, input, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -26,6 +26,8 @@ import { Appointment } from '../../../core/models/appointment.model';
     styleUrl: './citas-list.css',
 })
 export class CitasList {
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
 
     citas = input<Appointment[]>([]);
 
@@ -73,6 +75,32 @@ export class CitasList {
         return result;
     });
 
+    ngOnInit(): void {
+        const params = this.route.snapshot.queryParams;
+        if (params['status']) this.statusFilter.set(params['status']);
+        if (params['professional']) this.professionalFilter.set(Number(params['professional']));
+        if (params['dateFrom']) this.dateFrom.set(params['dateFrom']);
+        if (params['dateTo']) this.dateTo.set(params['dateTo']);
+    }
+
+    protected syncQueryParams(): void {
+        const params: any = {};
+        if (this.statusFilter() !== null) params.status = this.statusFilter();
+        if (this.professionalFilter() !== null) params.professional = this.professionalFilter();
+        if (this.dateFrom()) params.dateFrom = this.dateFrom();
+        if (this.dateTo()) params.dateTo = this.dateTo();
+
+        this.router.navigate([], { queryParams: params, replaceUrl: true });
+    }
+
+    clearFilters(): void {
+        this.statusFilter.set(null);
+        this.professionalFilter.set(null);
+        this.dateFrom.set('');
+        this.dateTo.set('');
+
+        this.syncQueryParams()
+    }   
 
     formatDate(dateStr: string): string {
         if (!dateStr) return '—';
@@ -110,17 +138,21 @@ export class CitasList {
 
     onStatusChange(value: string | null): void {
         this.statusFilter.set(value);
+        this.syncQueryParams();
     }
 
     onProfessionalChange(value: number | null): void {
         this.professionalFilter.set(value);
+        this.syncQueryParams();
     }
 
     onDateFromChange(event: Event): void {
         this.dateFrom.set((event.target as HTMLInputElement).value);
+        this.syncQueryParams();
     }
 
     onDateToChange(event: Event): void {
         this.dateTo.set((event.target as HTMLInputElement).value);
+        this.syncQueryParams();
     }
 }

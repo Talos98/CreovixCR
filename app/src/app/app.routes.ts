@@ -252,7 +252,7 @@ export const routes: Routes = [
                 title: 'Registrar cita',
                 canActivate: [authGuard, roleGuard],
                 data: {
-                    roles: [Role.ADMIN]
+                    roles: [Role.ADMIN, Role.CLIENT, Role.PROFESSIONAL]
                 },
             },
 
@@ -262,7 +262,7 @@ export const routes: Routes = [
                 title: 'Detalle de cita',
                 canActivate: [authGuard, roleGuard],
                 data: {
-                    roles: [Role.ADMIN]
+                    roles: [Role.ADMIN, Role.PROFESSIONAL, Role.CLIENT]
                 },
             },
 

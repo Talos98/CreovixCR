@@ -6,40 +6,55 @@
 </section>
 
 <section class="filters-section glass-card">
-    <mat-form-field appearance="outline">
-        <mat-label>Estado</mat-label>
-        <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
-            <mat-option [value]="null">Todos</mat-option>
-            <mat-option value="PENDING">Pendiente</mat-option>
-            <mat-option value="ACCEPTED">Aceptada</mat-option>
-            <mat-option value="REJECTED">Rechazada</mat-option>
-            <mat-option value="CANCELLED">Cancelada</mat-option>
-            <mat-option value="COMPLETED">Completada</mat-option>
-        </mat-select>
-    </mat-form-field>
+    <div class="filters-row">
+        <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
+                <mat-option [value]="null">Todos</mat-option>
+                <mat-option value="PENDING">Pendiente</mat-option>
+                <mat-option value="ACCEPTED">Aceptada</mat-option>
+                <mat-option value="REJECTED">Rechazada</mat-option>
+                <mat-option value="CANCELLED">Cancelada</mat-option>
+                <mat-option value="COMPLETED">Completada</mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Profesional</mat-label>
-        <mat-select [value]="professionalFilter()" (selectionChange)="onProfessionalChange($event.value)">
-            <mat-option [value]="null">Todos</mat-option>
-            @for (prof of professionals(); track prof.id) {
-            <mat-option [value]="prof.id">{{ prof.name }}</mat-option>
-            }
-        </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Profesional</mat-label>
+            <mat-select [value]="professionalFilter()" (selectionChange)="onProfessionalChange($event.value)">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (prof of professionals(); track prof.id) {
+                <mat-option [value]="prof.id">{{ prof.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Desde</mat-label>
-        <input matInput type="date" [value]="dateFrom()" (change)="onDateFromChange($event)" />
-    </mat-form-field>
+    <div class="filters-row">
+        <mat-form-field appearance="outline">
+            <mat-label>Desde</mat-label>
+            <input matInput type="date" [value]="dateFrom()" (change)="onDateFromChange($event)" />
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Hasta</mat-label>
-        <input matInput type="date" [value]="dateTo()" (change)="onDateToChange($event)" />
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Hasta</mat-label>
+            <input matInput type="date" [value]="dateTo()" (change)="onDateToChange($event)" />
+        </mat-form-field>
+
+        <div class="filters-actions">
+            <button mat-button (click)="clearFilters()">
+                <mat-icon>clear</mat-icon> Limpiar filtros
+            </button>
+        </div>
+    </div>
 </section>
-
-
+@if (citasFiltradas().length === 0) {
+  <div class="empty-state">
+    <mat-icon>search_off</mat-icon>
+    <p>No se encontraron citas con los filtros aplicados.</p>
+  </div>
+}
+@if (citasFiltradas().length > 0) {
 <div class="table-container glass-card">
     <table mat-table [dataSource]="citasFiltradas()">
 
@@ -91,3 +106,4 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>
+}

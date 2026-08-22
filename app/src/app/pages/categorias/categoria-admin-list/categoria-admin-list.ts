@@ -81,6 +81,11 @@ export class CategoriaAdminList {
     this.statusFilter.set(value || null);
   }
 
+  clearFilters(): void {
+    this.search.set('');
+    this.statusFilter.set(null);
+  }
+
   openStatusDialog(cat: Category): void {
     const isActive = cat.status === 'ACTIVE';
 

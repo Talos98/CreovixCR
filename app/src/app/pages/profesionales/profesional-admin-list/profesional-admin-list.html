@@ -29,6 +29,9 @@
             <mat-option [value]="false">No disponible</mat-option>
         </mat-select>
     </mat-form-field>
+    <button mat-button (click)="clearFilters()">
+        <mat-icon>clear</mat-icon> Limpiar filtros
+    </button>
 </section>
 
 @if (loading()) {
