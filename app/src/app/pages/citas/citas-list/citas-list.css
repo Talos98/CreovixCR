@@ -13,14 +13,26 @@
 }
 
 .filters-section {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
     border-radius: 16px;
     background: #ffffff;
     border: 1px solid #e6e6e6;
+}
+
+.filters-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    align-items: center;
+}
+
+.filters-actions {
+    display: flex;
+    align-items: center;
 }
 
 .loading-container {
@@ -125,7 +137,7 @@ th.mat-header-cell {
 }
 
 @media (max-width: 768px) {
-    .filters-section {
+    .filters-row {
         grid-template-columns: 1fr;
     }
 }
