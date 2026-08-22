@@ -1,13 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import {
-    FormField,
-    form,
-    required,
-    minLength,
-} from '@angular/forms/signals';
+import { FormField, form, required, minLength } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +17,8 @@ import { NotificationService } from '../../../core/services/notification.service
 import { User } from '../../../core/models/user.model';
 import { Service } from '../../../core/models/service.model';
 import { AppointmentCreateDto, AppointmentFormModel } from '../../../core/models/appointment.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { Role } from '../../../core/models/role.model';
 
 type FieldStateLike = {
     errors?: any[];
@@ -51,6 +48,9 @@ export class CitaCreatePage {
     private readonly userService = inject(UserService);
     private readonly servicioService = inject(ServicioService);
     private readonly noti = inject(NotificationService);
+    protected readonly authService = inject(AuthService);
+    readonly rol = this.authService.rol;
+    readonly Role = Role;
 
     clients = signal<User[]>([]);
     professionals = signal<User[]>([]);
@@ -58,6 +58,38 @@ export class CitaCreatePage {
     loading = signal(true);
     saving = signal(false);
     error = signal<string | null>(null);
+
+    // Servicio seleccionado actualmente
+    selectedService = computed(() => {
+        const id = this.citaModel().serviceId;
+        if (!id) return null;
+        return this.services().find(s => s.id === id) ?? null;
+    });
+
+    // Hora final calculada automáticamente
+    calculatedEndTime = computed(() => {
+        const start = this.citaModel().startTime;
+        const service = this.selectedService();
+        if (!start || !service) return '';
+
+        const [hours, minutes] = start.split(':').map(Number);
+        const totalMinutes = hours * 60 + minutes + service.duration;
+        const endH = Math.floor(totalMinutes / 60).toString().padStart(2, '0');
+        const endM = (totalMinutes % 60).toString().padStart(2, '0');
+        return `${endH}:${endM}`;
+    });
+
+    // Monto estimado del servicio
+    montoEstimado = computed(() => {
+        return this.selectedService()?.price ?? null;
+    });
+
+    // Servicios filtrados por profesional seleccionado
+    filteredServices = computed(() => {
+        const profId = this.citaModel().professionalId;
+        if (!profId) return this.services();
+        return this.services().filter(s => s.professionalId === profId);
+    });
 
     citaModel = signal<AppointmentFormModel>({
         clientId: null,
@@ -76,7 +108,6 @@ export class CitaCreatePage {
         required(path.serviceId, { message: 'Seleccione un servicio' });
         required(path.date, { message: 'La fecha es obligatoria' });
         required(path.startTime, { message: 'La hora es obligatoria' });
-        required(path.endTime, { message: 'La hora de finalización es obligatoria' });
         required(path.mode, { message: 'Seleccione una modalidad' });
         minLength(path.description, 5, { message: 'La descripcion debe tener al menos 5 caracteres' });
     });
@@ -96,8 +127,17 @@ export class CitaCreatePage {
             next: ({ users, services }) => {
                 const allUsers = users.data ?? [];
                 this.clients.set(allUsers.filter((u) => u.role === 'CLIENT'));
-                this.professionals.set(allUsers.filter((u) => u.role === 'PROFESSIONAL'));
-                this.services.set(services.data ?? []);
+                // Si es CLIENT, auto-asignar su propio ID
+                const currentUser = this.authService.user();
+                if (currentUser?.role === 'CLIENT') {
+                    this.citaModel.update(m => ({ ...m, clientId: currentUser.id }));
+                }
+                //valida si el profesional está disponible
+                this.professionals.set(
+                    allUsers.filter((u) => u.role === 'PROFESSIONAL' && u.status === 'ACTIVE' && u.professionalProfile?.isAvailable)
+                );
+                //valida si el servicio está activo
+                this.services.set((services.data ?? []).filter(s => s.status === 'ACTIVE'));
             },
             error: () => {
                 this.error.set('No se pudieron cargar los datos del formulario');
@@ -125,7 +165,7 @@ export class CitaCreatePage {
             serviceId: Number(value.serviceId),
             date: value.date,
             startTime: value.startTime,
-            endTime: value.endTime,
+            endTime: this.calculatedEndTime(),
             mode: value.mode,
             description: value.description.trim(),
         };
@@ -134,7 +174,11 @@ export class CitaCreatePage {
             next: () => {
                 this.saving.set(false);
                 this.noti.success('Cita registrada correctamente');
-                this.router.navigate(['/admin/citas']);
+                if (this.rol() === Role.CLIENT) {
+                    this.router.navigate(['/citas']);
+                } else {
+                    this.router.navigate(['/admin/citas']);
+                }
             },
 
             error: (err) => {
@@ -169,7 +213,11 @@ export class CitaCreatePage {
     }
 
     cancelar(): void {
-        this.router.navigate(['/admin/citas']);
+        if (this.rol() === Role.CLIENT) {
+            this.router.navigate(['/citas']);
+        } else {
+            this.router.navigate(['/admin/citas']);
+        }
     }
 
     private marcarCamposComoTocados(): void {
@@ -178,7 +226,6 @@ export class CitaCreatePage {
         this.citaForm.serviceId().markAsTouched();
         this.citaForm.date().markAsTouched();
         this.citaForm.startTime().markAsTouched();
-        this.citaForm.endTime().markAsTouched();
         this.citaForm.mode().markAsTouched();
         this.citaForm.description().markAsTouched();
     }
@@ -190,7 +237,6 @@ export class CitaCreatePage {
             this.citaForm.serviceId().invalid() ||
             this.citaForm.date().invalid() ||
             this.citaForm.startTime().invalid() ||
-            this.citaForm.endTime().invalid() ||
             this.citaForm.mode().invalid() ||
             this.citaForm.description().invalid()
         );

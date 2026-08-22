@@ -14,6 +14,21 @@ export interface User {
     status: 'ACTIVE' | 'INACTIVE';
     createdAt?: string;
     updatedAt?: string;
+    professionalProfile?: ProfessionalProfile;
+}
+
+export interface ProfessionalProfile {
+    id: number;
+    userId: number;
+    title: string;
+    description?: string;
+    yearsExperience: number;
+    phone: string;
+    location: string;
+    baseRate: number;
+    mode: 'ONLINE' | 'IN_PERSON';
+    isAvailable: boolean;
+    profileImage: string;
 }
 
 export interface LoginRequest {

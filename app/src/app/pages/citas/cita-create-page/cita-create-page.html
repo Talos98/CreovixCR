@@ -22,6 +22,12 @@
 
             <section class="form-section">
                 <div class="form-grid two-columns">
+                    @if (rol() === Role.CLIENT) {
+                    <mat-form-field appearance="outline">
+                        <mat-label>Cliente</mat-label>
+                        <input matInput [value]="authService.user()?.name" disabled />
+                    </mat-form-field>
+                    } @else {
                     <mat-form-field appearance="outline">
                         <mat-label>Cliente</mat-label>
                         <mat-select [formField]="citaForm.clientId">
@@ -34,6 +40,7 @@
                         <mat-error>{{ citaForm.clientId().errors()[0].message }}</mat-error>
                         }
                     </mat-form-field>
+                    }
 
                     <mat-form-field appearance="outline">
                         <mat-label>Profesional</mat-label>
@@ -56,7 +63,7 @@
                         <mat-label>Servicio</mat-label>
                         <mat-select [formField]="citaForm.serviceId">
                             <mat-option [value]="null">Seleccione un servicio</mat-option>
-                            @for (srv of services(); track srv.id) {
+                            @for (srv of filteredServices(); track srv.id) {
                             <mat-option [value]="srv.id">{{ srv.name }}</mat-option>
                             }
                         </mat-select>
@@ -97,14 +104,18 @@
                     </mat-form-field>
 
                     <mat-form-field>
-                        <mat-label>Hora fin</mat-label>
-                        <input matInput type="time" [formField]="citaForm.endTime" />
-                        @if (citaForm.endTime().touched() && citaForm.endTime().invalid()) {
-                        <mat-error>{{ citaForm.endTime().errors()[0].message }}</mat-error>
-                        }
+                        <mat-label>Hora fin (calculada)</mat-label>
+                        <input matInput type="time" [value]="calculatedEndTime()" disabled />
                     </mat-form-field>
                 </div>
             </section>
+
+            @if (montoEstimado(); as monto) {
+            <div class="monto-estimado">
+                <mat-icon>payments</mat-icon>
+                <span>Monto estimado: <strong>₡{{ monto }}</strong></span>
+            </div>
+            }
 
             <section class="form-section">
                 <mat-form-field appearance="outline" class="full-width">
@@ -123,11 +134,9 @@
                 </button>
                 <button mat-stroked-button type="submit" class="create-icon-button" [disabled]="saving()">
                     @if (saving()) {
-                    <mat-icon>hourglass_top</mat-icon>
-                    Guardando...
+                    <span class="btn-content"><mat-icon>hourglass_top</mat-icon> Guardando...</span>
                     } @else {
-                    <mat-icon>add_circle</mat-icon>
-                    Registrar
+                    <span class="btn-content"><mat-icon>add_circle</mat-icon> Registrar</span>
                     }
                 </button>
             </div>
