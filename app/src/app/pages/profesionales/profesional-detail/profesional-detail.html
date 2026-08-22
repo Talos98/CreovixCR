@@ -9,17 +9,17 @@
 <div class="error-container glass-card">
     <mat-icon>error_outline</mat-icon>
     <p>{{ error() }}</p>
-    <a mat-flat-button class="primary-button" routerLink="/admin/profesionales">
-        <mat-icon>arrow_back</mat-icon> Volver a la lista
-    </a>
+    <button mat-flat-button class="primary-button" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon> Volver
+    </button>
 </div>
 }
 
 @if (profesional(); as prof) {
 <div class="detail-header">
-    <a mat-button routerLink="/admin/profesionales">
-        <mat-icon>arrow_back</mat-icon> Volver a la lista
-    </a>
+    <button mat-button (click)="volver()">
+        <mat-icon>arrow_back</mat-icon> Volver
+    </button>
 </div>
 
 <div class="detail-layout">

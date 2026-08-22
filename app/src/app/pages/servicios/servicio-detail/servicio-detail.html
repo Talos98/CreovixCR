@@ -10,15 +10,15 @@
     <mat-icon>error_outline</mat-icon>
     <p>{{ error() }}</p>
     <a mat-flat-button class="primary-button" routerLink="/servicios">
-      <mat-icon>arrow_back</mat-icon> Volver al catálogo
+      <mat-icon>arrow_back</mat-icon> Volver
     </a>
   </div>
 }
 
 @if (servicio(); as srv) {
   <div class="detail-header">
-    <a mat-button routerLink="/servicios">
-      <mat-icon>arrow_back</mat-icon> Volver al catálogo
+    <a mat-button (click)="volver()">
+      <mat-icon>arrow_back</mat-icon> Volver
     </a>
   </div>
 

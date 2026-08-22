@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +24,7 @@ import { ProfessionalProfile } from '../../../core/models/professional.model';
 export class ProfesionalDetail {
     private readonly route = inject(ActivatedRoute);
     private readonly professionalService = inject(ProfessionalService);
+    private readonly location = inject(Location);
 
     profesional = signal<ProfessionalProfile | null>(null);
     loading = signal(false);
@@ -35,6 +37,10 @@ export class ProfesionalDetail {
             return;
         }
         this.loadProfesional(id);
+    }
+
+    volver(): void {
+        this.location.back();
     }
 
     loadProfesional(id: number): void {

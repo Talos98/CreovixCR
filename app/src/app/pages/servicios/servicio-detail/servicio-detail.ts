@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -24,6 +25,7 @@ import { Service } from '../../../core/models/service.model';
 export class ServicioDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly servicioService = inject(ServicioService);
+  private readonly location = inject(Location);
 
   servicio = signal<Service | null>(null);
   loading = signal(false);
@@ -56,5 +58,9 @@ export class ServicioDetail {
 
   getImageUrl(imageName: string): string {
     return this.servicioService.getImageUrl(imageName);
+  }
+
+  volver(): void {
+    this.location.back();
   }
 }

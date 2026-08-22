@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,6 +34,7 @@ export class CitaDetail {
     private readonly appointmentService = inject(AppointmentService);
     private readonly reviewService = inject(ReviewService);
     private readonly authService = inject(AuthService);
+    private readonly location = inject(Location);
 
     readonly rol = this.authService.rol;
     readonly Role = Role;
@@ -53,6 +55,10 @@ export class CitaDetail {
             return;
         }
         this.loadCita(id);
+    }
+
+    volver(): void {
+        this.location.back();
     }
 
     loadCita(id: number): void {
