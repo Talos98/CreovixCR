@@ -90,6 +90,18 @@
     border-top: 1px solid #e6e6e6;
 }
 
+.btn-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-content mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
 @media (max-width: 768px) {
     .form-grid.three-columns {
         grid-template-columns: 1fr;
