@@ -3,12 +3,12 @@
 <mat-dialog-content>
 
     <div class="detail-item">
-        <strong>Cliente:</strong>
+        <strong>Cliente:</strong> 
         <span>{{ data.client?.name }}</span>
     </div>
 
     <div class="detail-item">
-        <strong>Profesional:</strong>
+        <strong>Profesional:</strong> 
         <span>{{ data.professional?.name }}</span>
     </div>
 
@@ -19,12 +19,12 @@
 
     <div class="detail-item">
         <strong>Fecha:</strong>
-        <span>{{ data.date | date:'fullDate' }}</span>
+        <span>{{ data.date | date:'fullDate':'':'es' }}</span>
     </div>
 
     <div class="detail-item">
         <strong>Hora:</strong>
-        <span>{{ data.startTime | date:'shortTime' }}</span>
+        <span>{{ data.startTime | date:'shortTime':'':'es' }}</span>
     </div>
 
    <div class="detail-item">
