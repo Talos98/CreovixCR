@@ -6,7 +6,7 @@ export const createUserSchema = z.object({
     lastName: z.string(),
     email: z.string().email("Invalid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    role: z.string().min(1, "Role is required")
+    role: z.string().min(1, "Role is required").optional()
 });
 
 export const updateUserSchema = createUserSchema.partial();

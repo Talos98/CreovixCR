@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { ApiPaginatedResponse, ApiResponse } from '../models/api-response.model';
-import { User } from '../models/user.model';
+import { User, RegisterRequest } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -19,5 +19,9 @@ export class UserService {
 
     toggleStatus(id: number) {
         return this.http.patch<{ success: boolean; data: User }>(`${this.apiUrl}/${id}/status`, {});
+    }
+
+    registrar(data: RegisterRequest) {
+        return this.http.post<ApiResponse<User>>(this.apiUrl, data);
     }
 }

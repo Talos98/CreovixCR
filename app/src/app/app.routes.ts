@@ -28,6 +28,7 @@ import { NoAuthorization } from './pages/auth/no-authorization/no-authorization'
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { Login } from './pages/usuarios/login/login';
+import { Register } from './pages/usuarios/register/register';
 
 export const routes: Routes = [
     {
@@ -320,6 +321,16 @@ export const routes: Routes = [
                 data: {
                     roles: [Role.ADMIN]
                 },
+            },
+
+            // =========================
+            // CLIENTE - REGISTRARSE
+            // =========================
+
+            {
+                path: 'registro',
+                component: Register,
+                title: 'Crear cuenta'
             },
         ],
     },
