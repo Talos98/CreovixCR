@@ -78,18 +78,18 @@ export const appointmentService = {
         description?: string;
     }) {
 
-        await this.validateUser(data.clientId);
-        await this.validateUser(data.professionalId);
-        await this.validateService(data.serviceId);
+        await this.validateClient(data.clientId);
+        await this.validateProfessional(data.professionalId);
+        await this.validateActiveService(data.serviceId);
 
         const COSTA_RICA_OFFSET = '-06:00';
 
-        
+
         const date = new Date(
             `${data.date}T12:00:00${COSTA_RICA_OFFSET}`
         );
 
-       
+
         const startDateTime = new Date(
             `${data.date}T${data.startTime}:00${COSTA_RICA_OFFSET}`
         );
@@ -130,6 +130,7 @@ export const appointmentService = {
             where: {
                 professionalId: data.professionalId,
                 date: { gte: dayStart, lte: dayEnd },
+                status: { notIn: [AppointmentStatus.CANCELLED, AppointmentStatus.REJECTED] },
                 AND: [
                     { startTime: { lt: endDateTime } },
                     { endTime: { gt: startDateTime } }
@@ -168,7 +169,40 @@ export const appointmentService = {
     async updateStatus(id: number, status: AppointmentStatus, comment?: string) {
 
         const appointment = await this.getById(id);
-        const fromStatus = appointment.status;
+        const fromStatus = appointment.status as AppointmentStatus;
+
+        // Matriz de transiciones válidas
+        const transicionesValidas: Record<string, AppointmentStatus[]> = {
+            PENDING: [AppointmentStatus.ACCEPTED, AppointmentStatus.REJECTED, AppointmentStatus.CANCELLED],
+            ACCEPTED: [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED],
+            REJECTED: [],
+            CANCELLED: [],
+            COMPLETED: [],
+        };
+
+        const permitidas = transicionesValidas[fromStatus] ?? [];
+
+        if (!permitidas.includes(status)) {
+            throw AppError.badRequest(
+                `No se puede cambiar de ${fromStatus} a ${status}`
+            );
+        }
+
+        // Rechazar y Cancelar requieren motivo
+        if ((status === AppointmentStatus.REJECTED || status === AppointmentStatus.CANCELLED) && !comment?.trim()) {
+            throw AppError.badRequest("Debe indicar un motivo");
+        }
+
+        // No completar antes de la fecha/hora programada
+        if (status === AppointmentStatus.COMPLETED) {
+            const now = new Date();
+            const endTime = new Date(appointment.endTime);
+            if (now < endTime) {
+                throw AppError.badRequest(
+                    "No se puede completar la cita antes de la fecha y hora programadas"
+                );
+            }
+        }
 
         const [updated] = await prisma.$transaction([
             prisma.appointment.update({
@@ -197,23 +231,25 @@ export const appointmentService = {
     // =====================
     // VALIDATIONS
     // =====================
-    async validateUser(userId: number) {
-        const user = await prisma.user.findUnique({
-            where: { id: userId }
-        });
-
-        if (!user) {
-            throw AppError.badRequest("User does not exist");
-        }
+    async validateClient(userId: number) {
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) throw AppError.badRequest("El cliente no existe");
+        if (user.status !== 'ACTIVE') throw AppError.badRequest("El cliente no está activo");
     },
 
-    async validateService(serviceId: number) {
-        const service = await prisma.service.findUnique({
-            where: { id: serviceId }
+    async validateProfessional(userId: number) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: { professionalProfile: true }
         });
+        if (!user) throw AppError.badRequest("El profesional no existe");
+        if (user.status !== 'ACTIVE') throw AppError.badRequest("El profesional no está activo");
+        if (!user.professionalProfile?.isAvailable) throw AppError.badRequest("El profesional no está disponible");
+    },
 
-        if (!service) {
-            throw AppError.badRequest("Service does not exist");
-        }
+    async validateActiveService(serviceId: number) {
+        const service = await prisma.service.findUnique({ where: { id: serviceId } });
+        if (!service) throw AppError.badRequest("El servicio no existe");
+        if (service.status !== 'ACTIVE') throw AppError.badRequest("El servicio no está activo");
     }
 };
