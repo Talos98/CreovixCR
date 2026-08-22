@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -32,6 +32,8 @@ import { Category } from '../../../core/models/category.model';
 })
 export class ServiciosList {
   private readonly servicioService = inject(ServicioService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   servicios = signal<Service[]>([]);
   search = signal('');
@@ -108,6 +110,14 @@ export class ServiciosList {
   totalServicios = computed(() => this.serviciosFiltrados().length);
 
   ngOnInit(): void {
+    const params = this.route.snapshot.queryParams;
+    if(params['search']) this.search.set(params['search']);
+    if(params['categoriaId']) this.categoriaId.set(Number(params['categoriaId']));
+    if(params['especialidadId']) this.especialidadId.set(Number(params['especialidadId']));
+    if(params['mode']) this.modeFilter.set(params['mode']);
+    if(params['priceMin']) this.priceMin.set(Number(params['priceMin']));
+    if(params['priceMax']) this.priceMax.set(Number(params['priceMax']));
+
     this.loadServicios();
   }
 
@@ -134,9 +144,23 @@ export class ServiciosList {
     this.modeFilter.set('');
     this.priceMin.set(null);
     this.priceMax.set(null);
+
+    this.syncQueryParams();
   }
 
   getImageUrl(imageName: string): string {
     return this.servicioService.getImageUrl(imageName);
   }
+
+  protected syncQueryParams(): void {
+    const params: any = {};
+    if (this.search()) params.search = this.search();
+    if (this.categoriaId() !== null) params.categoriaId = this.categoriaId();
+    if (this.especialidadId() !== null) params.especialidadId = this.especialidadId();
+    if (this.modeFilter()) params.mode = this.modeFilter();
+    if (this.priceMin() !== null) params.priceMin = this.priceMin();
+    if (this.priceMax() !== null) params.priceMax = this.priceMax();
+
+    this.router.navigate([], { queryParams: params, replaceUrl: true });
+}
 }
