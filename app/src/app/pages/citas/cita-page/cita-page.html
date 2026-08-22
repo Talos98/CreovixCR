@@ -1,13 +1,11 @@
 <div class="actions">
 
-  <button (click)="viewMode = 'list'">
-    <mat-icon>list</mat-icon>
-    Lista
+  <button mat-stroked-button (click)="viewMode = 'list'" [class.active-view]="viewMode === 'list'">
+    <span class="btn-content"><mat-icon>list</mat-icon> Lista</span>
   </button>
 
-  <button (click)="viewMode = 'calendar'">
-    <mat-icon>calendar_month</mat-icon>
-    Calendario
+  <button mat-stroked-button (click)="viewMode = 'calendar'" [class.active-view]="viewMode === 'calendar'">
+    <span class="btn-content"><mat-icon>calendar_month</mat-icon> Calendario</span>
   </button>
 
 </div>
