@@ -81,7 +81,7 @@
     @for (servicio of serviciosFiltrados(); track servicio.id) {
       <mat-card class="service-card glass-card" [routerLink]="['/servicios', servicio.id]">
         <mat-card-header>
-          <div class="card-icon">
+          <div class="card-icon" matCardAvatar>
             <mat-icon>work</mat-icon>
           </div>
           <mat-card-title>{{ servicio.name }}</mat-card-title>
@@ -94,7 +94,7 @@
           <div class="service-meta">
             <mat-chip-set>
               <mat-chip>
-                <mat-icon matChipAvatar>attach_money</mat-icon>
+                <mat-icon matChipAvatar>payments</mat-icon>
                 ₡{{ servicio.price | number:'1.0-0' }}
               </mat-chip>
               <mat-chip>
@@ -106,14 +106,11 @@
                 {{ servicio.mode === 'ONLINE' ? 'En línea' : 'Presencial' }}
               </mat-chip>
             </mat-chip-set>
+            <button mat-icon-button class="view-btn" title="Ver detalle">
+              <mat-icon>visibility</mat-icon>
+            </button>
           </div>
         </mat-card-content>
-
-        <mat-card-actions align="end">
-          <button mat-button class="secondary-button" [routerLink]="['/servicios', servicio.id]">
-            <mat-icon>visibility</mat-icon> Ver detalle
-          </button>
-        </mat-card-actions>
       </mat-card>
     } @empty {
       <div class="empty-state">
