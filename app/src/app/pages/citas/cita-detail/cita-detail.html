@@ -1,231 +1,276 @@
 @if (loading()) {
-    <div class="loading-container">
-        <mat-icon>hourglass_empty</mat-icon>
-        <p>Cargando detalle de la cita...</p>
-    </div>
+<div class="loading-container">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>Cargando detalle de la cita...</p>
+</div>
 }
 
 @if (error()) {
-    <div class="error-container">
-        <mat-icon>error_outline</mat-icon>
-        <p>{{ error() }}</p>
+<div class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error() }}</p>
 
+    <button mat-button (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
+        Volver a citas
+    </button>
+</div>
+}
+
+@if (cita(); as c) {
+
+<div class="detail-layout">
+
+
+    <div class="back-button-container">
         <button mat-button (click)="volver()">
             <mat-icon>arrow_back</mat-icon>
             Volver a citas
         </button>
     </div>
-}
 
-@if (cita(); as c) {
+    <mat-card class="detail-card glass-card">
 
-    <div class="detail-layout">
+        <mat-card-header>
+            <div class="detail-icon">
+                <mat-icon>event</mat-icon>
+            </div>
 
-       
-        <div class="back-button-container">
-            <button mat-button (click)="volver()">
-                <mat-icon>arrow_back</mat-icon>
-                Volver a citas
-            </button>
-        </div>
+            <mat-card-title>Cita #{{ c.id }}</mat-card-title>
 
-        <mat-card class="detail-card glass-card">
+            <mat-card-subtitle>
+                <span class="status-chip" [class]="getStatusClass(c.status)">
+                    {{ getStatusLabel(c.status) }}
+                </span>
+            </mat-card-subtitle>
+        </mat-card-header>
 
-            <mat-card-header>
-                <div class="detail-icon">
-                    <mat-icon>event</mat-icon>
-                </div>
+        <mat-card-content>
 
-                <mat-card-title>Cita #{{ c.id }}</mat-card-title>
+            <div class="info-grid">
 
-                <mat-card-subtitle>
-                    <span
-                        class="status-chip"
-                        [class]="getStatusClass(c.status)">
-                        {{ getStatusLabel(c.status) }}
-                    </span>
-                </mat-card-subtitle>
-            </mat-card-header>
+                <!-- Cliente -->
+                <div class="info-item">
+                    <mat-icon>person</mat-icon>
 
-            <mat-card-content>
+                    <div>
+                        <strong>Cliente</strong>
 
-                <div class="info-grid">
+                        @if (c.client; as client) {
+                        <span>{{ client.name }}</span>
 
-                    <!-- Cliente -->
-                    <div class="info-item">
-                        <mat-icon>person</mat-icon>
-
-                        <div>
-                            <strong>Cliente</strong>
-
-                            @if (c.client; as client) {
-                                <span>{{ client.name }}</span>
-
-                                @if (client.email) {
-                                    <small>{{ client.email }}</small>
-                                }
-                            } @else {
-                                <span>—</span>
-                            }
-                        </div>
-                    </div>
-
-                    <!-- Profesional -->
-                    <div class="info-item">
-                        <mat-icon>medical_services</mat-icon>
-
-                        <div>
-                            <strong>Profesional</strong>
-
-                            @if (c.professional; as p) {
-                                <span>{{ p.name }}</span>
-
-                                @if (p.email) {
-                                    <small>{{ p.email }}</small>
-                                }
-                            } @else {
-                                <span>—</span>
-                            }
-                        </div>
-                    </div>
-
-                    <!-- Servicio -->
-                    <div class="info-item">
-                        <mat-icon>work</mat-icon>
-
-                        <div>
-                            <strong>Servicio</strong>
-
-                            @if (c.service; as s) {
-                                <span>{{ s.name }}</span>
-
-                                @if (s.price) {
-                                    <small>Precio: &#8353;{{ s.price }}</small>
-                                }
-                            } @else {
-                                <span>—</span>
-                            }
-                        </div>
-                    </div>
-
-                    <!-- Fecha -->
-                    <div class="info-item">
-                        <mat-icon>calendar_today</mat-icon>
-
-                        <div>
-                            <strong>Fecha</strong>
-                            <span>{{ formatDate(c.date) }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Hora -->
-                    <div class="info-item">
-                        <mat-icon>schedule</mat-icon>
-
-                        <div>
-                            <strong>Hora</strong>
-                            <span>{{ formatTime(c.startTime) }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Modalidad -->
-                    <div class="info-item">
-                        <mat-icon>
-                            {{ c.mode === 'ONLINE'
-                                ? 'videocam'
-                                : 'location_on' }}
-                        </mat-icon>
-
-                        <div>
-                            <strong>Modalidad</strong>
-
-                            <span>
-                                {{ c.mode === 'ONLINE'
-                                    ? 'En linea'
-                                    : 'Presencial' }}
-                            </span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Descripción -->
-                @if (c.description) {
-                    <div class="description-section">
-                        <h3>
-                            <mat-icon>description</mat-icon>
-                            Descripción
-                        </h3>
-
-                        <p>{{ c.description }}</p>
-                    </div>
-                }
-
-            </mat-card-content>
-
-            @if (c.review) {
-                <div class="review-section">
-                    <h3><mat-icon>star</mat-icon> Calificación</h3>
-                    <div class="review-rating">
-                        @for (star of [1,2,3,4,5]; track star) {
-                            <mat-icon [class.filled]="star <= c.review.rating">star</mat-icon>
+                        @if (client.email) {
+                        <small>{{ client.email }}</small>
                         }
-                        <span>({{ c.review.rating }}/5)</span>
+                        } @else {
+                        <span>—</span>
+                        }
                     </div>
-                    @if (c.review.comment) {
-                        <p class="review-comment">{{ c.review.comment }}</p>
+                </div>
+
+                <!-- Profesional -->
+                <div class="info-item">
+                    <mat-icon>medical_services</mat-icon>
+
+                    <div>
+                        <strong>Profesional</strong>
+
+                        @if (c.professional; as p) {
+                        <span>{{ p.name }}</span>
+
+                        @if (p.email) {
+                        <small>{{ p.email }}</small>
+                        }
+                        } @else {
+                        <span>—</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Servicio -->
+                <div class="info-item">
+                    <mat-icon>work</mat-icon>
+
+                    <div>
+                        <strong>Servicio</strong>
+
+                        @if (c.service; as s) {
+                        <span>{{ s.name }}</span>
+
+                        @if (s.price) {
+                        <small>Precio: &#8353;{{ s.price }}</small>
+                        }
+                        } @else {
+                        <span>—</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Fecha -->
+                <div class="info-item">
+                    <mat-icon>calendar_today</mat-icon>
+
+                    <div>
+                        <strong>Fecha</strong>
+                        <span>{{ formatDate(c.date) }}</span>
+                    </div>
+                </div>
+
+                <!-- Hora -->
+                <div class="info-item">
+                    <mat-icon>schedule</mat-icon>
+
+                    <div>
+                        <strong>Hora</strong>
+                        <span>{{ formatTime(c.startTime) }}</span>
+                    </div>
+                </div>
+
+                <!-- Modalidad -->
+                <div class="info-item">
+                    <mat-icon>
+                        {{ c.mode === 'ONLINE'
+                        ? 'videocam'
+                        : 'location_on' }}
+                    </mat-icon>
+
+                    <div>
+                        <strong>Modalidad</strong>
+
+                        <span>
+                            {{ c.mode === 'ONLINE'
+                            ? 'En linea'
+                            : 'Presencial' }}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Descripción -->
+            @if (c.description) {
+            <div class="description-section">
+                <h3>
+                    <mat-icon>description</mat-icon>
+                    Descripción
+                </h3>
+
+                <p>{{ c.description }}</p>
+            </div>
+            }
+
+            @if (c.statusLogs && c.statusLogs.length > 0) {
+            <div class="history-section">
+                <h3>
+                    <mat-icon>history</mat-icon>
+                    Historial de estados
+                </h3>
+                <div class="history-timeline">
+                    @for (log of c.statusLogs; track log.id) {
+                    <div class="history-item">
+                        <div class="history-header">
+                            <span class="status-chip" [class]="getStatusClass(log.fromStatus)">
+                                {{ getStatusLabel(log.fromStatus) }}
+                            </span>
+                            <mat-icon class="history-arrow">arrow_forward</mat-icon>
+                            <span class="status-chip" [class]="getStatusClass(log.toStatus)">
+                                {{ getStatusLabel(log.toStatus) }}
+                            </span>
+                            <span class="history-date">{{ formatDateTime(log.changedAt) }}</span>
+                        </div>
+                        @if (log.comment) {
+                        <p class="history-comment">
+                            <mat-icon>comment</mat-icon>
+                            {{ log.comment }}
+                        </p>
+                        }
+                    </div>
                     }
                 </div>
+            </div>
             }
+        </mat-card-content>
 
-            @if (!c.review && rol() === Role.CLIENT && c.status === 'COMPLETED') {
-                @if (!showReviewForm()) {
-                    <div class="review-action">
-                        <button mat-stroked-button (click)="showReviewForm.set(true)">
-                            <mat-icon>star_rate</mat-icon>
-                            Calificar esta cita
-                        </button>
-                    </div>
-                } @else {
-                    <div class="review-form">
-                        <h3><mat-icon>star</mat-icon> Calificar cita</h3>
-                        <div class="rating-select">
-                            <label>Puntuación:</label>
-                            <div class="star-buttons">
-                                @for (star of [1,2,3,4,5]; track star) {
-                                    <button class="star-btn" [class.filled]="star <= reviewRating()" (click)="reviewRating.set(star)">
-                                        <mat-icon>star</mat-icon>
-                                    </button>
-                                }
-                            </div>
-                        </div>
-                        <mat-form-field appearance="outline" class="full-width">
-                            <mat-label>Comentario (opcional)</mat-label>
-                            <textarea matInput rows="3" [value]="reviewComment()" (input)="reviewComment.set($any($event.target).value)"></textarea>
-                        </mat-form-field>
-                        <div class="review-form-actions">
-                            <button mat-button (click)="showReviewForm.set(false)" [disabled]="submittingReview()">Cancelar</button>
-                            <button mat-flat-button color="primary" (click)="submitReview()" [disabled]="submittingReview()">
-                                @if (submittingReview()) { Enviando... } @else { Enviar calificación }
-                            </button>
-                        </div>
-                    </div>
+        @if (c.review) {
+        <div class="review-section">
+            <h3><mat-icon>star</mat-icon> Calificación</h3>
+            <div class="review-rating">
+                @for (star of [1,2,3,4,5]; track star) {
+                <mat-icon [class.filled]="star <= c.review.rating">star</mat-icon>
                 }
+                <span>({{ c.review.rating }}/5)</span>
+            </div>
+            @if (c.review.comment) {
+            <p class="review-comment">{{ c.review.comment }}</p>
             }
+        </div>
+        }
 
-            <mat-card-actions>
-                <div class="status-actions">
-                    <strong>Cambiar estado:</strong>
-                    <div class="btn-group">
-                        <button [class.active]="c.status === 'ACCEPTED'" (click)="changeStatus('ACCEPTED')" [disabled]="updating() || c.status === 'ACCEPTED'">Aceptar</button>
-                        <button [class.active]="c.status === 'REJECTED'" (click)="changeStatus('REJECTED')" [disabled]="updating() || c.status === 'REJECTED'">Rechazar</button>
-                        <button [class.active]="c.status === 'COMPLETED'" (click)="changeStatus('COMPLETED')" [disabled]="updating() || c.status === 'COMPLETED'">Completar</button>
-                        <button [class.active]="c.status === 'CANCELLED'" (click)="changeStatus('CANCELLED')" [disabled]="updating() || c.status === 'CANCELLED'">Cancelar</button>
-                    </div>
+        @if (!c.review && rol() === Role.CLIENT && c.status === 'COMPLETED') {
+        @if (!showReviewForm()) {
+        <div class="review-action">
+            <button mat-stroked-button (click)="showReviewForm.set(true)">
+                <mat-icon>star_rate</mat-icon>
+                Calificar esta cita
+            </button>
+        </div>
+        } @else {
+        <div class="review-form">
+            <h3><mat-icon>star</mat-icon> Calificar cita</h3>
+            <div class="rating-select">
+                <label>Puntuación:</label>
+                <div class="star-buttons">
+                    @for (star of [1,2,3,4,5]; track star) {
+                    <button class="star-btn" [class.filled]="star <= reviewRating()" (click)="reviewRating.set(star)">
+                        <mat-icon>star</mat-icon>
+                    </button>
+                    }
                 </div>
-            </mat-card-actions>
-        </mat-card>
+            </div>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Comentario (opcional)</mat-label>
+                <textarea matInput rows="3" [value]="reviewComment()"
+                    (input)="reviewComment.set($any($event.target).value)"></textarea>
+            </mat-form-field>
+            <div class="review-form-actions">
+                <button mat-button (click)="showReviewForm.set(false)" [disabled]="submittingReview()">Cancelar</button>
+                <button mat-flat-button color="primary" (click)="submitReview()" [disabled]="submittingReview()">
+                    @if (submittingReview()) { Enviando... } @else { Enviar calificación }
+                </button>
+            </div>
+        </div>
+        }
+        }
 
-    </div>
+        <mat-card-actions>
+            <div class="status-actions">
+
+                @if (rol() === Role.PROFESSIONAL) {
+                <strong>Cambiar estado:</strong>
+                <div class="btn-group">
+                    @if (c.status === 'PENDING') {
+                    <button (click)="changeStatus('ACCEPTED')" [disabled]="updating()">Aceptar</button>
+                    <button (click)="changeStatus('REJECTED')" [disabled]="updating()">Rechazar</button>
+                    }
+                    @if (c.status === 'ACCEPTED') {
+                    <button (click)="changeStatus('COMPLETED')" [disabled]="updating()">Completar</button>
+                    <button (click)="changeStatus('CANCELLED')" [disabled]="updating()">Cancelar</button>
+                    }
+                </div>
+                }
+
+                @if (rol() === Role.CLIENT) {
+                @if (c.status === 'PENDING' || c.status === 'ACCEPTED') {
+                <div class="btn-group">
+                    <button (click)="changeStatus('CANCELLED')" [disabled]="updating()">Cancelar cita</button>
+                </div>
+                }
+                }
+
+            </div>
+        </mat-card-actions>
+    </mat-card>
+
+</div>
 }
 ```

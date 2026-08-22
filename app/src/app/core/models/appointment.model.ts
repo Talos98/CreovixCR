@@ -17,6 +17,7 @@ export interface Appointment {
     professional?: User;
     service?: Service;
     review?: Review;
+    statusLogs?: StatusLog[];
     createdAt?: string;
 }
 
@@ -40,4 +41,12 @@ export interface AppointmentCreateDto {
     endTime: string;
     mode: 'ONLINE' | 'IN_PERSON';
     description: string;
+}
+
+export interface StatusLog {
+    id: number;
+    fromStatus: string;
+    toStatus: string;
+    changedAt: string;
+    comment?: string;
 }

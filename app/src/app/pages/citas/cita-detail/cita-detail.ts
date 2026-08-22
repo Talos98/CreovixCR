@@ -12,6 +12,8 @@ import { Appointment } from '../../../core/models/appointment.model';
 import { ReviewService } from '../../../core/services/review.service';
 import { ReviewCreateDto } from '../../../core/models/review.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MotivoDialog } from '../../../shared/components/motivo-dialog/motivo-dialog';
 import { Role } from '../../../core/models/role.model';
 
 @Component({
@@ -35,6 +37,7 @@ export class CitaDetail {
     private readonly reviewService = inject(ReviewService);
     private readonly authService = inject(AuthService);
     private readonly location = inject(Location);
+    private readonly dialog = inject(MatDialog);
 
     readonly rol = this.authService.rol;
     readonly Role = Role;
@@ -89,6 +92,15 @@ export class CitaDetail {
         return date.toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' });
     }
 
+    formatDateTime(dateStr: string): string {
+        if (!dateStr) return '—';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('es-CR', {
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
     getStatusLabel(status: string): string {
         const labels: Record<string, string> = {
             PENDING: 'Pendiente',
@@ -117,10 +129,30 @@ export class CitaDetail {
         const cita = this.cita();
         if (!cita) return;
 
+        if (status === 'REJECTED' || status === 'CANCELLED') {
+            const titulo = status === 'REJECTED' ? 'Rechazar cita' : 'Cancelar cita';
+            const mensaje = status === 'REJECTED'
+                ? '¿Está seguro de rechazar esta cita? Debe indicar un motivo.'
+                : '¿Está seguro de cancelar esta cita? Debe indicar un motivo.';
+
+            this.dialog.open(MotivoDialog, {
+                width: '450px',
+                data: { titulo, mensaje }
+            }).afterClosed().subscribe((motivo: string | undefined) => {
+                if (motivo) {
+                    this.ejecutarCambioEstado(cita.id, status, motivo);
+                }
+            });
+        } else {
+            this.ejecutarCambioEstado(cita.id, status);
+        }
+    }
+
+    private ejecutarCambioEstado(id: number, status: string, comment?: string): void {
         this.updating.set(true);
-        this.appointmentService.cambiarEstado(cita.id, status).subscribe({
-            next: (response) => {
-                this.cita.set(response.data);
+        this.appointmentService.cambiarEstado(id, status, comment).subscribe({
+            next: () => {
+                this.loadCita(id);
                 this.updating.set(false);
             },
             error: () => {
