@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { Appointment } from '../../../core/models/appointment.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { Role } from '../../../core/models/role.model';
 
 @Component({
     selector: 'app-citas-list',
@@ -28,6 +30,9 @@ import { Appointment } from '../../../core/models/appointment.model';
 export class CitasList {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
+    private readonly authService = inject(AuthService);
+    readonly rol = this.authService.rol;
+    readonly Role = Role;
 
     citas = input<Appointment[]>([]);
 
@@ -100,7 +105,7 @@ export class CitasList {
         this.dateTo.set('');
 
         this.syncQueryParams()
-    }   
+    }
 
     formatDate(dateStr: string): string {
         if (!dateStr) return '—';

@@ -1,8 +1,10 @@
 <section class="admin-header">
     <h1>Gesti&oacute;n de Citas</h1>
-    <a mat-flat-button class="create-button" routerLink="/admin/citas/crear">
+    @if (rol() === Role.CLIENT) {
+        <a mat-flat-button class="create-button" routerLink="/admin/citas/crear">
         <mat-icon>add</mat-icon> Nueva cita
     </a>
+    }
 </section>
 
 <section class="filters-section glass-card">
