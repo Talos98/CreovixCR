@@ -121,11 +121,9 @@
                     [class.create-icon-button]="!isEdit()"
                     [disabled]="isSubmitting()">
                     @if (isSubmitting()) {
-                        <mat-icon>hourglass_top</mat-icon>
-                        Guardando...
+                        <span class="btn-content"><mat-icon>hourglass_top</mat-icon> Guardando...</span>
                     } @else {
-                        <mat-icon>{{ isEdit() ? 'edit' : 'add_circle' }}</mat-icon>
-                        {{ isEdit() ? 'Actualizar' : 'Registrar' }}
+                        <span class="btn-content"><mat-icon>{{ isEdit() ? 'edit' : 'add_circle' }}</mat-icon> {{ isEdit() ? 'Actualizar' : 'Registrar' }}</span>
                     }
                 </button>
             </div>
