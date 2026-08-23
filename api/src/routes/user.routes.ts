@@ -75,6 +75,11 @@ export class UserRoutes {
             asyncHandler(controller.toggleStatus)
         );
 
+        router.patch(
+            "/:id/role",
+            asyncHandler(controller.makeProfessional)
+        );
+
         return router;
     }
 }

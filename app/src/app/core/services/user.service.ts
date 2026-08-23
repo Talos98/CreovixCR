@@ -29,6 +29,13 @@ export class UserService {
             data
         );
     }
+    convertirEnProfesional(id: number) {
+        return this.http.patch<ApiResponse<User>>(
+            `${this.apiUrl}/${id}/role`,
+            {}
+        );
+    }
+
 
     toggleStatus(id: number) {
         return this.http.patch<{ success: boolean; data: User }>(`${this.apiUrl}/${id}/status`, {});

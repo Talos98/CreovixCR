@@ -148,6 +148,27 @@ export class UserController {
         }
     };
 
+    makeProfessional = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const id = parseId(req.params.id);
+
+            const user = await userService.makeProfessional(id);
+
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                message: "Usuario convertido en profesional exitosamente",
+                data: user
+            });
+
+        } catch (error) {
+            next(error);
+        }
+    };
+
 
 
     update = async (req: Request, res: Response, next: NextFunction) => {

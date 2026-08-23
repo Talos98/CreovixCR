@@ -201,6 +201,34 @@ export const userService = {
         return userWithoutPassword;
     },
 
+    async makeProfessional(id: number) {
+
+        const user = await prisma.user.findUnique({
+            where: { id }
+        });
+
+        if (!user) {
+            throw AppError.badRequest("El usuario no existe");
+        }
+
+        if (user.role !== Role.CLIENT) {
+            throw AppError.badRequest(
+                "Solo los usuarios con rol CLIENT pueden convertirse en PROFESSIONAL"
+            );
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: {
+                role: Role.PROFESSIONAL
+            }
+        });
+
+        const { password, ...userWithoutPassword } = updatedUser;
+
+        return userWithoutPassword;
+    },
+
 
     // =====================
     // UPDATE USER
