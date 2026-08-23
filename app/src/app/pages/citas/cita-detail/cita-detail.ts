@@ -123,6 +123,19 @@ export class CitaDetail {
         return classes[status] ?? '';
     }
 
+    canCompleteAppointment(): boolean {
+        const cita = this.cita();
+
+        if (!cita || cita.status !== 'ACCEPTED') {
+            return false;
+        }
+
+        const appointmentDateTime = new Date(cita.startTime);
+
+        return new Date() >= appointmentDateTime;
+    }
+
+
     updating = signal(false);
 
     changeStatus(status: string): void {

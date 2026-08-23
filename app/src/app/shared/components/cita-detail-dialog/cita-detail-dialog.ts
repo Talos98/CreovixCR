@@ -68,6 +68,16 @@ private ejecutarCambioEstado(status: string, comment?: string): void {
     });
 }
 
+canComplete() : boolean {
+    if (this.data.status != 'ACCEPTED'){
+        return false;
+    }
+    const appointmentDateTime = new Date (
+          `${this.data.date}T${this.data.startTime}`
+    );
+        return new Date() >= appointmentDateTime;
+}
+
 getStatusClass(status: string): string {
   const classes: Record<string, string> = {
     PENDING: 'status-pending',
