@@ -213,25 +213,7 @@ export const routes: Routes = [
                 },
             },
 
-            {
-                path: 'admin/profesionales/crear',
-                component: ProfesionalCreatePage,
-                title: 'Registrar profesional',
-                canActivate: [authGuard, roleGuard],
-                data: {
-                    roles: [Role.ADMIN]
-                },
-            },
 
-            {
-                path: 'admin/profesionales/editar/:id',
-                component: ProfesionalEditPage,
-                title: 'Editar profesional',
-                canActivate: [authGuard, roleGuard],
-                data: {
-                    roles: [Role.ADMIN]
-                },
-            },
 
             // =========================
             // ADMIN - CITAS
