@@ -43,12 +43,17 @@ export class ProfesionalMiPerfil {
 
         this.professionalService.listar().subscribe({
             next: (response: any) => {
-                const profiles: ProfessionalProfile[] = response.data ?? response ?? [];
-                const myProfile = profiles.find((p: ProfessionalProfile) => p.userId === user.id);
+                const profiles: ProfessionalProfile[] =
+                    response.data?.data ?? [];
+
+                const myProfile = profiles.find(
+                    (p: ProfessionalProfile) => p.userId === user.id
+                );
+
                 if (myProfile) {
                     this.profesional.set(myProfile);
                 } else {
-                    this.error.set('No se encontró tu perfil profesional. Contacta al administrador.');
+                    this.profesional.set(null);
                 }
             },
             error: () => {
@@ -61,22 +66,70 @@ export class ProfesionalMiPerfil {
     }
 
     guardar(data: ProfessionalCreateDto | ProfessionalUpdateDto) {
-        const prof = this.profesional();
-        if (!prof) return;
 
         this.saving.set(true);
         this.error.set(null);
 
-        this.professionalService.actualizar(prof.id, data as ProfessionalUpdateDto).subscribe({
+        const prof = this.profesional();
+
+        // =========================
+        // CREAR PERFIL
+        // =========================
+        if (!prof) {
+
+            this.professionalService.crear(
+                data as ProfessionalCreateDto
+            ).subscribe({
+
+                next: () => {
+                    this.noti.success(
+                        'Perfil profesional creado correctamente'
+                    );
+
+                    this.loadProfile();
+                    this.saving.set(false);
+                },
+
+                error: () => {
+                    this.error.set(
+                        'No se pudo crear el perfil profesional'
+                    );
+
+                    this.saving.set(false);
+                }
+
+            });
+
+            return;
+        }
+
+        // =========================
+        // ACTUALIZAR PERFIL
+        // =========================
+        this.professionalService.actualizar(
+            prof.id,
+            data as ProfessionalUpdateDto
+        ).subscribe({
+
             next: () => {
-                this.noti.success('Perfil actualizado correctamente');
+
+                this.noti.success(
+                    'Perfil actualizado correctamente'
+                );
+
                 this.loadProfile();
                 this.saving.set(false);
             },
+
             error: () => {
-                this.error.set('No se pudo actualizar el perfil');
+
+                this.error.set(
+                    'No se pudo actualizar el perfil'
+                );
+
                 this.saving.set(false);
-            },
+            }
+
         });
     }
 

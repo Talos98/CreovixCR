@@ -1,25 +1,21 @@
 <h1>Mi Perfil Profesional</h1>
 
 @if (loading()) {
-    <div class="loading-container">
-        <mat-spinner diameter="48"></mat-spinner>
-        <p>Cargando perfil...</p>
-    </div>
+<div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Cargando perfil...</p>
+</div>
 }
 
 @if (error()) {
-    <div class="error-container">
-        <mat-icon>error_outline</mat-icon>
-        <p>{{ error() }}</p>
-        <button mat-flat-button class="primary-button" (click)="loadProfile()">Reintentar</button>
-    </div>
+<div class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-flat-button class="primary-button" (click)="loadProfile()">Reintentar</button>
+</div>
 }
 
-@if (!loading() && !error() && profesional()) {
-    <app-profesional-form
-        [profesional]="profesional()"
-        [saving]="saving()"
-        (guardar)="guardar($event)"
-        (cancelar)="cancelar()"
-    />
+@if (!loading() && !error()) {
+<app-profesional-form [profesional]="profesional()" [saving]="saving()" (guardar)="guardar($event)"
+    (cancelar)="cancelar()" />
 }

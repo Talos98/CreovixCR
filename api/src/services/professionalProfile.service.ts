@@ -4,7 +4,7 @@ import { Role, ServiceMode } from "../../generated/prisma/enums";
 
 export const professionalProfileService = {
 
- 
+
     async list(page: number = 1, limit: number = 0) {
 
         const paginar = limit > 0;
@@ -56,9 +56,8 @@ export const professionalProfileService = {
         return profile;
     },
 
-  
+
     async create(data: {
-        userId: number;
         title: string;
         description?: string;
         yearsExperience: number;
@@ -66,11 +65,14 @@ export const professionalProfileService = {
         location: string;
         baseRate: number;
         mode: ServiceMode;
-    }) {
+        profileImage?: string;
+    },
+        authenticatedUserId: number
+    ) {
 
         // 1. Validar user existe
         const user = await prisma.user.findUnique({
-            where: { id: data.userId }
+            where: { id: authenticatedUserId }
         });
 
         if (!user) {
@@ -84,7 +86,7 @@ export const professionalProfileService = {
 
         // 3. Evitar duplicado de perfil
         const existingProfile = await prisma.professionalProfile.findUnique({
-            where: { userId: data.userId }
+            where: { userId: authenticatedUserId }
         });
 
         if (existingProfile) {
@@ -94,14 +96,15 @@ export const professionalProfileService = {
         // 4. Crear perfil
         return prisma.professionalProfile.create({
             data: {
-                userId: data.userId,
+                userId: authenticatedUserId,
                 title: data.title,
                 description: data.description,
                 yearsExperience: data.yearsExperience,
                 phone: data.phone,
                 location: data.location,
                 baseRate: data.baseRate,
-                mode: data.mode
+                mode: data.mode,
+                profileImage: data.profileImage ?? "image-not-found.jpg"
             },
             include: {
                 user: true
@@ -133,7 +136,8 @@ export const professionalProfileService = {
                 phone: data.phone,
                 location: data.location,
                 baseRate: data.baseRate,
-                mode: data.mode
+                mode: data.mode,
+                profileImage: data.profileImage
             },
             include: {
                 user: true

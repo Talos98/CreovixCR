@@ -36,13 +36,32 @@ export class ProfessionalProfileController {
         }
     };
 
-    create = async (req: Request, res: Response, next: NextFunction) => {
+    create = async (
+        req: AuthRequest,
+        res: Response,
+        next: NextFunction
+    ) => {
+
         try {
-            const profile = await professionalProfileService.create(req.body);
+
+            const userId = req.user?.id;
+
+            if (!userId) {
+                return res.status(StatusCodes.UNAUTHORIZED).json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+            }
+
+            const profile =
+                await professionalProfileService.create(
+                    req.body,
+                    userId
+                );
 
             return res.status(StatusCodes.CREATED).json({
                 success: true,
-                message: "Professional profile created successfully",
+                message: "Perfil profesinal creado exitosamente",
                 data: profile
             });
 
@@ -57,7 +76,7 @@ export class ProfessionalProfileController {
             const profile = await professionalProfileService.toggleAvailability(id);
             return res.status(StatusCodes.OK).json({
                 success: true,
-                message: "Availability updated successfully",
+                message: "Disponibilidad actualizada correctamente",
                 data: profile
             });
         } catch (error) {
@@ -90,7 +109,7 @@ export class ProfessionalProfileController {
 
             return res.status(StatusCodes.OK).json({
                 success: true,
-                message: "Professional profile updated successfully",
+                message: "Perfil profesional actualizado exitosamente",
                 data: profile
             });
 
