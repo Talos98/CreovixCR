@@ -17,6 +17,19 @@ export class UserService {
         return this.http.put<ApiResponse<User>>(`${this.apiUrl}/${id}`, data);
     }
 
+    actualizarMiPerfil(
+        data: {
+            name: string;
+            lastName: string;
+            email: string;
+        }
+    ) {
+        return this.http.put<ApiResponse<User>>(
+            `${this.apiUrl}/profile`,
+            data
+        );
+    }
+
     toggleStatus(id: number) {
         return this.http.patch<{ success: boolean; data: User }>(`${this.apiUrl}/${id}/status`, {});
     }

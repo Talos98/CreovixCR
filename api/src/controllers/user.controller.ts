@@ -50,7 +50,7 @@ export class UserController {
     create = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-              console.log("BODY RECIBIDO:", req.body);
+            console.log("BODY RECIBIDO:", req.body);
             const user = await userService.create(req.body);
 
             return res.status(StatusCodes.CREATED).json({
@@ -115,6 +115,37 @@ export class UserController {
             user,
             "Perfil obtenido correctamente"
         );
+    };
+
+    updateProfile = async (
+        request: AuthRequest,
+        response: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const userId = request.user?.id;
+
+            if (!userId) {
+                return response.status(StatusCodes.UNAUTHORIZED).json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+            }
+
+            const user = await userService.updateProfile(
+                userId,
+                request.body
+            );
+
+            return response.status(StatusCodes.OK).json({
+                success: true,
+                message: "Perfil actualizado correctamente",
+                data: user
+            });
+
+        } catch (error) {
+            next(error);
+        }
     };
 
 

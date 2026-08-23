@@ -75,11 +75,10 @@ export const userService = {
         lastName: string;
         email: string;
         password: string;
-        role?: Role;
     }) {
 
-    console.log("DATA RECIBIDA EN SERVICE:", data);
-    console.log("LAST NAME:", data.lastName);
+        console.log("DATA RECIBIDA EN SERVICE:", data);
+        console.log("LAST NAME:", data.lastName);
 
         // 1. Validar email único
         const existingUser = await prisma.user.findUnique({
@@ -98,7 +97,7 @@ export const userService = {
                 lastName: data.lastName,
                 email: data.email,
                 password: hashedPassword,
-                role: data.role ?? Role.CLIENT,
+                role: Role.CLIENT,
                 status: Status.ACTIVE
             },
             include: {
@@ -162,6 +161,46 @@ export const userService = {
 
         return userWihoutPassword;
     },
+    async updateProfile(
+        userId: number,
+        data: {
+            name: string;
+            lastName: string;
+            email: string;
+        }
+    ) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId }
+        });
+
+        if (!user) {
+            throw AppError.badRequest("El usuario no existe");
+        }
+
+        if (data.email !== user.email) {
+            const existingUser = await prisma.user.findUnique({
+                where: { email: data.email }
+            });
+
+            if (existingUser && existingUser.id !== userId) {
+                throw AppError.badRequest("El correo ya está registrado");
+            }
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name: data.name,
+                lastName: data.lastName,
+                email: data.email
+            }
+        });
+
+        const { password, ...userWithoutPassword } = updatedUser;
+
+        return userWithoutPassword;
+    },
+
 
     // =====================
     // UPDATE USER

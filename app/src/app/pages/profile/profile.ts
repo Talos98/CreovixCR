@@ -113,6 +113,7 @@ export class Profile {
     }
 
     guardarPerfil(): void {
+
         if (this.guardando()) return;
 
         this.profileForm.name().markAsTouched();
@@ -128,26 +129,38 @@ export class Profile {
         }
 
         const u = this.user();
+
         if (!u) return;
 
         this.guardando.set(true);
+
         const data = this.profileModel();
 
-        this.userService.actualizar(u.id, data).subscribe({
+        this.userService.actualizarMiPerfil(data).subscribe({
+
             next: () => {
-                this.noti.success('Perfil actualizado correctamente');
+
+                this.noti.success(
+                    'Perfil actualizado correctamente'
+                );
+
                 this.editando.set(false);
                 this.guardando.set(false);
-                // Recargar perfil para reflejar cambios sin recarga manual
+
                 this.authService.loadProfile().subscribe();
             },
+
             error: () => {
-                this.noti.error('No se pudo actualizar el perfil');
+
+                this.noti.error(
+                    'No se pudo actualizar el perfil'
+                );
+
                 this.guardando.set(false);
-            },
+            }
+
         });
     }
-
     closeSession(): void {
         this.authService.logout();
         void this.router.navigate(['/login']);
