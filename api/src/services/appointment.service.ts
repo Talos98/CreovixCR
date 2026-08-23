@@ -22,7 +22,8 @@ export const appointmentService = {
                 include: {
                     client: true,
                     professional: true,
-                    service: true
+                    service: true,
+                    review: true
                 },
                 orderBy: { createdAt: "desc" }
             })
