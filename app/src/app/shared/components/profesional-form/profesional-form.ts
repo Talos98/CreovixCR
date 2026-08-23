@@ -34,6 +34,7 @@ import {
 } from '../../../core/models/professional.model';
 
 import { ImageService } from '../../../core/services/image.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 interface UserOption {
     id: number;
@@ -155,6 +156,7 @@ export class ProfesionalForm {
     // SERVICES
     // =====================
     private readonly imageService = inject(ImageService);
+    private readonly authService = inject(AuthService);
 
     // =====================
     // IMAGE STATE
@@ -170,6 +172,8 @@ export class ProfesionalForm {
         const prof = this.profesional();
         if (prof) {
             this.loadProfesional(prof);
+        } else {
+            this.loadUserData();
         }
     }
 
@@ -217,6 +221,31 @@ export class ProfesionalForm {
             isAvailable: prof.isAvailable,
             profileImage: prof.profileImage ?? ''
         });
+
+        if (prof.profileImage) {
+            this.imagePreview.set(
+                this.imageService.getImageUrl(prof.profileImage)
+            );
+        } else {
+            this.imagePreview.set(null);
+        }
+
+        this.selectedImageFile.set(null);
+    }
+
+    private loadUserData() {
+        const user = this.authService.user();
+
+        if (!user) {
+            return;
+        }
+
+        this.profesionalModel.update(value => ({
+            ...value,
+            name: user.name ?? '',
+            lastName: user.lastName ?? '',
+            email: user.email ?? ''
+        }));
     }
 
     private markFieldsAsTouched() {

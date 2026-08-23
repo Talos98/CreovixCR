@@ -7,8 +7,8 @@ import { ProfessionalProfile, ProfessionalCreateDto, ProfessionalUpdateDto } fro
 @Injectable({ providedIn: 'root' })
 export class ProfessionalService {
     private readonly http = inject(HttpClient);
-   private readonly apiUrl = `${environment.apiUrl}/professionalProfile`;
-   private readonly professionalUrl =
+    private readonly apiUrl = `${environment.apiUrl}/professionalProfile`;
+    private readonly professionalUrl =
         `${environment.apiUrl}/professional`;
 
 
@@ -21,9 +21,11 @@ export class ProfessionalService {
     }
 
     crear(data: ProfessionalCreateDto) {
-        return this.http.post<ApiResponse<ProfessionalProfile>>(this.professionalUrl, data);
+        return this.http.post<ApiResponse<ProfessionalProfile>>(
+            this.apiUrl,
+            data
+        );
     }
-
     actualizar(id: number, data: ProfessionalUpdateDto) {
         return this.http.put<ApiResponse<ProfessionalProfile>>(`${this.professionalUrl}/${id}`, data);
     }
