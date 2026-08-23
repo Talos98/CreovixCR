@@ -9,11 +9,13 @@ import { UserService } from '../../../core/services/user.service';
 import { Appointment } from '../../../core/models/appointment.model';
 import { Service } from '../../../core/models/service.model';
 import { User } from '../../../core/models/user.model';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-reporte-admin',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [MatCardModule, MatIconModule, MatProgressSpinnerModule, NgxChartsModule],
   templateUrl: './reporte-admin.html',
   styleUrl: './reporte-admin.css',
 })
@@ -34,6 +36,22 @@ export class ReporteAdmin {
   citasCompletadas = computed(() => this.citas().filter(c => c.status === 'COMPLETED').length);
   citasCanceladas = computed(() => this.citas().filter(c => c.status === 'CANCELLED').length);
   citasRechazadas = computed(() => this.citas().filter(c => c.status === 'REJECTED').length);
+  // Paleta de colores personalizada
+  colorScheme: any = { domain: ['#f59e0b', '#0c3c2c', '#22c55e', '#ef4444', '#6b7280'] };
+
+  citasPorEstadoChart = computed(() => [
+    { name: 'Pendientes', value: this.citasPendientes() },
+    { name: 'Aceptadas', value: this.citasAceptadas() },
+    { name: 'Completadas', value: this.citasCompletadas() },
+    { name: 'Rechazadas', value: this.citasRechazadas() },
+    { name: 'Canceladas', value: this.citasCanceladas() },
+  ]);
+
+  usuariosPorRolChart = computed(() => [
+    { name: 'Administradores', value: this.usuarios().filter(u => u.role === 'ADMIN').length },
+    { name: 'Profesionales', value: this.totalProfesionales() },
+    { name: 'Clientes', value: this.totalClientes() },
+  ]);
 
   totalServicios = computed(() => this.servicios().length);
   serviciosActivos = computed(() => this.servicios().filter(s => s.status === 'ACTIVE').length);
