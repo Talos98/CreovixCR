@@ -52,39 +52,73 @@
     </div>
   </section>
 
-  <section class="report-section">
-    <h2><mat-icon>work</mat-icon> Mis Servicios</h2>
-    <div class="stats-grid">
-      <mat-card class="stat-card">
-        <mat-card-content>
-          <span class="stat-number">{{ totalServicios() }}</span>
-          <span class="stat-label">Total servicios</span>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="stat-card accepted">
-        <mat-card-content>
-          <span class="stat-number">{{ serviciosActivos() }}</span>
-          <span class="stat-label">Activos</span>
-        </mat-card-content>
-      </mat-card>
+  <div class="side-by-side">
+    <div class="side-left">
+      <section class="report-section">
+        <h2><mat-icon>work</mat-icon> Mis Servicios</h2>
+        <div class="stats-grid">
+          <mat-card class="stat-card">
+            <mat-card-content>
+              <span class="stat-number">{{ totalServicios() }}</span>
+              <span class="stat-label">Total servicios</span>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card accepted">
+            <mat-card-content>
+              <span class="stat-number">{{ serviciosActivos() }}</span>
+              <span class="stat-label">Activos</span>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </section>
+
+      <section class="report-section">
+        <h2><mat-icon>star</mat-icon> Calificaciones</h2>
+        <div class="stats-grid">
+          <mat-card class="stat-card">
+            <mat-card-content>
+              <span class="stat-number">{{ ratingPromedio() }}</span>
+              <span class="stat-label">Rating promedio</span>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card">
+            <mat-card-content>
+              <span class="stat-number">{{ totalReviews() }}</span>
+              <span class="stat-label">Total reseñas</span>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </section>
     </div>
-  </section>
+
+    <div class="side-right">
+      <div class="chart-container">
+        <h3>Calificación promedio por mes</h3>
+        <ngx-charts-bar-vertical [results]="ratingPorMesChart()" [scheme]="ratingColorScheme"
+          [xAxisLabel]="'Mes'" [yAxisLabel]="'Promedio'" [showXAxisLabel]="true" [showYAxisLabel]="true"
+          [xAxis]="true" [yAxis]="true" [view]="[500, 400]">
+        </ngx-charts-bar-vertical>
+      </div>
+    </div>
+  </div>
 
   <section class="report-section">
-    <h2><mat-icon>star</mat-icon> Calificaciones</h2>
-    <div class="stats-grid">
-      <mat-card class="stat-card">
-        <mat-card-content>
-          <span class="stat-number">{{ ratingPromedio() }}</span>
-          <span class="stat-label">Rating promedio</span>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="stat-card">
-        <mat-card-content>
-          <span class="stat-number">{{ totalReviews() }}</span>
-          <span class="stat-label">Total reseñas</span>
-        </mat-card-content>
-      </mat-card>
+    <h2><mat-icon>bar_chart</mat-icon> Gráficos</h2>
+    <div class="charts-row">
+      <div class="chart-container">
+        <h3>Mis citas por estado</h3>
+        <ngx-charts-pie-chart [results]="citasPorEstadoChart()" [scheme]="colorScheme" [labels]="true" [doughnut]="true"
+          [view]="[450, 300]">
+        </ngx-charts-pie-chart>
+      </div>
+
+      <div class="chart-container">
+        <h3>Mis servicios</h3>
+        <ngx-charts-bar-horizontal [results]="serviciosPorEstadoChart()" [scheme]="colorScheme" [xAxisLabel]="'Cantidad'"
+          [yAxisLabel]="'Estado'" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true"
+          [view]="[450, 300]">
+        </ngx-charts-bar-horizontal>
+      </div>
     </div>
   </section>
 }

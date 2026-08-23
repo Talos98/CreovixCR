@@ -3,6 +3,7 @@ import { forkJoin } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { ServicioService } from '../../../core/services/servicio.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,7 +13,7 @@ import { Service } from '../../../core/models/service.model';
 @Component({
   selector: 'app-reporte-profesional',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [MatCardModule, MatIconModule, MatProgressSpinnerModule, NgxChartsModule],
   templateUrl: './reporte-profesional.html',
   styleUrl: './reporte-profesional.css',
 })
@@ -56,6 +57,48 @@ export class ReporteProfesional {
 
   totalReviews = computed(() => {
     return this.misCitas().filter(c => c.review).length;
+  });
+
+  colorScheme: any = { domain: ['#f59e0b', '#0c3c2c', '#22c55e', '#6b7280'] };
+
+  citasPorEstadoChart = computed(() => [
+    { name: 'Pendientes', value: this.citasPendientes() },
+    { name: 'Aceptadas', value: this.citasAceptadas() },
+    { name: 'Completadas', value: this.citasCompletadas() },
+    { name: 'Canceladas', value: this.citasCanceladas() },
+  ]);
+
+  serviciosPorEstadoChart = computed(() => [
+    { name: 'Activos', value: this.serviciosActivos() },
+    { name: 'Inactivos', value: this.totalServicios() - this.serviciosActivos() },
+  ]);
+
+  ratingColorScheme: any = { domain: ['#e85320'] };
+
+  ratingPorMesChart = computed(() => {
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const ahora = new Date();
+    const anioActual = ahora.getFullYear();
+
+    const reviewsPorMes: { [key: number]: number[] } = {};
+    for (let i = 0; i < 12; i++) reviewsPorMes[i] = [];
+
+    this.misCitas()
+      .filter(c => c.review?.createdAt)
+      .forEach(c => {
+        const fecha = new Date(c.review!.createdAt!);
+        if (fecha.getFullYear() === anioActual) {
+          reviewsPorMes[fecha.getMonth()].push(c.review!.rating);
+        }
+      });
+
+    return meses.map((mes, i) => {
+      const ratings = reviewsPorMes[i];
+      const promedio = ratings.length > 0
+        ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10
+        : 0;
+      return { name: mes, value: promedio };
+    });
   });
 
   ngOnInit(): void {

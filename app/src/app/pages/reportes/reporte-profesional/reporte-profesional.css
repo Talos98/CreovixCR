@@ -42,8 +42,8 @@ h1 {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
 }
 
 .stat-card {
@@ -56,11 +56,11 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 1rem;
+  padding: 1rem 0.75rem;
 }
 
 .stat-number {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 800;
   color: #1a1a1a;
 }
@@ -87,4 +87,40 @@ h1 {
 
 .stat-card.cancelled {
   border-left: 4px solid #5d4037;
+}
+
+.side-by-side {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.side-left {
+    flex: 1;
+}
+
+.side-right {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+}
+
+.charts-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.chart-container {
+    flex: 1;
+}
+
+@media (max-width: 900px) {
+    .side-by-side {
+        flex-direction: column;
+    }
+
+    .charts-row {
+        flex-direction: column;
+    }
 }
