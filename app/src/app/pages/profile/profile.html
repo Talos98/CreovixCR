@@ -126,7 +126,7 @@
                                 <mat-icon matPrefix>person</mat-icon>
                                 <input matInput [formField]="profileForm.name" />
                                 @if (profileForm.name().touched() && profileForm.name().invalid()) {
-                                    <mat-error>{{ profileForm.name().errors()[0].message }}</mat-error>
+                                <mat-error>{{ profileForm.name().errors()[0].message }}</mat-error>
                                 }
                             </mat-form-field>
 
@@ -135,7 +135,7 @@
                                 <mat-icon matPrefix>person_outline</mat-icon>
                                 <input matInput [formField]="profileForm.lastName" />
                                 @if (profileForm.lastName().touched() && profileForm.lastName().invalid()) {
-                                    <mat-error>{{ profileForm.lastName().errors()[0].message }}</mat-error>
+                                <mat-error>{{ profileForm.lastName().errors()[0].message }}</mat-error>
                                 }
                             </mat-form-field>
 
@@ -144,21 +144,25 @@
                                 <mat-icon matPrefix>mail</mat-icon>
                                 <input matInput type="email" [formField]="profileForm.email" />
                                 @if (profileForm.email().touched() && profileForm.email().invalid()) {
-                                    <mat-error>{{ profileForm.email().errors()[0].message }}</mat-error>
+                                <mat-error>{{ profileForm.email().errors()[0].message }}</mat-error>
                                 }
                             </mat-form-field>
 
                             <div class="edit-actions">
-                                <button mat-stroked-button type="button" (click)="cancelarEdicion()" [disabled]="guardando()">
+                                <button mat-stroked-button type="button" (click)="cancelarEdicion()"
+                                    [disabled]="guardando()">
                                     Cancelar
                                 </button>
                                 <button mat-flat-button class="save-button" type="submit" [disabled]="guardando()">
                                     @if (guardando()) {
-                                        <mat-spinner diameter="20"></mat-spinner>
-                                        <span>Guardando...</span>
+                                    <mat-spinner diameter="20"></mat-spinner>
+                                    <span>Guardando...</span>
                                     } @else {
+                                    <ng-container>
                                         <mat-icon>save</mat-icon>
                                         <span>Guardar cambios</span>
+                                    </ng-container>
+
                                     }
                                 </button>
                             </div>

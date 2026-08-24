@@ -12,7 +12,6 @@ import { ProfessionalProfile } from '../../../core/models/professional.model';
     selector: 'app-profesional-detail',
     standalone: true,
     imports: [
-        RouterLink,
         MatButtonModule,
         MatCardModule,
         MatIconModule,

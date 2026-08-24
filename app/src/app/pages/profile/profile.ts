@@ -36,6 +36,7 @@ interface ProfileFormModel {
         MatFormFieldModule,
         MatInputModule,
         MatProgressSpinnerModule,
+      
     ],
     templateUrl: './profile.html',
     styleUrl: './profile.css',

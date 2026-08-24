@@ -20,7 +20,6 @@ import { Role } from '../../../core/models/role.model';
     selector: 'app-cita-detail',
     standalone: true,
     imports: [
-        RouterLink,
         MatButtonModule,
         MatCardModule,
         MatIconModule,
