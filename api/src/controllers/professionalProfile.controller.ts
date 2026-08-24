@@ -36,6 +36,22 @@ export class ProfessionalProfileController {
         }
     };
 
+    async getMyProfile(req: AuthRequest, res: Response) {
+
+        const userId = req.user!.id;
+
+        const profile =
+            await professionalProfileService.getMyProfile(userId);
+
+        return res.json({
+            success: true,
+            data: profile
+        });
+    };
+
+
+
+
     create = async (
         req: AuthRequest,
         res: Response,

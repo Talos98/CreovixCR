@@ -34,34 +34,27 @@ export class ProfesionalMiPerfil {
         this.loading.set(true);
         this.error.set(null);
 
-        const user = this.authService.user();
-        if (!user) {
-            this.error.set('No se pudo obtener la información del usuario');
-            this.loading.set(false);
-            return;
-        }
+        this.professionalService.obtenerMiPerfil().subscribe({
+            next: (response) => {
+                console.log('MI PERFIL:', response);
 
-        this.professionalService.listar().subscribe({
-            next: (response: any) => {
-                const profiles: ProfessionalProfile[] =
-                    response.data?.data ?? [];
+                this.profesional.set(response.data);
+            },
 
-                const myProfile = profiles.find(
-                    (p: ProfessionalProfile) => p.userId === user.id
+            error: (error) => {
+                console.error('ERROR AL CARGAR MI PERFIL:', error);
+
+                this.profesional.set(null);
+
+                this.error.set(
+                    error.error?.message ||
+                    'No se pudo cargar la información del perfil'
                 );
+            },
 
-                if (myProfile) {
-                    this.profesional.set(myProfile);
-                } else {
-                    this.profesional.set(null);
-                }
-            },
-            error: () => {
-                this.error.set('No se pudo cargar la información del perfil');
-            },
             complete: () => {
                 this.loading.set(false);
-            },
+            }
         });
     }
 
@@ -111,19 +104,32 @@ export class ProfesionalMiPerfil {
             data as ProfessionalUpdateDto
         ).subscribe({
 
-            next: () => {
+            next: (response) => {
+
+                console.log('RESPUESTA UPDATE:', response);
+
+                const updatedProfile: ProfessionalProfile = {
+                    ...response.data.profile,
+                    user: response.data.user
+                };
+                this.profesional.set(updatedProfile);
 
                 this.noti.success(
                     'Perfil actualizado correctamente'
                 );
 
-                this.loadProfile();
+
                 this.saving.set(false);
             },
 
-            error: () => {
+            error: (error) => {
+                console.error('ERROR AL ACTUALIZAR PERFIL:', error);
+                console.error('STATUS:', error.status);
+                console.error('ERROR BODY:', error.error);
+                console.log('VALIDATION ERRORS:', error.error?.validationErrors);
 
                 this.error.set(
+                    error.error?.message ||
                     'No se pudo actualizar el perfil'
                 );
 

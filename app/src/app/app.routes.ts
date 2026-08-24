@@ -29,6 +29,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { Login } from './pages/usuarios/login/login';
 import { Register } from './pages/usuarios/register/register';
+import { ProfesionalClientList } from './pages/profesionales/profesional-client-list/profesional-client-list';
 
 export const routes: Routes = [
     {
@@ -56,6 +57,11 @@ export const routes: Routes = [
                 path: 'servicios/:id',
                 component: ServicioDetail,
                 title: 'Detalle del servicio'
+            },
+            {
+                path: 'profesionales',
+                component: ProfesionalClientList,
+                title: 'Profesionales'
             },
 
             {

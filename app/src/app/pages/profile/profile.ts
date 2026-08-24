@@ -152,10 +152,6 @@ export class Profile {
 
             error: () => {
 
-                this.noti.error(
-                    'No se pudo actualizar el perfil'
-                );
-
                 this.guardando.set(false);
             }
 
