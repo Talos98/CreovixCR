@@ -1,5 +1,6 @@
 .calendar-legend {
   display: flex;
+  align-items: center;
   gap: 16px;
   margin-bottom: 12px;
   flex-wrap: wrap;
@@ -120,4 +121,10 @@
 
 .cal-month-view .cal-day-cell {
   min-height: 100px;
+}
+
+.status-filter {
+    margin-left: auto;
+    width: 180px;
+    font-size: 0.85rem;
 }
