@@ -1,5 +1,9 @@
 <h1>Reportes Generales</h1>
 
+<button mat-stroked-button class="pdf-button" (click)="generarReportePDF()">
+  <span class="btn-content"><mat-icon class="pdf-icon">picture_as_pdf</mat-icon> Reporte de Calificaciones</span>
+</button>
+
 @if (loading()) {
 <div class="loading-container">
   <mat-spinner diameter="48"></mat-spinner>

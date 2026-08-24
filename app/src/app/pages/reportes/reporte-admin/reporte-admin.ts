@@ -11,6 +11,7 @@ import { Service } from '../../../core/models/service.model';
 import { User } from '../../../core/models/user.model';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { PdfReportService } from '../../../core/services/pdf-report.service';
 
 @Component({
   selector: 'app-reporte-admin',
@@ -23,6 +24,7 @@ export class ReporteAdmin {
   private readonly citaService = inject(AppointmentService);
   private readonly servicioService = inject(ServicioService);
   private readonly userService = inject(UserService);
+  private readonly pdfService = inject(PdfReportService);
 
   citas = signal<Appointment[]>([]);
   servicios = signal<Service[]>([]);
@@ -84,5 +86,9 @@ export class ReporteAdmin {
         this.loading.set(false);
       },
     });
+  }
+
+  generarReportePDF(): void {
+    this.pdfService.generarReporteCalificaciones(this.citas());
   }
 }
