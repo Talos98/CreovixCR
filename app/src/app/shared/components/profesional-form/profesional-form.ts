@@ -171,16 +171,17 @@ export class ProfesionalForm {
     // =====================
     // LIFECYCLE
     // =====================
-    ngOnChanges(): void {
-        const prof = this.profesional();
+    constructor() {
+        effect(() => {
+            const prof = this.profesional();
 
-        if (prof) {
-            this.loadProfesional(prof);
-        } else {
-            this.loadUserData();
-        }
+            if (prof) {
+                this.loadProfesional(prof);
+            } else {
+                this.loadUserData();
+            }
+        });
     }
-
     // =====================
     // PUBLIC METHODS (UI)
     // =====================
@@ -308,13 +309,32 @@ export class ProfesionalForm {
     }
 
     private buildDto(): ProfessionalCreateDto | ProfessionalUpdateDto {
-    const value = this.profesionalModel();
+        const value = this.profesionalModel();
 
-    // =========================
-    // ACTUALIZAR PERFIL
-    // =========================
-    if (this.isEdit()) {
+        // =========================
+        // ACTUALIZAR PERFIL
+        // =========================
+        if (this.isEdit()) {
+            return {
+                title: value.title.trim(),
+                description: value.description.trim(),
+                yearsExperience: Number(value.yearsExperience),
+                phone: value.phone.trim(),
+                location: value.location.trim(),
+                baseRate: Number(value.baseRate),
+                mode: value.mode,
+                isAvailable: value.isAvailable,
+                profileImage: value.profileImage?.trim()
+            };
+        }
+
+        // =========================
+        // CREAR PERFIL
+        // =========================
         return {
+            name: value.name.trim(),
+            lastName: value.lastName.trim(),
+            email: value.email.trim(),
             title: value.title.trim(),
             description: value.description.trim(),
             yearsExperience: Number(value.yearsExperience),
@@ -326,23 +346,4 @@ export class ProfesionalForm {
             profileImage: value.profileImage?.trim()
         };
     }
-
-    // =========================
-    // CREAR PERFIL
-    // =========================
-    return {
-        name: value.name.trim(),
-        lastName: value.lastName.trim(),
-        email: value.email.trim(),
-        title: value.title.trim(),
-        description: value.description.trim(),
-        yearsExperience: Number(value.yearsExperience),
-        phone: value.phone.trim(),
-        location: value.location.trim(),
-        baseRate: Number(value.baseRate),
-        mode: value.mode,
-        isAvailable: value.isAvailable,
-        profileImage: value.profileImage?.trim()
-    };
-}
 }

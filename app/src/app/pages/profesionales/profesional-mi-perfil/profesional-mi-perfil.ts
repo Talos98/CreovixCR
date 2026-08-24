@@ -108,11 +108,6 @@ export class ProfesionalMiPerfil {
 
                 console.log('RESPUESTA UPDATE:', response);
 
-                const updatedProfile: ProfessionalProfile = {
-                    ...response.data.profile,
-                    user: response.data.user
-                };
-                this.profesional.set(updatedProfile);
 
                 this.noti.success(
                     'Perfil actualizado correctamente'
