@@ -77,6 +77,14 @@
   transition: background 0.15s, color 0.15s;
 }
 
+.complete-disabled {
+  background-color: #e0e0e0 !important;
+  color: #888 !important;
+  border-color: #d0d0d0 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+}
+
 .btn-group button:last-child {
   border-right: none;
 }
@@ -108,5 +116,5 @@
 }
 
 .detail-item strong {
-    margin-right: 0.2rem;
+  margin-right: 0.2rem;
 }

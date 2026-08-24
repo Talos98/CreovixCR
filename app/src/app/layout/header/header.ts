@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { Role } from '../../core/models/role.model'
 import { AuthService } from '../../core/services/auth.service';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 
@@ -33,6 +34,7 @@ interface User {
     MatIconModule,
     MatMenuModule,
     MatBadgeModule,
+    MatDividerModule
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',

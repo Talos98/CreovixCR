@@ -15,13 +15,13 @@ import {
 } from 'angular-calendar';
 
 import { Appointment } from '../../../core/models/appointment.model';
-import { CdkNoDataRow } from "@angular/cdk/table";
+
 
 
 @Component({
   selector: 'app-citas-calendar',
   standalone: true,
-  imports: [CommonModule, DatePipe, CalendarMonthViewComponent, CalendarWeekViewComponent, MatDialogModule, CdkNoDataRow],
+  imports: [CommonModule, DatePipe, CalendarMonthViewComponent, CalendarWeekViewComponent, MatDialogModule],
   templateUrl: './calendar.html',
   styleUrl: './calendar.css',
   encapsulation: ViewEncapsulation.None,

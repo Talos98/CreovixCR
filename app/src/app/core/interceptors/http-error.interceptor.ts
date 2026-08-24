@@ -23,11 +23,13 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
                         message = 'No se pudo conectar con el servidor'
                         break
                     case 400:
-                        message = 'Solicitud incorrecta'
+                          message = error.error?.message || 'Solicitud incorrecta'
                         break
                     case 401:
-                        message = 'Su sesión ha expirado o no es válida'
-                        if (!request.url.includes('/login')) {
+                        if (request.url.includes('/login')) {
+                            message = 'Correo o contraseña incorrectos'
+                        } else {
+                            message = 'Su sesión ha expirado o no es válida'
                             authService.logout()
                         }
                         break
@@ -48,7 +50,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
                         break
                 }
             }
-            noti.error(message, `Error ${error.status}`, 5000)
+            noti.error(message, 'Error', 2000)
             return throwError(() => error)
         })
     )

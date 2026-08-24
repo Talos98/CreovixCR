@@ -4,7 +4,8 @@ import {
     input,
     output,
     signal,
-    inject
+    inject,
+    effect
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -34,6 +35,9 @@ import {
 } from '../../../core/models/professional.model';
 
 import { ImageService } from '../../../core/services/image.service';
+import { AuthService } from '../../../core/services/auth.service';
+
+
 
 interface UserOption {
     id: number;
@@ -155,6 +159,7 @@ export class ProfesionalForm {
     // SERVICES
     // =====================
     private readonly imageService = inject(ImageService);
+    private readonly authService = inject(AuthService);
 
     // =====================
     // IMAGE STATE
@@ -166,13 +171,17 @@ export class ProfesionalForm {
     // =====================
     // LIFECYCLE
     // =====================
-    ngOnChanges(): void {
-        const prof = this.profesional();
-        if (prof) {
-            this.loadProfesional(prof);
-        }
-    }
+    constructor() {
+        effect(() => {
+            const prof = this.profesional();
 
+            if (prof) {
+                this.loadProfesional(prof);
+            } else {
+                this.loadUserData();
+            }
+        });
+    }
     // =====================
     // PUBLIC METHODS (UI)
     // =====================
@@ -203,20 +212,46 @@ export class ProfesionalForm {
     // PRIVATE METHODS
     // =====================
     private loadProfesional(prof: ProfessionalProfile) {
-        this.profesionalModel.set({
+
+        this.profesionalModel.update(value => ({
+            ...value,
             name: prof.user?.name ?? '',
             lastName: prof.user?.lastName ?? '',
             email: prof.user?.email ?? '',
-            title: prof.title,
+            title: prof.title ?? '',
             description: prof.description ?? '',
-            yearsExperience: prof.yearsExperience,
-            phone: prof.phone,
-            location: prof.location,
-            baseRate: prof.baseRate,
-            mode: prof.mode,
-            isAvailable: prof.isAvailable,
+            yearsExperience: prof.yearsExperience ?? 0,
+            phone: prof.phone ?? '',
+            location: prof.location ?? '',
+            baseRate: prof.baseRate ?? 0,
+            mode: prof.mode ?? 'IN_PERSON',
+            isAvailable: prof.isAvailable ?? true,
             profileImage: prof.profileImage ?? ''
-        });
+        }));
+
+        if (prof.profileImage) {
+            this.imagePreview.set(
+                this.imageService.getImageUrl(prof.profileImage)
+            );
+        } else {
+            this.imagePreview.set(null);
+        }
+
+        this.selectedImageFile.set(null);
+    }
+    private loadUserData() {
+        const user = this.authService.user();
+
+        if (!user) {
+            return;
+        }
+
+        this.profesionalModel.update(value => ({
+            ...value,
+            name: user.name ?? '',
+            lastName: user.lastName ?? '',
+            email: user.email ?? ''
+        }));
     }
 
     private markFieldsAsTouched() {
@@ -276,6 +311,26 @@ export class ProfesionalForm {
     private buildDto(): ProfessionalCreateDto | ProfessionalUpdateDto {
         const value = this.profesionalModel();
 
+        // =========================
+        // ACTUALIZAR PERFIL
+        // =========================
+        if (this.isEdit()) {
+            return {
+                title: value.title.trim(),
+                description: value.description.trim(),
+                yearsExperience: Number(value.yearsExperience),
+                phone: value.phone.trim(),
+                location: value.location.trim(),
+                baseRate: Number(value.baseRate),
+                mode: value.mode,
+                isAvailable: value.isAvailable,
+                profileImage: value.profileImage?.trim()
+            };
+        }
+
+        // =========================
+        // CREAR PERFIL
+        // =========================
         return {
             name: value.name.trim(),
             lastName: value.lastName.trim(),

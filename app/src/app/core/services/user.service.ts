@@ -17,6 +17,26 @@ export class UserService {
         return this.http.put<ApiResponse<User>>(`${this.apiUrl}/${id}`, data);
     }
 
+    actualizarMiPerfil(
+        data: {
+            name: string;
+            lastName: string;
+            email: string;
+        }
+    ) {
+        return this.http.put<ApiResponse<User>>(
+            `${this.apiUrl}/profile`,
+            data
+        );
+    }
+    convertirEnProfesional(id: number) {
+        return this.http.patch<ApiResponse<User>>(
+            `${this.apiUrl}/${id}/role`,
+            {}
+        );
+    }
+
+
     toggleStatus(id: number) {
         return this.http.patch<{ success: boolean; data: User }>(`${this.apiUrl}/${id}/status`, {});
     }

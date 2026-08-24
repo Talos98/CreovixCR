@@ -10,17 +10,46 @@ export interface ProfessionalProfile {
     mode: 'ONLINE' | 'IN_PERSON';
     isAvailable: boolean;
     profileImage: string;
-    user?: { 
+
+    user?: {
         id: number;
         name: string;
         lastName: string;
-        email: string;
-        role: string;
-        status: string };
+        email?: string;
+        role?: string;
+        status?: string;
+    };
 }
 
+export interface ProfessionalDetail extends ProfessionalProfile {
+    user: {
+        id: number;
+        name: string;
+        lastName: string;
+        services: ProfessionalService[];
+    };
+}
+
+export interface ProfessionalService {
+    id: number;
+    name: string;
+    description: string | null;
+    price: number;
+    duration: number;
+    mode: 'ONLINE' | 'IN_PERSON';
+
+    category: {
+        id: number;
+        name: string;
+    };
+
+    specialties: {
+        id: number;
+        name: string;
+    }[];
+}
 export interface ProfessionalFormModel {
-    
+
     name: string;
     lastName: string;
     email: string;
@@ -37,7 +66,7 @@ export interface ProfessionalFormModel {
 }
 
 export interface ProfessionalCreateDto {
-    
+
     name: string;
     lastName: string;
     email: string;
@@ -54,4 +83,9 @@ export interface ProfessionalCreateDto {
 }
 
 export type ProfessionalUpdateDto = Partial<ProfessionalCreateDto>;
+
+export interface ProfessionalUpdateResponse {
+    user: ProfessionalProfile['user'];
+    profile: ProfessionalProfile;
+}
 

@@ -20,7 +20,6 @@ import { Role } from '../../../core/models/role.model';
     selector: 'app-cita-detail',
     standalone: true,
     imports: [
-        RouterLink,
         MatButtonModule,
         MatCardModule,
         MatIconModule,
@@ -122,6 +121,19 @@ export class CitaDetail {
         };
         return classes[status] ?? '';
     }
+
+    canCompleteAppointment(): boolean {
+        const cita = this.cita();
+
+        if (!cita || cita.status !== 'ACCEPTED') {
+            return false;
+        }
+
+        const appointmentDateTime = new Date(cita.startTime);
+
+        return new Date() >= appointmentDateTime;
+    }
+
 
     updating = signal(false);
 

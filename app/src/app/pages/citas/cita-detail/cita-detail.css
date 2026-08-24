@@ -414,6 +414,14 @@
     margin-top: 2px;
 }
 
+.complete-disabled {
+    background-color: #e0e0e0 !important;
+    color: #888 !important;
+    border-color: #d0d0d0 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
 mat-card-content {
     overflow: visible;
 }

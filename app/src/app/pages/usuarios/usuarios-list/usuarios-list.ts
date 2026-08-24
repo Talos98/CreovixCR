@@ -123,6 +123,41 @@ export class UsuariosList {
     });
   }
 
+  convertirEnProfesional(user: User): void {
+    this.userService.convertirEnProfesional(user.id).subscribe({
+      next: () => {
+        this.notificationService.success(
+          `El usuario ${user.name} ahora es profesional.`
+        );
+
+        this.loadUsuarios();
+      },
+      error: () => {
+        this.notificationService.error(
+          'No se pudo convertir el usuario en profesional.'
+        );
+      },
+    });
+  }
+
+  openProfessionalDialog(user: User): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Convertir en profesional',
+        message: `¿Deseas convertir a ${user.name} ${user.lastName} en profesional?`,
+        warning: 'El usuario tendrá acceso a las funciones correspondientes al rol profesional.',
+        confirmText: 'Convertir'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.convertirEnProfesional(user);
+      }
+    });
+  }
+
   getRoleLabel(role: string): string {
     const labels: Record<string, string> = {
       ADMIN: 'Administrador',

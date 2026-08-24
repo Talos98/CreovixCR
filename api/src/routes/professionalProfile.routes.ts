@@ -5,12 +5,19 @@ import { validateRequest } from "../middlewares/validate-request.middleware";
 import { createProfessionalProfileSchema, updateProfessionalProfileSchema } from "../dtos/professionalProfile.dto";
 import { authenticateToken } from "../middlewares/auth.middleware";
 
+
 export class ProfessionalProfileRoutes {
     static get routes(): Router {
         const router = Router();
         const controller = new ProfessionalProfileController();
 
         router.get("/", controller.list);
+        router.get(
+            "/me",
+            authenticateToken,
+            asyncHandler(controller.getMyProfile)
+        );
+
         router.get("/:id", controller.getById);
 
         router.post(

@@ -56,16 +56,20 @@ export class Login {
         this.errorServidor.set(null);
 
         this.authService.login(this.model())
-            .pipe(finalize(() => this.enviando.set(false)))
+            .pipe(
+                finalize(() => this.enviando.set(false))
+            )
             .subscribe({
                 next: () => {
                     const returnUrl =
                         this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
+
                     void this.router.navigateByUrl(returnUrl);
                 },
-                error: (error) => {
+
+                error: (error: Error) => {
                     this.errorServidor.set(
-                        error.error?.message ?? 'No fue posible iniciar sesión.'
+                        error.message ?? 'No fue posible iniciar sesión.'
                     );
                 },
             });

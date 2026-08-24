@@ -253,8 +253,14 @@
                     <button (click)="changeStatus('REJECTED')" [disabled]="updating()">Rechazar</button>
                     }
                     @if (c.status === 'ACCEPTED') {
-                    <button (click)="changeStatus('COMPLETED')" [disabled]="updating()">Completar</button>
-                    <button (click)="changeStatus('CANCELLED')" [disabled]="updating()">Cancelar</button>
+                    <button (click)="changeStatus('COMPLETED')" [disabled]="updating() || !canCompleteAppointment()"
+                        [class.complete-disabled]="!canCompleteAppointment()">
+                        Completar
+                    </button>
+
+                    <button (click)="changeStatus('CANCELLED')" [disabled]="updating()">
+                        Cancelar
+                    </button>
                     }
                 </div>
                 }
@@ -273,4 +279,3 @@
 
 </div>
 }
-```

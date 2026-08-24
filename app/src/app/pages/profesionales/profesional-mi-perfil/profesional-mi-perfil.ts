@@ -34,49 +34,103 @@ export class ProfesionalMiPerfil {
         this.loading.set(true);
         this.error.set(null);
 
-        const user = this.authService.user();
-        if (!user) {
-            this.error.set('No se pudo obtener la información del usuario');
-            this.loading.set(false);
-            return;
-        }
+        this.professionalService.obtenerMiPerfil().subscribe({
+            next: (response) => {
+                console.log('MI PERFIL:', response);
 
-        this.professionalService.listar().subscribe({
-            next: (response: any) => {
-                const profiles: ProfessionalProfile[] = response.data ?? response ?? [];
-                const myProfile = profiles.find((p: ProfessionalProfile) => p.userId === user.id);
-                if (myProfile) {
-                    this.profesional.set(myProfile);
-                } else {
-                    this.error.set('No se encontró tu perfil profesional. Contacta al administrador.');
-                }
+                this.profesional.set(response.data);
             },
-            error: () => {
-                this.error.set('No se pudo cargar la información del perfil');
+
+            error: (error) => {
+                console.error('ERROR AL CARGAR MI PERFIL:', error);
+
+                this.profesional.set(null);
+
+                this.error.set(
+                    error.error?.message ||
+                    'No se pudo cargar la información del perfil'
+                );
             },
+
             complete: () => {
                 this.loading.set(false);
-            },
+            }
         });
     }
 
     guardar(data: ProfessionalCreateDto | ProfessionalUpdateDto) {
-        const prof = this.profesional();
-        if (!prof) return;
 
         this.saving.set(true);
         this.error.set(null);
 
-        this.professionalService.actualizar(prof.id, data as ProfessionalUpdateDto).subscribe({
-            next: () => {
-                this.noti.success('Perfil actualizado correctamente');
-                this.loadProfile();
+        const prof = this.profesional();
+
+        // =========================
+        // CREAR PERFIL
+        // =========================
+        if (!prof) {
+
+            this.professionalService.crear(
+                data as ProfessionalCreateDto
+            ).subscribe({
+
+                next: () => {
+                    this.noti.success(
+                        'Perfil profesional creado correctamente'
+                    );
+
+                    this.loadProfile();
+                    this.saving.set(false);
+                },
+
+                error: () => {
+                    this.error.set(
+                        'No se pudo crear el perfil profesional'
+                    );
+
+                    this.saving.set(false);
+                }
+
+            });
+
+            return;
+        }
+
+        // =========================
+        // ACTUALIZAR PERFIL
+        // =========================
+        this.professionalService.actualizar(
+            prof.id,
+            data as ProfessionalUpdateDto
+        ).subscribe({
+
+            next: (response) => {
+
+                console.log('RESPUESTA UPDATE:', response);
+
+
+                this.noti.success(
+                    'Perfil actualizado correctamente'
+                );
+
+
                 this.saving.set(false);
             },
-            error: () => {
-                this.error.set('No se pudo actualizar el perfil');
+
+            error: (error) => {
+                console.error('ERROR AL ACTUALIZAR PERFIL:', error);
+                console.error('STATUS:', error.status);
+                console.error('ERROR BODY:', error.error);
+                console.log('VALIDATION ERRORS:', error.error?.validationErrors);
+
+                this.error.set(
+                    error.error?.message ||
+                    'No se pudo actualizar el perfil'
+                );
+
                 this.saving.set(false);
-            },
+            }
+
         });
     }
 
