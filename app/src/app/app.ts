@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgxSonnerToaster } from 'ngx-sonner';
+import { AuthService } from './core/services/auth.service';
 
 
 @Component({
@@ -12,4 +13,9 @@ import { NgxSonnerToaster } from 'ngx-sonner';
 })
 export class App {
   protected readonly title = signal('app');
+  private readonly authService = inject(AuthService);
+
+  constructor() {
+    this.authService.initializeSession().subscribe();
+  }
 }
