@@ -7,7 +7,6 @@ import { Appointment } from '../../../core/models/appointment.model';
 import { Role } from '../../../core/models/role.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule, MatIcon } from '@angular/material/icon';
-import { ExcelExportService } from '../../../core/services/excel-export.service';
 
 @Component({
   selector: 'app-cita-page',
@@ -20,7 +19,6 @@ export class CitaPage implements OnInit {
 
   private readonly appointmentService = inject(AppointmentService);
   private readonly authService = inject(AuthService);
-  private readonly excelService = inject(ExcelExportService);
 
   viewMode: 'list' | 'calendar' = 'list';
 
@@ -67,11 +65,5 @@ export class CitaPage implements OnInit {
         this.loading.set(false);
       }
     });
-  }
-
-  exportarExcel(): void {
-    this.excelService.exportCitas(this.citas(), 'reporte-citas');
-  }
-
-  
+  }  
 }
