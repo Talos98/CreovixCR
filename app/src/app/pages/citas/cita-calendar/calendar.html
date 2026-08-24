@@ -12,7 +12,7 @@
 
   <div class="view-buttons">
     <button (click)="view.set(CalendarView.Month)">Mes</button>
-    <button (click)="view.set(CalendarView.Week)">Semana</button> 
+    <button (click)="view.set(CalendarView.Week)">Semana</button>
   </div>
 
 </div>
@@ -43,15 +43,24 @@
     <span>Completada</span>
   </div>
 
+  <mat-form-field appearance="outline" class="status-filter">
+    <mat-label>Filtrar por estado</mat-label>
+    <mat-select [value]="statusFilter()" (selectionChange)="statusFilter.set($event.value)">
+      <mat-option [value]="null">Todos</mat-option>
+      <mat-option value="PENDING">Pendiente</mat-option>
+      <mat-option value="ACCEPTED">Aceptada</mat-option>
+      <mat-option value="COMPLETED">Completada</mat-option>
+      <mat-option value="REJECTED">Rechazada</mat-option>
+      <mat-option value="CANCELLED">Cancelada</mat-option>
+    </mat-select>
+  </mat-form-field>
+
 </div>
 
 <div [ngSwitch]="view()">
 
-  <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" 
-    [viewDate]="viewDate()" 
-    [events]="events()"
-    [cellTemplate]="monthCellTemplate"
-    (eventClicked)="handleEvent($event.event)">
+  <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate()" [events]="events()"
+    [cellTemplate]="monthCellTemplate" (eventClicked)="handleEvent($event.event)">
   </mwl-calendar-month-view>
 
 
@@ -65,12 +74,10 @@
     </div>
     <div class='cal-events-bar'>
       @for (event of day.events; track event.id) {
-        <div class="event-bar"
-          [style.background]="event.color?.secondary"
-          [style.border-left-color]="event.color?.primary"
-          (click)="handleEvent(event)">
-          {{ event.title }}
-        </div>
+      <div class="event-bar" [style.background]="event.color?.secondary"
+        [style.border-left-color]="event.color?.primary" (click)="handleEvent(event)">
+        {{ event.title }}
+      </div>
       }
     </div>
   </ng-template>
