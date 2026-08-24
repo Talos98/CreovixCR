@@ -23,7 +23,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
                         message = 'No se pudo conectar con el servidor'
                         break
                     case 400:
-                        message = 'Solicitud incorrecta'
+                          message = error.error?.message || 'Solicitud incorrecta'
                         break
                     case 401:
                         if (request.url.includes('/login')) {
@@ -50,7 +50,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
                         break
                 }
             }
-            noti.error(message, 'Error', 5000)
+            noti.error(message, 'Error', 2000)
             return throwError(() => error)
         })
     )

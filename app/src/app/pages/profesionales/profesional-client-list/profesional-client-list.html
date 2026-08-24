@@ -1,0 +1,207 @@
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Profesionales disponibles</h1>
+
+            <p>
+                Consulta los profesionales disponibles y conoce sus servicios.
+            </p>
+        </div>
+
+    </div>
+
+
+    @if (loading()) {
+
+        <div class="loading-container">
+
+            <mat-spinner diameter="48"></mat-spinner>
+
+            <p>
+                Cargando profesionales...
+            </p>
+
+        </div>
+
+    }
+
+
+    @if (error()) {
+
+        <div class="error-container">
+
+            <mat-icon>error_outline</mat-icon>
+
+            <p>
+                {{ error() }}
+            </p>
+
+            <button
+                mat-flat-button
+                (click)="cargarProfesionales()">
+
+                Reintentar
+
+            </button>
+
+        </div>
+
+    }
+
+
+    @if (!loading() && !error()) {
+
+        @if (profesionales().length === 0) {
+
+            <div class="empty-container">
+
+                <mat-icon>person_off</mat-icon>
+
+                <h2>No hay profesionales disponibles</h2>
+
+                <p>
+                    Actualmente no hay profesionales disponibles.
+                </p>
+
+            </div>
+
+        } @else {
+
+            <div class="professionals-grid">
+
+                @for (
+                    profesional of profesionales();
+                    track profesional.id
+                ) {
+
+                    <mat-card class="professional-card">
+
+                        <div class="image-container">
+
+                            @if (profesional.profileImage) {
+
+                                <img
+                                    [src]="getImageUrl(profesional.profileImage)"
+                                    [alt]="
+                                        profesional.user?.name +
+                                        ' ' +
+                                        profesional.user?.lastName
+                                    "
+                                    class="profile-image"
+                                />
+
+                            } @else {
+
+                                <mat-icon class="fallback-icon">
+                                    person
+                                </mat-icon>
+
+                            }
+
+                        </div>
+
+
+                        <mat-card-header>
+
+                            <mat-card-title>
+
+                                {{ profesional.user?.name }}
+                                {{ profesional.user?.lastName }}
+
+                            </mat-card-title>
+
+                            <mat-card-subtitle>
+
+                                {{ profesional.title }}
+
+                            </mat-card-subtitle>
+
+                        </mat-card-header>
+
+
+                        <mat-card-content>
+
+                            @if (profesional.description) {
+
+                                <p class="description">
+
+                                    {{ profesional.description }}
+
+                                </p>
+
+                            }
+
+                            <div class="professional-info">
+
+                                <span>
+
+                                    <mat-icon>location_on</mat-icon>
+
+                                    {{ profesional.location }}
+
+                                </span>
+
+
+                                <span>
+
+                                    <mat-icon>work_history</mat-icon>
+
+                                    {{ profesional.yearsExperience }}
+                                    años de experiencia
+
+                                </span>
+
+
+                                <span>
+
+                                    <mat-icon>
+                                        {{
+                                            profesional.mode === 'ONLINE'
+                                                ? 'videocam'
+                                                : 'storefront'
+                                        }}
+                                    </mat-icon>
+
+                                    {{
+                                        profesional.mode === 'ONLINE'
+                                            ? 'En línea'
+                                            : 'Presencial'
+                                    }}
+
+                                </span>
+
+                            </div>
+
+                        </mat-card-content>
+
+
+                        <mat-card-actions>
+
+                            <a
+                                mat-flat-button
+                                [routerLink]="[
+                                    '/profesionales',
+                                    profesional.id
+                                ]">
+
+                                <mat-icon>person</mat-icon>
+
+                                Ver perfil
+
+                            </a>
+
+                        </mat-card-actions>
+
+                    </mat-card>
+
+                }
+
+            </div>
+
+        }
+
+    }
+
+</div>

@@ -1,6 +1,6 @@
 import { prisma } from "../config/prisma";
 import { AppError } from "../utils/app-error";
-import { Role, ServiceMode } from "../../generated/prisma/enums";
+import { Role, ServiceMode, Status } from "../../generated/prisma/enums";
 
 export const professionalProfileService = {
 
@@ -12,19 +12,56 @@ export const professionalProfileService = {
         const skip = paginar ? (page - 1) * limit : undefined;
         const take = paginar ? limit : undefined;
 
+        const where = {
+            isAvailable: true,
+            user: {
+                role: Role.PROFESSIONAL,
+                status: Status.ACTIVE
+            }
+        };
+
         const [totalItems, data] = await Promise.all([
-            prisma.professionalProfile.count(),
+
+            prisma.professionalProfile.count({
+                where
+            }),
+
             prisma.professionalProfile.findMany({
                 skip,
                 take,
-                include: {
-                    user: true
+                where,
+
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    yearsExperience: true,
+                    phone: true,
+                    location: true,
+                    baseRate: true,
+                    mode: true,
+                    isAvailable: true,
+                    profileImage: true,
+
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            lastName: true,
+
+                        }
+                    }
                 },
-                orderBy: { createdAt: "desc" }
+
+                orderBy: {
+                    createdAt: "desc"
+                }
             })
         ]);
 
-        const totalPages = paginar ? Math.ceil(totalItems / limit) : 1;
+        const totalPages = paginar
+            ? Math.ceil(totalItems / limit)
+            : 1;
 
         return {
             meta: {
@@ -44,13 +81,101 @@ export const professionalProfileService = {
 
         const profile = await prisma.professionalProfile.findUnique({
             where: { id },
-            include: {
-                user: true
+
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                yearsExperience: true,
+                phone: true,
+                location: true,
+                baseRate: true,
+                mode: true,
+                isAvailable: true,
+                profileImage: true,
+
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        lastName: true,
+                        email: true,
+
+                        services: {
+                            where: {
+                                status: Status.ACTIVE
+                            },
+
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true,
+                                price: true,
+                                duration: true,
+                                mode: true,
+
+                                category: {
+                                    select: {
+                                        id: true,
+                                        name: true
+                                    }
+                                },
+
+                                specialties: {
+                                    select: {
+                                        id: true,
+                                        name: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
 
         if (!profile) {
-            throw AppError.badRequest("Perfil profesional no encontrado");
+            throw AppError.badRequest(
+                "Perfil profesional no encontrado"
+            );
+        }
+
+        return profile;
+    },
+
+    async getMyProfile(authenticatedUserId: number) {
+
+        const profile = await prisma.professionalProfile.findUnique({
+            where: {
+                userId: authenticatedUserId
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                yearsExperience: true,
+                phone: true,
+                location: true,
+                baseRate: true,
+                mode: true,
+                isAvailable: true,
+                profileImage: true,
+
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        lastName: true,
+                        email: true
+                    }
+                }
+            }
+        });
+
+        if (!profile) {
+            throw AppError.badRequest(
+                "Perfil profesional no encontrado"
+            );
         }
 
         return profile;
@@ -115,11 +240,24 @@ export const professionalProfileService = {
     // =====================
     // UPDATE PROFILE
     // =====================
-    async update(id: number, data: any, authenticatedUserId: number) {
+    async update(
+        id: number,
+        data: any,
+        authenticatedUserId: number
+    ) {
+        const profile = await prisma.professionalProfile.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                userId: true
+            }
+        });
 
-        await this.getById(id);
-
-        const profile = await this.getById(id);
+        if (!profile) {
+            throw AppError.badRequest(
+                "Perfil profesional no encontrado"
+            );
+        }
 
         if (profile.userId !== authenticatedUserId) {
             throw AppError.forbidden(
@@ -137,7 +275,8 @@ export const professionalProfileService = {
                 location: data.location,
                 baseRate: data.baseRate,
                 mode: data.mode,
-                profileImage: data.profileImage
+                profileImage: data.profileImage,
+                isAvailable: data.isAvailable,
             },
             include: {
                 user: true

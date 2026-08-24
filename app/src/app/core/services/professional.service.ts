@@ -2,22 +2,30 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { ApiResponse } from '../models/api-response.model';
-import { ProfessionalProfile, ProfessionalCreateDto, ProfessionalUpdateDto } from '../models/professional.model';
+import { ProfessionalProfile, ProfessionalCreateDto, ProfessionalUpdateDto, ProfessionalUpdateResponse } from '../models/professional.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfessionalService {
-    private readonly http = inject(HttpClient);
-    private readonly apiUrl = `${environment.apiUrl}/professionalProfile`;
-    private readonly professionalUrl =
-        `${environment.apiUrl}/professional`;
 
+    private readonly http = inject(HttpClient);
+
+    private readonly apiUrl =
+        `${environment.apiUrl}/professionalProfile`;
 
     listar() {
         return this.http.get<any>(this.apiUrl);
     }
 
     obtenerPorId(id: number) {
-        return this.http.get<ApiResponse<ProfessionalProfile>>(`${this.apiUrl}/${id}`);
+        return this.http.get<ApiResponse<ProfessionalProfile>>(
+            `${this.apiUrl}/${id}`
+        );
+    }
+
+    obtenerMiPerfil() {
+        return this.http.get<ApiResponse<ProfessionalProfile>>(
+            `${this.apiUrl}/me`
+        );
     }
 
     crear(data: ProfessionalCreateDto) {
@@ -26,12 +34,22 @@ export class ProfessionalService {
             data
         );
     }
-    actualizar(id: number, data: ProfessionalUpdateDto) {
-        return this.http.put<ApiResponse<ProfessionalProfile>>(`${this.professionalUrl}/${id}`, data);
+
+    actualizar(
+        id: number,
+        data: ProfessionalUpdateDto
+    ) {
+        return this.http.put<ApiResponse<ProfessionalUpdateResponse>>(
+            `${this.apiUrl}/${id}`,
+            data
+        );
     }
 
     toggleAvailability(id: number) {
-        return this.http.patch<ApiResponse<ProfessionalProfile>>(`${this.apiUrl}/${id}/availability`, {});
+        return this.http.patch<ApiResponse<ProfessionalProfile>>(
+            `${this.apiUrl}/${id}/availability`,
+            {}
+        );
     }
 
     getImageUrl(imageName: string): string {

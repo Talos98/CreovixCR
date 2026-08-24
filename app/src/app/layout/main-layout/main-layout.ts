@@ -32,6 +32,11 @@ export class MainLayout {
       icon: 'work'
     },
     {
+      label: 'Profesionales',
+      path: '/profesionales',
+      icon: 'people'
+    },
+    {
       label: 'Mis citas',
       path: '/citas',
       icon: 'calendar_today',
