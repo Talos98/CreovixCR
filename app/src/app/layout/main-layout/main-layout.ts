@@ -34,7 +34,10 @@ export class MainLayout {
     {
       label: 'Profesionales',
       path: '/profesionales',
-      icon: 'people'
+      icon: 'people',
+      roles: [
+        Role.PROFESSIONAL,
+        Role.CLIENT]
     },
     {
       label: 'Mis citas',

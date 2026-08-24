@@ -108,3 +108,46 @@ h1 {
         flex-direction: column;
     }
 }
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.report-header h1 {
+    margin: 0;
+}
+
+.btn-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-content mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.pdf-button {
+    border-color: #c62828;
+    color: #c62828;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+}
+
+.pdf-button:hover {
+    background: #c62828;
+    color: #ffffff;
+}
+
+.pdf-button:hover .pdf-icon {
+    color: #ffffff;
+}
+
+.pdf-icon {
+    color: #c62828;
+}
