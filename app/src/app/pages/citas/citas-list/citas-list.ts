@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Appointment } from '../../../core/models/appointment.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { Role } from '../../../core/models/role.model';
+import { ExcelExportService } from '../../../core/services/excel-export.service';
 
 @Component({
     selector: 'app-citas-list',
@@ -31,11 +32,11 @@ export class CitasList {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly authService = inject(AuthService);
+    private readonly excelService = inject(ExcelExportService);
     readonly rol = this.authService.rol;
     readonly Role = Role;
 
     citas = input<Appointment[]>([]);
-
 
     statusFilter = signal<string | null>(null);
     professionalFilter = signal<number | null>(null);
@@ -159,5 +160,9 @@ export class CitasList {
     onDateToChange(event: Event): void {
         this.dateTo.set((event.target as HTMLInputElement).value);
         this.syncQueryParams();
+    }
+
+    exportarExcel(): void {
+        this.excelService.exportCitas(this.citasFiltradas(), 'reporte-citas');
     }
 }

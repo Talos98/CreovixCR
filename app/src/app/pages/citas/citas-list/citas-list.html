@@ -1,7 +1,7 @@
 <section class="admin-header">
     <h1>Gesti&oacute;n de Citas</h1>
     @if (rol() === Role.CLIENT) {
-        <a mat-flat-button class="create-button" routerLink="/admin/citas/crear">
+    <a mat-flat-button class="create-button" routerLink="/admin/citas/crear">
         <mat-icon>add</mat-icon> Nueva cita
     </a>
     }
@@ -30,6 +30,10 @@
                 }
             </mat-select>
         </mat-form-field>
+
+        <button mat-stroked-button (click)="exportarExcel()">
+            <span class="btn-content"><mat-icon>download</mat-icon> Exportar Excel</span>
+        </button>
     </div>
 
     <div class="filters-row">
@@ -51,10 +55,10 @@
     </div>
 </section>
 @if (citasFiltradas().length === 0) {
-  <div class="empty-state">
+<div class="empty-state">
     <mat-icon>search_off</mat-icon>
     <p>No se encontraron citas con los filtros aplicados.</p>
-  </div>
+</div>
 }
 @if (citasFiltradas().length > 0) {
 <div class="table-container glass-card">
